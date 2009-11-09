@@ -1,0 +1,593 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML; 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<title>Hesk - README</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* Style sheet and XHTML code
+Author: Mauricio Samy Silva http://www.maujor.com/ A Web Standard evangelist site
+City: Rio de Janeiro - Brazil
+Contact: maujorcss[at]maujor[dot]com
+Date: 2006-05-11
+*/
+body {
+        margin:5px 0;
+        padding:0;
+        background:#eee;
+        color: black;
+        font : 68.8%/1.5 Verdana, Geneva, Arial, Helvetica, sans-serif;
+        text-align:center;
+        }
+#wrapper {
+        width:700px;
+        background:#fff;
+        margin:0 auto;
+        text-align:left;
+        border:1px solid #ccc;
+        padding:10px 20px;
+        }
+h1 {
+        font-size:1.5em;
+        }
+h2 {
+        font-size:1.2em;
+        border-top:1px solid #999;
+        padding-top:1.8em;
+        }
+h3 {
+        font-size:1.0em;
+        }
+span.dest { color:#f00;}
+span.tip { color:#008000; font-weight:bold;}
+p {
+        color : black;
+        font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+        font-size: 1.0em;
+        }
+address {
+        font-weight:bold;
+        font-style:normal;
+        }
+ul.nobullets {
+        margin:0 0 1.0em;
+        padding:0;
+        list-style:none;
+        }
+ol li {margin-bottom:1.0em;}
+samp, code {
+        font-size:1.3em;
+        font-weight:bold;
+        }
+a:hover {
+        color : red;
+        background:#ccc;
+        text-decoration : none;
+        }
+table#installation {
+        border-collapse:collapse;
+        margin: 5px 15px 10px -25px;
+        border: 2px solid #999;
+        }
+table#installation thead {
+        text-align:center;
+        text-transform:uppercase;
+        }
+table#installation tr td, table#installation tr th {
+        padding: 2px 5px;
+        border: 1px solid #ccc;
+        }
+table#installation tr th {
+        border-bottom-width:2px;
+        border-bottom-color:#999;
+        }
+
+table#installation tr td var {
+        font-weight:bold;
+        font-style:normal;
+        }
+table#installation tr.odd {
+        background: #fafafa;
+        }
+
+
+</style>
+</head>
+<body>
+<div id="wrapper">
+<div id="main">
+<h1><span class="dest">Hesk</span><br />
+PHP Helpdesk software</h1>
+
+<ul class="nobullets">
+<li>PHP helpdesk software (Hesk)</li>
+<li>Version: 2.0 from 24th January 2009</li>
+<li>Author: Klemen Stirn</li>
+<li><a href="http://www.phpjunkyard.com" target="_blank">PHPJunkYard.com - Free PHP scripts</a></li>
+<li><a href="http://www.phpjunkyard.com/free-helpdesk-software.php" target="_blank">Helpdesk software Hesk</a></li>
+<li><a href="http://developers.phpjunkyard.com/" target="_blank">Support and developers forum</a></li>
+</ul>
+
+<p><b>PLEASE NOTE:</b> I <span class="dest">cannot</span> provide free installation support for this free script! Please contact me ONLY about possible bug reports, suggestions or comments! Thank you!</p>
+
+<h2>INDEX</h2>
+
+<ul class="nobullets">
+    <li><a href="#copy">Copyright notice and license</a></li>
+    <li><a href="#desc">Description, requirements and  &amp; Thanks to</a></li>
+    <li><a href="#install">Installation</a></li>
+    <li><a href="#upgrade">Upgrading from old versions</a></li>
+    <li><a href="#help">HELP and Troubleshooting</a></li>
+    <li><b>Customizing Hesk</b>
+    <ul>
+        <li><a href="#customize">Customizing the look</a></li>
+        <li><a href="#emails">Customizing e-mails</a></li>
+        <li><a href="#translate">Translating Hesk to your language</a></li>
+    </ul>
+    </li>
+    <li><a href="#other">Copyright removal, newsletter, rating this script and other</a></li>
+</ul>
+
+<h2 id="copy">COPYRIGHT NOTICE</h2>
+
+<p>Copyright 2005-2009 Klemen Stirn. All Rights Reserved.</p>
+
+<p>The Hesk may be used and modified free of charge by anyone AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT. By using this code you agree to indemnify Klemen Stirn from any liability that might arise from it's use.</p>
+
+<p><b>Selling the code for this program, in part or full, without prior written consent is expressly forbidden.</b></p>
+
+<p>Using this code, in part or full, to create derivate work, new scripts or products is expressly forbidden. <b>Obtain permission before redistributing this software over the Internet or in any other medium.</b> In all cases copyright and header must remain intact. This Copyright is in full effect in any country that has International Trade Agreements with the United States of America or with the European Union.</p>
+
+<p><b>Removing copyright notice (&quot;Powered by&quot; statement)</b><br />
+Removing any of the copyright notices without purchasing a license is <b>illegal</b>! To remove PHPJunkyard copyright notice you must purchase a license for this script. For more information on how to obtain a license please visit the site below:<br />
+<a href="http://www.phpjunkyard.com/copyright-removal.php" target="_blank">http://www.phpjunkyard.com/copyright-removal.php</a></p>
+
+<h2 id="desc">DESCRIPTION</h2>
+
+<p>A PHP/MySQL browser based customer support software.</p>
+
+<p><b>Changes in 2.0</b><br />
+- updated user interface<br />
+- fully featured knowledge base (categories, articles (counting views, able to rate), search, ...)<br />
+- display of latest and top articles<br />
+- before a ticket is submitted HESK will suggest matching Knowledgebase articles<br />
+- you can add notes to tickets (hidden from customer, viewable by staff)<br />
+- limit features for staff (not just Administrator/Staff, now you can enable/disable individual features for individual users)<br />
+- rating of staff replies (Helpful/Not helpful)<br />
+- up to 10 custom field now<br />
+- custom fields can be text, textarea, select or radio button<br />
+- disable list users in admin<br />
+- remember staff username<br />
+- default ticket listing by status (new, waiting reply first) then priority<br />
+- staff passwords encrypted - not simple SHA1, but multiple times<br />
+- admin files moved to &quot;admin&quot; folder<br />
+- added prefix to database names<br />
+- autoclose tickets after X days<br />
+- adjust server time to match your local time<br />
+- updated anti-SPAM features<br />
+- and many other changes</p>
+
+<p><b>Changes in 0.94.1</b><br />
+- fixed an XSS vulnerability on some servers (reported by Nemanja Avramovic, <a href="http://www.avramovic.info">www</a>)<br />
+- changed the way file uploads are handled</p>
+
+<p><b>Changes in 0.94</b><br />
+- added support for custom fields (up to 5)<br />
+- added file attachments<br />
+- added anti-SPAM security image<br />
+- added canned responses<br />
+- settings are now edited from the admin panel<br />
+- new ticket statuses (New, Replied, Waiting Reply, Resolved)<br />
+- Ticket ID reminder<br />
+- and many other changes (too many to list here)</p>
+
+<h2>REQUIREMENTS</h2>
+
+<ul>
+    <li>UNIX, Windows, FreeBSD server (or other with working PHP/MySQL)</li>
+    <li>PHP 4.3.2 or newer</li>
+    <li>1 MySQL database</li>
+    <li>FTP access and a FTP program</li>
+</ul>
+
+<h2>THANKS TO</h2>
+
+<p>I would like to say THANKS to everyone who in any way contributed to the development of this script, especially to (in no particular order):</p>
+
+<ul>
+    <li>Mauricio Samy Silva, designed the nice readme file you are just reading (<a href="http://www.maujor.com/">www</a>)</li>
+    <li>Michael Casha, beta tester (<a href="http://www.miccas.net/">www</a>)</li>
+    <li>everyone who supported my work by <a href="http://www.phpjunkyard.com/copyright-removal.php">purchasing a license</a></li>
+    <li>everyone who posted their suggestions, comments and feedback on the <a href="http://developers.phpjunkyard.com">PHPJunkyard forum</a></li>
+</ul>
+
+<h2 id="install">&raquo; Installation</h2>
+
+<p style="font-weight:bold"><span class="dest">Please take 5 minutes time and read installation instructions carefully and completely! This will ensure a proper and easy installation.</span></p>
+
+<p style="font-weight:bold"><span class="dest">If you have problems/questions see the &quot;Troubleshooting and HELP&quot; section further down.</span></p>
+
+<p>Before you can install Hesk you will need to obtain your MySQL database information,
+such as <b>database name</b>, <b>database user</b> and <b>password</b>. You have
+to get this information from your HOSTING COMPANY, PHPJunkyard CANNOT help you
+get this information!</p>
+
+<ol>
+<li>
+<p>FTP to the public folder of your server (where the rest of your website is;
+usually called &quot;public_html&quot;, &quot;www&quot; or &quot;site&quot;) and create
+a folder where you will install Hesk (for example named &quot;hesk&quot; or &quot;support&quot;).<br />
+Example: /public_html/hesk<br />
+Corresponding URL: http://www.yourdomain.com/hesk</p>
+<p><span class="tip">TIP:</span> If you don't know how to FTP or CHMOD files read my simple
+<a href="http://www.phpjunkyard.com/ftp-chmod-tutorial.php" target="_blank">FTP and CHMOD tutorial</a></p>
+</li>
+<li>
+<p>Upload folder &quot;img&quot; and images inside to your server in BINARY mode and all other Hesk files and folders to your server in ASCII mode.</p>
+</li>
+<li>
+<p>Make sure the following files/folders are writable by the script:<br />
+- file <b>hesk_settings.inc.php</b> - on Unix (Linux) servers CHMOD this file to <b>666</b> (rw-rw-rw-)<br />
+- directory <b>attachments</b> - on Unix (Linux) servers CHMOD this directory to <b>777</b> (rwxrwxrwx)</p>
+</li>
+<li>
+<p>Open your browser and open <b>hesk/install</b> in your browser, for example:<br />
+http://www.yourdomain.com/hesk/install<br />
+(of course change the URL to your domain and your path to Hesk folder!)</p>
+</li>
+<li>
+<p>Hesk setup script will show up on the install URL. Click <b>New install</b> and follow instructions. The install consists of 4 steps:</p>
+   <ol>
+   <li><b>STEP 1: License agreement</b> - read the Hesk License agreement and confirm that you agree with the terms</li>
+   <li><b>STEP 2: Check setup</b> - the script will test your server to see if all required settings are correct and advise solution to any problems</li>
+   <li><b>STEP 3: Database settings</b> - enter your MySQL database settings and the script will test them<br />
+       <span class="dest">You need to get correct MySQL database information from your hosting company!</span></li>
+   <li><b>STEP 4: Setup database tables</b> - everything OK so far, the script will install MySQL tables</li>
+   </ol>
+</li>
+<li>
+<p style="font-weight:bold"><span class="dest">DELETE the &quot;install&quot; directory on your server!</span></p>
+</li>
+<li>
+<p>Well done so far, time to setup your help desk! Click the Continue link in install script or open <b>admin.php</b> in your browser, for example:<br />
+http://www.yourdomain.com/hesk/admin/<br />
+Login using<br />
+-&gt; Default username: <b><i>Administrator</i></b><br />
+-&gt; Default password: <b><i>admin</i></b><br />
+Click the <b>Settings</b> link in the top menu to get to the settings page (if not already there)</p>
+</li>
+<li>
+<p>Take some time and get familiar with all the available settings. Most should be self-explanatory, for additional information
+about each setting click the [<a href="Javascript:void(0)"><b>?</b></a>] link for help about the current setting.</p>
+<p>Don't forget to click the <b>Save changes</b> button at the bottom of the settings page to save your settings!</p>
+</li>
+<li>
+<p style="font-weight:bold">Things to do next</p>
+<p>Click the &quot;Profile&quot; link
+and set your name, e-mail, NEW PASSWORD and signature (optional).</p>
+
+<p>You can add new users on the &quot;Users&quot; page. The default user
+(Administrator) cannot be deleted.</p>
+
+<p>You can add new categories on the &quot;Categories&quot; page. The default category
+cannot be deleted, but it can be renamed.</p>
+
+<p>You can create canned responses on the &quot;Canned responses&quot; page. These are pre-written
+replies to common support questions.</p>
+
+<p>To manage and access knowledgebase click the &quot;Knowledgebase&quot; link.
+Knowledgebase is a collection of answers to frequently asked questions (FAQ) and articles which provide self-help resources to your customers.
+<b>A comprehensive and well-written knowledgebase can drastically reduce the number of support tickets you receive and save a lot of your time.</b>
+You can arrange articles into categories and sub categories.</p>
+
+<p>Your customers will be able to post tickets on the index page:<br />
+http://www.yourdomain/hesk/index.php<br />
+or just<br />
+http://www.yourdomain/hesk</p>
+
+<p style="font-weight:bold"><span class="dest">If you have problems/questions see the &quot;Troubleshooting and HELP&quot; section further down.</span></p>
+</li>
+<li>
+<p style="font-weight:bold">Enjoy using Hesk!</p>
+</li>
+</ol>
+
+<h2 id="upgrade">&raquo; Upgrading from old versions</h2>
+
+<p style="font-weight:bold"><span class="dest">Please take 5 minutes time and read upgrade instructions carefully and completely! This will ensure a proper and easy upgrade.</span></p>
+
+<p><b><span class="dest">Known upgrade issues</span></b><br />
+There are some known issues when upgrading from versions prior to 0.94:</p>
+<ol>
+<li>all &quot;Open&quot; tickets' status will be changed to &quot;Waiting reply&quot;</li>
+<li>the &quot;Last update&quot; date will actually show ticket creation date for all existing (old) tickets until a new reply is added.</li>
+<li>the &quot;Last replier&quot; will show &quot;Customer&quot; for all existing (old) tickets until a new reply is added.</li>
+</ol>
+
+<p><span class="tip">TIP:</span> Try to perform the upgrade in low-traffic hours when your website receives the least amount of visits.</p>
+
+<p style="font-weight:bold">To upgrade Hesk to version 2.0 follow these steps:</p>
+
+<ol>
+<li>
+<p><span class="dest" style="font-weight:bold">BACKUP YOUR EXISTING HESK DATABASE AND FILES!</span> Most web hosts allow you to do that from your control panel.
+Contact your host if not sure how to do that. Don't skip this step!</p>
+</li>
+<li>
+<p>Delete any of these files from your main hesk folder (older versions might not have all the files listed):<br />
+- admin.php<br />
+- admin_change_status.php<br />
+- admin_main.php<br />
+- admin_move_category<br />
+- admin_reply_ticket.php<br />
+- admin_settings.php<br />
+- admin_settings_save.php<br />
+- admin_ticket.php<br />
+- archive.php<br />
+- delete_tickets.php<br />
+- find_tickets.php<br />
+- manage_canned.php<br />
+- manage_categories.php<br />
+- manage_users.php<br />
+- profile.php<br />
+- show_tickets.php<br /></p>
+</li>
+<li>
+<p>Upload <b>ALL</b> HESK 2.0 files to your server <b>EXCEPT</b> these ones (do NOT upload these files):<br />
+- hesk_settings.inc.php<br />
+- header.txt<br />
+- footer.txt</p>
+
+<p>The &quot;img&quot; folder and images inside must be transferred to your server in BINARY mode and all other Hesk files and folders in ASCII mode.</p>
+</li>
+<li>
+<p>Make sure the following files/folders are writable by the script:<br />
+- file <b>hesk_settings.inc.php</b> - on Unix (Linux) servers CHMOD this file to <b>666</b> (rw-rw-rw-)<br />
+- directory <b>attachments</b> - on Unix (Linux) servers CHMOD this directory to <b>777</b> (rwxrwxrwx)</p>
+</li>
+<li>
+<p>Delete any language files from the <b>language</b> folder <b>except english.inc.php</b>. A lot of new text has been added in Hesk 2.0, you will need to
+translate that before using any other language files.</p>
+</li>
+<li>
+<p>Open your browser and open <b>hesk/install</b> in your browser, for example:<br />
+http://www.yourdomain.com/hesk/install<br />
+(of course change the URL to your domain and your path to Hesk folder!)</p>
+</li>
+<li>
+<p>Hesk setup script will show up on the install URL. Click <b>Update existing install</b> and follow instructions. The update consists of 4 steps:</p>
+   <ol>
+   <li><b>STEP 1: License agreement</b> - read the Hesk License agreement and confirm that you agree with the terms</li>
+   <li><b>STEP 2: Check setup</b> - the script will test your server to see if all required settings are correct and advise solution to any problems</li>
+   <li><b>STEP 3: Database settings</b> - check your MySQL database settings and the script will test them.<br />
+       <span class="dest">The settings must be the same as with your old Hesk installation</span></li>
+   <li><b>STEP 4: Update database tables</b> - everything OK so far, the script will update your existing MySQL tables to version 0.94.1</li>
+   </ol>
+</li>
+<li>
+<p style="font-weight:bold"><span class="dest">DELETE the &quot;install&quot; directory on your server!</span></p>
+</li>
+<li>
+<p>Click the Continue link in update script or open <b>admin.php</b> in your browser, for example:<br />
+http://www.yourdomain.com/hesk/admin/<br />
+Login using username <b>Administrator</b> and your password then click the <b>Settings</b> link in the top menu to get to the settings page (if not already there)</p>
+</li>
+<li>
+<p>Take some time and get familiar with all the new available settings. Most should be self-explanatory, for additional information
+about each setting click the [<a href="Javascript:void(0)"><b>?</b></a>] link for help about the current setting.</p>
+<p>Don't forget to click the <b>Save changes</b> button at the bottom of the settings page to save your settings!</p>
+</li>
+<li>
+<p style="font-weight:bold"><span class="dest">If you have problems/questions see the &quot;Troubleshooting and HELP&quot; section further down.</span></p>
+</li>
+<li>
+<p style="font-weight:bold">Enjoy using Hesk!</p>
+</li>
+</ol>
+
+<h2 id="help">&raquo; HELP and Troubleshooting</h2>
+
+<h3>1. What is CHMOD and FTP?</h3>
+
+<p>I have prepared a simple <a href="http://www.phpjunkyard.com/ftp-chmod-tutorial.php" target="_blank">FTP
+and CHMOD tutorial</a> which will help you FTP files to your server and set correct CHMOD settings.</p>
+
+<h3>2. I did CHMOD hesk_settings.inc.php and attachments folder but I still get an error?</h3>
+
+<p>CHMOD doesn't work on all servers, Windows (IIS) servers for example don't understand CHMOD command.
+You need to make sure the <i>Internet Guest Account</i> (IUSR) has permissions to modify, write and read the required
+files. Some further instructions can be found <a href="http://developers.phpjunkyard.com/viewtopic.php?t=1406" target="_blank">HERE</a></p>
+
+<p>In case you still can't get it to work contact your hosting company
+and ask them to set modify/write/read permissions for file <b>hesk_settings.inc.php</b> and directory <b>attachments</b>.</p>
+
+<h3>3. The security image doesn't show up correctly</h3>
+
+<p>For the image to work your server must have GD library installed. You can test if your server supports all the required functions by uploading the
+<b>gd_test.php</b> file to your server and open it in your browser. If you get an error or empty page when opening gd_test.php you should either ask your
+hosting company to install the GD library for PHP or disable anti-SPAM image in Hesk admin panel under &quot;Settings&quot;</p>
+
+<h3>4. The installation (or upgrade) script doesn't move from the &quot;License agreement&quot; page</h3>
+
+<p>You did check that you agree with the license agreement, didn't you? In that case your server probably has problems with PHP sessions.
+Download <a href="http://www.phpjunkyard.com/extras/session_test.zip">Session test files</a>,
+upload them to your server and open <b>session_test.php</b> in your browser.</p>
+<p>Click the CLICK HERE FOR PAGE 2 link. If you get &quot;$_SESSION['test'] is set to:&quot; <b>FALSE</b>
+contact your hosting company and ask them to check if PHP session are working normally. If you get <b>TRUE</b> instead of FALSE the problem is something else,
+try searching for help <a href="http://developers.phpjunkyard.com">PHPJunkyard Support forum</a>.</p>
+
+<h3>5. I get an <span class="dest">Your session has expired</span> error when trying to login to admin panel</h3>
+
+<p>Your server probably has problems with PHP sessions. Download <a href="http://www.phpjunkyard.com/extras/session_test.zip">Session test files</a>,
+upload them to your server and open <b>session_test.php</b> in your browser.</p>
+<p>Click the CLICK HERE FOR PAGE 2 link. If you get &quot;$_SESSION['test'] is set to:&quot; <b>FALSE</b>
+contact your hosting company and ask them to check if PHP session are working normally. If you get <b>TRUE</b> instead of FALSE the problem is something else,
+try searching for help <a href="http://developers.phpjunkyard.com">PHPJunkyard Support forum</a>.</p>
+
+<h3>6. Hesk doesn't send out ticket e-mails</h3>
+
+<p>Hesk uses the standard PHP mail() command so if sending out e-mails isn't working there are two common problems:</p>
+
+<ol>
+<li>Some servers restrict sending e-mails from scripts to local domains only (i.e. domains hosted
+on the server). If you can receive e-mails to <i>something@YOURDOMAIN.com</i> but not
+to third-party domains (for example something@YAHOO.com) this is probably the case. Contact your hosting company
+and ask them to remove the restriction.</li>
+<li>If no e-mails at all are sent then PHP mail() function is probably not configured properly.
+Contact your hosting company and ask them to check if PHP mail() is enabled and working correctly.</li>
+</ol>
+
+<h3>7. File uploads don't work</h3>
+
+<p>For file uploads to work your server must have <b>file.uploads</b> enabled in the PHP configuration and the <b>attachments</b>
+folder must be writable by Hesk. There are also other PHP settings that can limit file uploads,
+especially the size and number of attachments. Usually keeping attachment size limit
+under 2 Mb (2048 Kb) works, but try also lower values, for example 0.5 Mb (512 Kb).</p>
+
+<p>Important PHP settings for file uploads are <i>upload_max_filesize</i>, <i>upload_tmp_dir</i>, <i>post_max_size</i> and <i>max_input_time</i> directives in php.ini.
+If not sure what your settings are you will need to contact your hosting company and
+ask them what file size limits should you use for file uploads.</p>
+
+<h3>8. What do statuses mean (New, Replied, Waiting Reply, Resolved)?</h3>
+
+<ol>
+<li><b>New</b> - newely created ticket with no replies yet</li>
+<li><b>Waiting reply</b> - this tickets waits for your reply</li>
+<li><b>Replied</b> - you have replied to this ticket, waiting for reply from other party</li>
+<li><b>Resolved (Closed)</b> - the ticket has been resolved, no more replies necessary</li>
+</ol>
+
+<p>&nbsp;</p>
+
+<p>Since these scripts are free no support is guaranteed. If you can't get the script to work please go
+through this readme file again carefully and repeat the installation step-by-step (also delete old
+files and folders from the server). Also please feel free to post any questions or problems you might have
+in <a href="http://developers.phpjunkyard.com">PHPJunkyard forum</a>!</p>
+
+<h2 id="customize">&raquo; Customizing the look</h2>
+
+<p>You may add your header HTML code to header.txt and footer HTML code to footer.txt file. This code will then be used throughout the Hesk. You will have to use <b>full image URLs</b> in the code. For example instead of<br />
+&lt;IMG SRC=&quot;images/image.jpg&quot; ... &gt; use<br />
+&lt;IMG SRC=&quot;http://www.yourdomain.com/images/image.jpg&quot; ... &gt;!<br />
+Same goes for any Javascripts or CSS files if you are calling them from within the header or footer.</p>
+
+<p>You may also edit the <b>style.css</b> file to customize colors and fonts of your helpdesk. The code inside is CSS (Cascading Style Sheets), you can learn CSS <a href="http://www.w3schools.com/css/default.asp" target="_blank">here</a> (it's quite simple and you can easily edit all colors with it).</p>
+
+
+<h2 id="emails">&raquo; Customizing e-mail messages</h2>
+
+<p>You can easily customize e-mail messages sent by Hesk. E-mail message templates can be found in the &quot;emails&quot; folder:</p>
+<p><b>forgot_ticket_id.txt</b> - e-mail reminder sent if someone forgot (lost) their ticket tracking number.<br />
+<b>new_ticket.txt</b> - e-mail sent to the person who submits a new ticket.<br />
+<b>new_ticket_staff.txt</b> - e-mail sent to staff (you) when someone submits a new ticket.<br />
+<b>new_reply_by_staff.txt</b> - e-mail sent to the customer who submitted the ticket after you (your staff) respond to the ticket.<br />
+<b>new_reply_by_customer.txt</b> - e-mail sent to staff (you) when the customer replies to the ticket.<br />
+<b>category_changed.txt</b> - e-mail sent to notify staff when a ticket category is changed</p>
+
+<p>Simply edit the e-mail template files and upload them over original ones. You can use these special tags in the templates and they will be replaced with actual values by Hesk:</p>
+
+<ol>
+<table id="installation" summary="This is a simple two columns table - the first column names a special tag and in second one has the replacement variable">
+<thead>
+<tr>
+<th>Special tag</th>
+<th>Replaced with</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td nowrap="nowrap"><var>%%NAME%%</var></td>
+<td>customer name</td>
+</tr>
+<tr>
+<td nowrap="nowrap"><var>%%SUBJECT%%</var></td>
+<td>ticket subject</td>
+</tr>
+<tr class="odd">
+<td nowrap="nowrap"><var>%%TRACK_ID%%</var></td>
+<td>ticket tracking ID</td>
+</tr>
+<tr>
+<td><var>%%TRACK_URL%%</var></td>
+<td>ticket URL</td>
+</tr>
+<tr class="odd">
+<td nowrap="nowrap"><var>%%SITE_TITLE%%</var></td>
+<td>website title </td>
+</tr>
+<tr>
+<td><var>%%SITE_URL%%</var></td>
+<td>website URL (as set on settings page)</td>
+</tr>
+</tbody>
+</table>
+</ol>
+
+<p>You can turn off e-mail notifications in the &quot;Your profile&quot; page. The customer will still receive e-mails if you turn off your e-mails.</p>
+
+<h2 id="translate">&raquo; Translating Hesk to your language</h2>
+
+<p>Hesk comes with a language file which makes translating Hesk to other languages easily.<br />
+<a href="http://developers.phpjunkyard.com/viewtopic.php?t=1390" target="_blank">Check if this version of Hesk had already been translated to your language</a>.</p>
+
+<p>To translate Hesk to your language follow these steps:</p>
+
+<ol>
+<li>Locate file <b>english.inc.php</b> inside your <b>language</b> folder and open it in a plain text editor like Notepad or Wordpad.</li>
+<li>Save the file as <b>yourlanguage.inc.php</b> (deutsch.inc.php, francais.inc.php, ...). The entire name should be lowercase.<br />
+OK: francais.inc.php<br />
+WRONG: Francais.inc.php, FRANCAIS.inc.php</li>
+<li>Edit the language file header (first lines that start with *) with your information. Please follow the provided format.</li>
+<li>Translate all lines containing language. You may translate <b>only the right side of each line</b>, for example:<br /><br />
+$hesklang['DO_NOT_CHANGE_THIS']='TRANSLATE WORDS HERE';<br /><br />
+<p><span class="dest">When translating make sure to:</span></p>
+<ul>
+<li>keep the line format: single quotes (') around each phrase and lines must end with a semi-colon (;)</li>
+<li>if you use single quotes in the words escape them with a backslash (\). WRONG: can't CORRECT: can\'t</li>
+<li>do not change these codes as they are used by Hesk: %s %d</li>
+</ul>
+<br />
+</li>
+<li>Save the file and upload it to your language folder.</li>
+<li>Open the file in your browser to check syntax, for example:<br />
+ <b>http://www.domain.com/hesk/language/francais.inc.php</b><br />
+ If everything is OK you should get a message like &quot;No syntax errors detected in /francais.inc.php&quot;.
+ If you get any errors then the syntax is wrong. The error should give you line number with error, check syntax around that line (make sure it ends with ; , single quotes must be escaped with \' etc.).</li>
+<li>Edit the <b>Language file</b> setting in your admin panel (Settings page)</li>
+<li>Test Hesk with your language and make sure it works ok.</li>
+<li>You should also translate e-mail files in the &quot;emails&quot; folder and this readme.htm file (please name it <b>readme-yourlanguage.htm</b>, for example readme-fr.htm, readme-de.htm, ...).</li>
+</ol>
+
+<p><span class="dest">If you translate Hesk to your language please post it to the PHPJunkyard forum for others to download.</span></p>
+
+<h2 id="other">&raquo; Copyright removal</h2>
+
+You may NOT remove any copyright statements in the source code. The Powered by link in Hesk mustn't be removed without purchasing a license! For more information please visit
+<a href="http://www.phpjunkyard.com/copyright-removal.php" target="_blank">http://www.phpjunkyard.com/copyright-removal.php</a>
+
+<h2>&raquo; Stay updated!</h2>
+
+<p>Join my FREE newsletter and you will be notified about new scripts, new versions of the existing scripts and other important news from PHPJunkYard.<br />
+<a href="http://www.phpjunkyard.com/newsletter.php">Click here for more info</a></p>
+
+
+<h2>&raquo; Please rate this script</h2>
+
+<p>If you like this script please rate it or even write a review at:</p>
+
+<p><a href="http://php.resourceindex.com/detail/04946.html" target="_new">Rate this Script @ The PHP Resource Index</a></p>
+
+<p><a href="http://www.hotscripts.com/Detailed/46973.html" target="_blank">Rate this Script @ Hot Scripts</a></p>
+
+<h2>&raquo; What else?</h2>
+
+<p>That's it! If you use PHPJunkYard free scripts or any portion of their code  please place a link to PHPJunkYard.com on your website. I won't sue you if you don't, but I believe it is a fair trade for a free script/code. Think about it. You can find link suggestions <a href="http://www.phpjunkyard.com/link2us.php">here</a>.</p>
+
+<p>Best regards,</p>
+<address>Klemen Stirn<br />
+PHP JunkYard<br />
+<a href="http://www.phpjunkyard.com">http://www.PHPJunkYard.com</a></address>
+
+</div>
+</div>
+</body>
+</html>

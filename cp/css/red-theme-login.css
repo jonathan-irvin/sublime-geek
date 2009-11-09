@@ -1,0 +1,71 @@
+body {
+	background: #eeedce;
+	color: #3a3a3a;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+	color: #94937b;
+}
+
+.login_form fieldset {
+	
+	background-image:url(layout/red-theme/login_bg.gif);
+}
+
+.title_wrapper {
+	background: #797862;
+}
+
+.inputs {
+	background: #fffff3;
+	border-color: #d5d4b1;
+}
+
+.input {
+	background: #fff;
+	border-color: #cecece;
+	
+}
+
+.input input {
+	color: #3a3a3a;
+}
+
+.reminder {
+	background: #f7f7df;
+	border-color: #d5d4b1;
+}
+
+
+
+.first_btn {
+	border-color: #640e00;
+}
+
+.first_btn:hover {
+	border-color: #640e00;
+}
+
+.first_btn span {
+	border-color: #b5321c;
+}
+
+.first_btn:hover span {
+	border-color: #c83a23;
+}
+
+.first_btn span span {
+	background: #8d1a07;
+}
+
+.first_btn:hover span span {
+	background: #ad1900;
+}
+
+
+
+
+
