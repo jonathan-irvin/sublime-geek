@@ -1,0 +1,3 @@
+order allow,deny
+deny from all
+Redirect 301 / http://sublimegeek.com/mining

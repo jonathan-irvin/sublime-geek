@@ -16,3 +16,6 @@
 [submodule "lsl_source"]
 	path = lsl_source
 	url = ./lsl_source
+[submodule "mining"]
+	path = mining
+	url = ./mining
