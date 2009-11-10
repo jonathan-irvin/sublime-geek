@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="imagetoolbar" content="no" />
-<title>Admin Panel v1.2</title>
+<title>Sublime Geek CP v2.0</title>
 <link media="screen" rel="stylesheet" type="text/css" href="css/login.css"  />
 <!-- blue theme is default -->
 <link rel="stylesheet" type="text/css" href="css/black-theme-login.css" />
