@@ -11,3 +11,18 @@
 <script type="text/javascript" src="js/css.js"></script>
 <script type="text/javascript" src="js/behaviour.js"></script>
 </head>
+
+<body>
+	<!--[if !IE]>start wrapper<![endif]-->
+	<div id="wrapper">
+		<!--[if !IE]>start header<![endif]-->
+		<div id="header">
+			<div class="inner">
+				<h1 id="logo"><a href="#">Sublime Geek <span>CP</span><em>v2.0</em></a></h1>
+				<ul id="user_menu">
+					<li>Welcome <strong>Username</strong></li>
+					<li class="last"><a href="#">Log out</a></li>
+				</ul>
+			</div>
+		</div>
+		<!--[if !IE]>end header<![endif]-->
