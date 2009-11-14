@@ -6,7 +6,7 @@ if($sel == ''){$sel = 5;}
 $toploc = "SELECT  
 `locname` ,  `simname` ,  `locurl` , 
 COUNT( * ) AS  `total` , 
-AVG(  `rating` ) as `rating` ,  
+AVG(  `rating` ) as `rating` ,  `type` ,
 `timestamp` 
 FROM  `mvs_votes` 
 WHERE  `timestamp` >= DATE_SUB( CURDATE( ) , INTERVAL $interval ) 
