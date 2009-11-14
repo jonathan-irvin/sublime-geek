@@ -49,16 +49,30 @@ if($topnum > 0){
     $simname    = $toprow['simname'];
     $slurl      = $toprow['locurl'];
     $total      = $toprow['total'];
-    $rating     = number_format(round($toprow['rating'],1),1,'.',',');   
-    print("
-    <tr>
-     <td align=center>#$rank</td>
-     <td><a href='$slurl'>$location</a></td> 
-     <td align=center>$simname</td> 
-     <td align=center><a href=\"$slurl\">Teleport</a></td> 
-     <td align=center>$total</td>
-     <td align=center>$rating</td>
-    </tr>");
+    $rating     = number_format(round($toprow['rating'],1),1,'.',',');
+	$type		= $toprow['type'];	
+    
+	if($type == "FREE"){
+		print("
+	    <tr>
+	     <td align=center>#$rank</td>
+	     <td><a href='$slurl'>$location</a></td> 
+	     <td align=center>$simname</td> 
+	     <td align=center><a href=\"$slurl\">Teleport</a></td> 
+	     <td align=center>$total</td>
+	     <td align=center>$rating</td>
+	    </tr>");
+	}else if ($type == "PAID"){
+		print("
+	    <tr>
+	     <td align=center>#$rank</td>
+	     <td><a href='$slurl'>$location</a></td> 
+	     <td align=center>$simname</td> 
+	     <td align=center><a href=\"$slurl\">Teleport</a></td> 
+	     <td align=center>$total</td>
+	     <td align=center>$rating</td>
+	    </tr>");
+	}
     $rank++;
   } 
   print("</table>"); 
