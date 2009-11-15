@@ -50,15 +50,35 @@ if($topnum > 0){
     $slurl      = $toprow['locurl'];
     $total      = $toprow['total'];
     $rating     = number_format(round($toprow['rating'],1),1,'.',',');   
-    print("
-    <tr>
-     <td align=center>#$rank</td>
-     <td><a href='$slurl'>$location</a></td> 
-     <td align=center>$simname</td> 
-     <td align=center><a href=\"$slurl\">Teleport</a></td> 
-     <td align=center>$total</td>
-     <td align=center>$rating</td>
-    </tr>");
+   $type		= $toprow['type'];	
+    $tags;
+	
+	if($rank == 1){$tags = "<a href='$slurl' title='1st Place'><img src='./images/trophy.png'></a>";}
+	if($rank == 2){$tags = "<a href='$slurl' title='2nd Place'><img src='./images/trophy_silver.png'></a>";}
+	if($rank == 3){$tags = "<a href='$slurl' title='3rd Place'><img src='./images/trophy_bronze.png'></a>";}
+	if($type == 'PAID'){$tags .= "<a href='$slurl' title='Featured Location'><img src='./images/star_1.png'></a>";}
+	
+	if($type == "FREE"){
+		print("
+	    <tr>
+	     <td align=center>#$rank</td>
+	     <td><a href='$slurl'>$location</a></td> 
+	     <td align=center>$simname</td>
+		 <td align=center>$tags</td>
+	     <td align=center>$total</td>
+	     <td align=center>$rating</td>
+	    </tr>");
+	}else if ($type == "PAID"){
+		print("
+	    <tr class=\"paid\">
+	     <td align=center>#$rank</td>
+	     <td><a href='$slurl'>$location</a></td> 
+	     <td align=center>$simname</td>
+		 <td align=center>$tags</td>
+	     <td align=center>$total</td>
+	     <td align=center>$rating</td>
+	    </tr>");
+	}
     $rank++;
   } 
   print("</table>"); 
