@@ -1,16 +1,12 @@
 <?php
 
-/*
- * YOURLS : sample file showing how to use the API
- */
-
 // EDIT THIS: your auth parameters
 $username = 'admin';
 $password = 'Jurb1f!ed';
 
 // EDIT THIS: the query parameters
-$url = 'http://planetozh.com/blog/'; // URL to shrink
-$keyword = 'ozh';				// optional keyword
+$url; // URL to shrink
+$keyword;				// optional keyword
 $format = 'json';				// output format: 'json', 'xml' or 'simple'
 
 // EDIT THIS: the URL of the API file
