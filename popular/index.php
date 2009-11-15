@@ -53,9 +53,9 @@ if($topnum > 0){
 	$type		= $toprow['type'];	
     $tags;
 	
-	if($rank == 1){$tags .= "<a href='$slurl' title='1st Place'><img src='./images/trophy.png'></a>";}
-	if($rank == 2){$tags .= "<a href='$slurl' title='2nd Place'><img src='./images/trophy_silver.png'></a>";}
-	if($rank == 3){$tags .= "<a href='$slurl' title='3rd Place'><img src='./images/trophy_bronze.png'></a>";}
+	if($rank == 1){$tags = "<a href='$slurl' title='1st Place'><img src='./images/trophy.png'></a>";}
+	if($rank == 2){$tags = "<a href='$slurl' title='2nd Place'><img src='./images/trophy_silver.png'></a>";}
+	if($rank == 3){$tags = "<a href='$slurl' title='3rd Place'><img src='./images/trophy_bronze.png'></a>";}
 	if($type == 'PAID'){$tags .= "<a href='$slurl' title='Featured Location'><img src='./images/star_1.png'></a>";}
 	
 	if($type == "FREE"){
