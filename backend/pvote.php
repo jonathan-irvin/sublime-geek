@@ -30,7 +30,7 @@ FROM `mvs_votes`
 WHERE 
 `voter_key` = '$voterkey' AND
 `locname`   = '$locname'  AND
-`timestamp` >= CURDATE()"; 
+`timestamp` >= DATE_SUB(NOW(),INTERVAL 1 HOUR)"; 
 
 //print("FOR DEBUG PURPOSES ONLY: $sel_vote");
 
