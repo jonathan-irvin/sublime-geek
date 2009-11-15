@@ -10,16 +10,16 @@ define('YOURLS_DB_USER', 'geekfox');
 define('YOURLS_DB_PASS', 'jurby5000');
 
 /** The name of the database for YOURLS */
-define('YOURLS_DB_NAME', 'geekfox_urls');
+define('YOURLS_DB_NAME', 'geekfox_ms');
 
 /** MySQL hostname */
 define('YOURLS_DB_HOST', 'localhost');
 
 /** MySQL URL table name. Don't change this if in doubt. */
-define('YOURLS_DB_TABLE_URL', 'url');
+define('YOURLS_DB_TABLE_URL', 'livemark_url');
 
 /** MySQL Next ID table name. Don't change this if in doubt. */
-define('YOURLS_DB_TABLE_NEXTDEC', 'next_id');
+define('YOURLS_DB_TABLE_NEXTDEC', 'livemark_next_id');
 
 /*
  ** Site options
