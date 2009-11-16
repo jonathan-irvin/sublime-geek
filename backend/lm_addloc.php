@@ -14,9 +14,9 @@ $username = 'admin';
 $password = 'Jurb1f!ed';
 
 // EDIT THIS: the query parameters
-$url; // URL to shrink
+$url = $slurl; // URL to shrink
 $keyword;				// optional keyword
-$format = 'json';				// output format: 'json', 'xml' or 'simple'
+$format = 'simple';				// output format: 'json', 'xml' or 'simple'
 
 // EDIT THIS: the URL of the API file
 $api_url = 'http://lmrk.in/yourls-api.php';
@@ -53,7 +53,7 @@ $addlmk_sql="INSERT INTO `livemark_profiles` (
 VALUES ('', '$profilename', '$ownerName', '$ownerkey', '$locname', '$slurl|$data', NOW())";
 mysql_query($addlmk_sql);
 
-$urlpath = parse_url($data['path']);
+$urlpath  = str_replace("http://lmrk.in/","",$data);
 
 print("newloc|$data|$urlpath");
 
