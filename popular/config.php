@@ -143,22 +143,7 @@ $chart->setConfig('animation.start_time', '.5');
 $chart->setConfig('animation.pull_out_time', '1.5');
 
 
-function genRanks(){
-	if($sel <= 15){
-    //Chart Data
-    $count = 0;
-    while($c_toprow = mysql_fetch_array($c_topres)){	 	  			
-		$c_title = escape_string_for_regex($c_toprow['locname']);				
-		$c_total = $c_toprow['total'];
-		$count2 = $count + 1;
-		$chart->addSlice($count, trim($c_title), $c_total );
-		$count++;
-    }
-	print("<div align='center'>");
-	print($chart->getCode());
-	print("</div>");
-  }else{print("<br><br><div align='center'><b>I'm sorry, the pie chart is not available for selections greater than 15</b></div><br>");}
-  
+function genRanks(){  
   print("<br><div align='center'><i>Note: Some cropping may occur on longer names, <br>please refer to the data below for ranking, votes, and names.<br>Pardon the mess, we are using this page for testing :)</i></div><br>");
   
   print("
