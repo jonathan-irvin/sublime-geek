@@ -1,29 +1,25 @@
 <?php
 // Require Files
-require_once( dirname(dirname(__FILE__)).'/includes/config.php' );
-if (defined('YOURLS_PRIVATE') && YOURLS_PRIVATE == true)
-	require_once( dirname(dirname(__FILE__)).'/includes/auth.php' );
-
-// Connect To Database
-$db = yourls_db_connect();
+require_once( dirname(dirname(__FILE__)).'/includes/load-yourls.php' );
+yourls_maybe_require_auth();
 
 // Variables
 $table_url = YOURLS_DB_TABLE_URL;
-
+// Default SQL behavior
 $where = $search_display = $search_text = $search_url = $url = $keyword = '';
 $search_in_text = 'URL';
 $search_in_sql = 'url';
-$sort_by_text = 'ID';
-$sort_by_sql = 'id';
+$sort_by_text = 'Short URL';
+$sort_by_sql = 'timestamp';
 $sort_order_text = 'Descending Order';
 $sort_order_sql = 'desc';
 $page = ( isset( $_GET['page'] ) ? intval($_GET['page']) : 1 );
 $search = ( isset( $_GET['s_search'] ) ? mysql_real_escape_string(trim($_GET['s_search'])) : '' );
-$perpage = ( isset( $_GET['perpage'] ) && intval( $_GET['perpage'] ) ? intval($_GET['perpage']) : 10 );
-$link_limit = ( isset( $_GET['link_limit'] ) && intval($_GET['link_limit']) ? intval($_GET['link_limit']) : '' );
-if ( $link_limit != '' ) {
+$perpage = ( isset( $_GET['perpage'] ) && intval( $_GET['perpage'] ) ? intval($_GET['perpage']) : 15 );
+$link_limit = ( isset( $_GET['link_limit'] ) ? intval($_GET['link_limit']) : '' );
+if ( $link_limit !== '' ) {
 	$link_filter = ( isset( $_GET['link_filter'] ) && $_GET['link_filter'] == 'more' ? 'more' : 'less' ) ;
-	$link_moreless = ( $link_filter == 'more' ? '>=' : '<=' );
+	$link_moreless = ( $link_filter == 'more' ? '>' : '<' );
 	$where = " AND clicks $link_moreless $link_limit";
 } else {
 	$link_filter = '';
@@ -33,9 +29,9 @@ $base_page = YOURLS_SITE . '/admin/index.php';
 // Searching
 if(!empty($search) && !empty($_GET['s_in'])) {
 	switch($_GET['s_in']) {
-		case 'id':
-			$search_in_text = 'ID';
-			$search_in_sql = 'id';
+		case 'keyword':
+			$search_in_text = 'Short URL';
+			$search_in_sql = 'keyword';
 			break;
 		case 'url':
 			$search_in_text = 'URL';
@@ -56,9 +52,9 @@ if(!empty($search) && !empty($_GET['s_in'])) {
 // Sorting
 if(!empty($_GET['s_by']) || !empty($_GET['s_order'])) {
 	switch($_GET['s_by']) {
-		case 'id':
-			$sort_by_text = 'ID';
-			$sort_by_sql = 'id';
+		case 'keyword':
+			$sort_by_text = 'Short URL';
+			$sort_by_sql = 'keyword';
 			break;
 		case 'url':
 			$sort_by_text = 'URL';
@@ -90,8 +86,13 @@ if(!empty($_GET['s_by']) || !empty($_GET['s_order'])) {
 }
 
 // Get URLs Count for current filter, total links in DB & total clicks
-$total_items = $db->get_var("SELECT COUNT(id) FROM $table_url WHERE 1=1 $where");
-$totals = $db->get_row("SELECT COUNT(id) as c, SUM(clicks) as s FROM $table_url WHERE 1=1");
+list( $total_urls, $total_clicks ) = array_values( yourls_get_db_stats() );
+if ( $where ) {
+	list( $total_items, $total_items_clicks ) = array_values( yourls_get_db_stats( $where ) );
+} else {
+	$total_items = $total_urls;
+	$total_items_clicks = false;
+}
 
 // This is a bookmarklet
 if ( isset( $_GET['u'] ) ) {
@@ -99,12 +100,12 @@ if ( isset( $_GET['u'] ) ) {
 
 	$url = $_GET['u'];
 	$keyword = ( isset( $_GET['k'] ) ? $_GET['k'] : '' );
-	$return = yourls_add_new_link( $url, $keyword, $db );
+	$return = yourls_add_new_link( $url, $keyword );
 	
 	// If fails because keyword already exist, retry with no keyword
-	if ( $return['status'] == 'fail' && $return['code'] == 'error:keyword' ) {
+	if ( isset( $return['status'] ) && $return['status'] == 'fail' && isset( $return['code'] ) && $return['code'] == 'error:keyword' ) {
 		$msg = $return['message'];
-		$return = yourls_add_new_link( $url, '', $db );
+		$return = yourls_add_new_link( $url, '', $ydb );
 		$return['message'] .= ' ('.$msg.')';
 	}
 	
@@ -157,16 +158,17 @@ yourls_html_head( $context );
 		<a href="<?php echo $base_page; ?>" title="YOURLS"><span>YOURLS</span>: <span>Y</span>our <span>O</span>wn <span>URL</span> <span>S</span>hortener<br/>
 		<img src="<?php echo YOURLS_SITE; ?>/images/yourls-logo.png" alt="YOURLS" title="YOURLS" style="border: 0px;" /></a>
 	</h1>
-	<?php if ( defined('YOURLS_PRIVATE') && YOURLS_PRIVATE == true ) { ?>
-		<p>Your are logged in as: <strong><?php echo YOURLS_USER; ?></strong>. <a href="?mode=logout" title="Logout">Logout</a>. Check the <a href="tools.php">Tools</a>.</p>
+	<p>
+	<?php if ( yourls_is_private() ) { ?>
+		Your are logged in as: <strong><?php echo YOURLS_USER; ?></strong>. <a href="?mode=logout" title="Logout">Logout</a>.
 	<?php } ?>
-	<p><?php if ( !$is_bookmark ) {
+	Check the <a href="tools.php">Tools</a>.</p>
+	<?php if ( !$is_bookmark ) {
 	?>
-	Display <strong><?php echo $display_on_page; ?></strong> to <strong class='increment'><?php echo $max_on_page; ?></strong> of <strong class='increment'><?php echo $total_items; ?></strong> URLs.
-		<?php echo $search_display; ?>
+	<p><?php echo $search_display; ?></p>
+	<p>Display <strong><?php echo $display_on_page; ?></strong> to <strong class='increment'><?php echo $max_on_page; ?></strong> of <strong class='increment'><?php echo $total_items; ?></strong> URLs<?php if( $total_items_clicks !== false ) echo ", counting <strong>$total_items_clicks</strong> " . yourls_plural('click', $total_items_clicks) ?>.</p>
 	<?php } ?>
-		Overall, tracking <strong class='increment'><?php echo number_format($totals->c); ?></strong> links, <strong><?php echo number_format($totals->s); ?></strong> clicks, and counting!
-	</p>
+	<p>Overall, tracking <strong class='increment'><?php echo number_format($total_urls); ?></strong> links, <strong><?php echo number_format($total_clicks); ?></strong> clicks, and counting!</p>
 
 	<?php yourls_html_addnew(); ?>
 	
@@ -178,9 +180,8 @@ yourls_html_head( $context );
 	<table id="tblUrl" class="tblSorter" cellpadding="0" cellspacing="1">
 		<thead>
 			<tr>
-				<th>Link&nbsp;ID&nbsp;&nbsp;</th>
+				<th>Short URL&nbsp;</th>
 				<th>Original URL</th>
-				<th>Short URL</th>
 				<th>Date</th>
 				<th>IP</th>
 				<th>Clicks&nbsp;&nbsp;</th>
@@ -210,20 +211,19 @@ yourls_html_head( $context );
 		<tbody>
 			<?php
 			// Main Query
-			$url_results = $db->get_results("SELECT * FROM $table_url WHERE 1=1 $where ORDER BY $sort_by_sql $sort_order_sql LIMIT $offset, $perpage;");
-			if($url_results) {
+			$url_results = $ydb->get_results("SELECT * FROM `$table_url` WHERE 1=1 $where ORDER BY $sort_by_sql $sort_order_sql LIMIT $offset, $perpage;");
+			if( $url_results ) {
 				foreach( $url_results as $url_result ) {
-					$base36 = yourls_int2string($url_result->id);
+					$keyword = yourls_sanitize_string($url_result->keyword);
 					$timestamp = strtotime($url_result->timestamp);
-					$id = ($url_result->id);
 					$url = stripslashes($url_result->url);
 					$ip = $url_result->ip;
 					$clicks = $url_result->clicks;
 
-					echo yourls_table_add_row($id, $base36, $url, $ip, $clicks, $timestamp );
+					echo yourls_table_add_row( $keyword, $url, $ip, $clicks, $timestamp );
 				}
 			} else {
-				echo '<tr class="nourl_found"><td colspan="7">No URL Found</td></tr>';
+				echo '<tr class="nourl_found"><td colspan="6">No URL Found</td></tr>';
 			}
 			?>
 		</tbody>
@@ -233,4 +233,4 @@ yourls_html_head( $context );
 		yourls_share_box( $url, $return['shorturl'], $title, $text );
 	?>
 	
-<?php yourls_html_footer(); ?>
+<?php yourls_html_footer( ); ?>

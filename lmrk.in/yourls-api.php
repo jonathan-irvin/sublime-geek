@@ -1,30 +1,43 @@
 <?php
 define('YOURLS_API', true);
-require_once( dirname(__FILE__).'/includes/config.php' );
-if ( defined('YOURLS_PRIVATE') && YOURLS_PRIVATE == true )
-	require_once( dirname(__FILE__).'/includes/auth.php' );
+require_once( dirname(__FILE__).'/includes/load-yourls.php' );
+yourls_maybe_require_auth();
 
-if ( !isset($_REQUEST['action']) )
-	die( 'Missing parameter "action"' );
-
-$db = yourls_db_connect();
+$action = ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : null );
 	
-switch( $_REQUEST['action'] ) {
+switch( $action ) {
 
 	case 'shorturl':
-		$return = yourls_add_new_link( $_REQUEST['url'], $_REQUEST['keyword'], $db );
+		$url = ( isset( $_REQUEST['url'] ) ? $_REQUEST['url'] : '' );
+		$keyword = ( isset( $_REQUEST['keyword'] ) ? $_REQUEST['keyword'] : '' );
+		$return = yourls_add_new_link( $url, $keyword );
+		$return['simple'] = ( isset( $return['shorturl'] ) ? $return['shorturl'] : '' ); // This one will be used in case output mode is 'simple'
 		unset($return['html']); // in API mode, no need for our internal HTML output
 		break;
 	
 	case 'stats':
-		$return = yourls_api_stats( $_REQUEST['filter'], $_REQUEST['limit'], $db );
+		$filter = ( isset( $_REQUEST['filter'] ) ? $_REQUEST['filter'] : '' );
+		$limit = ( isset( $_REQUEST['limit'] ) ? $_REQUEST['limit'] : '' );
+		$return = yourls_api_stats( $filter, $limit );
+		break;
+		
+	case 'expand':
+		$shorturl = ( isset( $_REQUEST['shorturl'] ) ? $_REQUEST['shorturl'] : '' );
+		$return = yourls_api_expand( $shorturl );
 		break;
 		
 	default:
-		die( 'Unknown "action" parameter' );
+		$return = array(
+			'errorCode' => 400,
+			'message'   => 'Unknown or missing "action" parameter',
+			'simple'    => 'Unknown or missing "action" parameter',
+		);
+		
 
 }
 
-yourls_api_output( $_REQUEST['format'], $return );
+$format = ( isset( $_REQUEST['format'] ) ? $_REQUEST['format'] : 'xml' );
+
+yourls_api_output( $format, $return );
 
 die();

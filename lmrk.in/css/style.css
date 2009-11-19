@@ -2,20 +2,38 @@ body {
 	font-family: Verdana, Arial;
 	font-size: 12px;
 	color: #595441;
+	background:#F3FAFD;
+	text-align:center;
+	margin-top:0px;
+	padding-top:10px;
+}
+#wrap {
+	width:950px;
+	margin:0 auto;
+	background:white;
+	text-align:left;
+	padding:5px 20px 10px 20px;
+	border-left:3px solid #5FA3C6;
+	border-right:3px solid #5FA3C6;
+	border-bottom:3px solid #5FA3C6;
+	border-top:3px solid #5FA3C6;
+	-moz-border-radius:20px;
+	-webkit-border-radius:20px;
 }
 div, p, td {
 	font-family: Verdana, Arial;
 	font-size: 12px;
 }
 a, a:link, a:active, a:visited {
-	color: #4a8797;
+	color: #2A85B3;
 	text-decoration: none;
 }
 a:hover {
 	text-decoration: underline;
 }
-h1 {height:50px;}
+h1 {height:50px;margin:0;}
 h1 a {float:right;text-align:right;}
+h1 a, h1 a:link, h1 a:active, h1 a:visited {color:#2A85B3}
 h1 a:hover{text-decoration:none;}
 h1 a:hover span{text-decoration:underline;color:#8dbdd8}
 input, textarea {
@@ -30,7 +48,7 @@ Input.text, select, textarea {
 	border: 1px solid #8dbdd8;
 	margin:1px;
 }
-input.button {
+input.button, a.button_stats {
 	font-family: Verdana, Arial;
 	font-size: 10px;
 	color: #595441;
@@ -66,7 +84,7 @@ tr.edit-row  td {
 	clear:both;
 }
 #new_url div {
-	background:#E6EEEE;
+	background:#D9EAF3;
 	padding:4px;
 }
 #new_url_form {
@@ -83,27 +101,50 @@ tr.edit-row  td {
 #new_url #feedback .fail {
 	color:#f55;
 }
-td.actions input{
+td.actions input, td.actions a {
 	visibility:hidden;
 }
-td.actions input.disabled, td.actions input.loading{
+td.actions input.disabled, td.actions input.loading {
 	visibility:visible;
 }
-tr:hover td.actions input{
+tr:hover td.actions input, tr:hover td.actions a {
 	visibility:visible;
+}
+td.actions .button {
+	height:22px;
+	width:22px;
+}
+td.actions .button_edit {
+	background:transparent url(../images/pencil.png) 2px center no-repeat;
+}
+td.actions .button_delete {
+	background:transparent url(../images/delete.png) 2px center no-repeat;
+}
+td.actions .button_stats {
+	background:transparent url(../images/chart_bar.png) 2px center no-repeat;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	margin-top:0px;
+	display:block;
+	float:left;
+}
+td.actions .button_stats:hover {
+	text-decoration:none;
+}
+#tblUrl tfoot th, #tblUrl tfoot th div {
+	font-size:10px;
 }
 .error {
 	color: red;
 }
+.warning {
+	color: orange;
+}
 .success {
 	color: green;
 }
-#footer {
-	margin-top:2em;
-	text-align: center;
-}
 #login {
-	width: 210px;
+	width: 300px;
 	margin: 200px auto 0px auto;
 }
 #login p{
@@ -112,65 +153,59 @@ tr:hover td.actions input{
 #login .text {
 	width: 100%;
 }
-#shareboxes, #tweet {
-	overflow:hidden;
+#login ul {
+	padding-left:0px;
+	list-style-type:none;
+	text-indent:0;
 }
-div.share {
-	-moz-border-radius:5px;
-	border:2px solid #8DBDD8;
-	background:#fff;
-	margin-right:1em;
-	padding:0 1em;
-	float:left;
-	height:130px;
+#login ul li {
+	padding:0 0 5px 20px;
 }
-#copybox {
-	width:250px;
+#login ul.error li {
+	background:transparent url(../images/cancel.png) top left no-repeat;
 }
-#sharebox {
-	width:500px;
+#login ul.warning li {
+	background:transparent url(../images/error.png) top left no-repeat;
 }
-#tweet_body {
-	float:left;
-	width:450px;
-	height:3em;
-	font-size:12px;
+#login ul.success li {
+	background:transparent url(../images/accept.png) top left no-repeat;
 }
-#charcount {
-	padding-left:5px;
-	color:#8DBDD8;
-}
-#charcount.negative {
-	color:red;
-}
-#share_links a {
-	padding:0 12px 0 18px;
-	font-weight:bold
-}
-#share_links a:hover {
-	background-position:2px center;
-}
-#share_tw {background:transparent url(../images/twitter.png) left center no-repeat;}
-#share_fb {background:transparent url(../images/facebook.png) left center no-repeat;}
-#share_ff {background:transparent url(../images/friendfeed.png) left center no-repeat;}
-
 #tools_desc {
 	width:550px;
-	zbackground:#ffe;
 	padding-bottom:10px;
 }
 #tools_desc span {
 	background:#ffa;
 	padding:0 2px;
 }
-
 #tools_desc .bookmarklet {
 	border:2px solid #2A85B3;
 	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
 	padding:5px 5px 5px 20px;
 	background:#eef url(../images/favicon.gif) 2px center no-repeat;
 }
-
 #tools_desc .bookmarklet:hover {
 	text-decoration:none;
+}
+#footer {
+	text-align:center;
+	margin-top:20px;
+}
+#footer p {
+	padding:10px;
+	background:white;
+	margin:0 auto;
+	width:950px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border:2px solid #2A85B3;
+	-moz-border-radius-bottomleft:30px;
+	-moz-border-radius-bottomright:30px;
+	-webkit-border-bottom-left-radius:25px;
+	-webkit-border-bottom-right-radius:25px;
+}
+#footer p a {
+	background:#fff url(../images/favicon.gif) 2px center no-repeat;
+	padding-left:20px;
 }

@@ -1,13 +1,16 @@
 <?php
-require(dirname(__FILE__).'/functions-auth.php');
-
 $auth = yourls_is_valid_user();
 
 if( $auth !== true ) {
 
 	// API mode, 
 	if ( defined('YOURLS_API') && YOURLS_API == true ) {
-		yourls_api_output( $_REQUEST['format'], array('shorturl' => $auth) );
+		$format = ( isset($_REQUEST['format']) ? $_REQUEST['format'] : 'xml' );
+		yourls_api_output( $format, array(
+			'simple' => $auth,
+			'message' => $auth,
+			'errorCode' => 403,
+			) );
 
 	// Regular mode
 	} else {

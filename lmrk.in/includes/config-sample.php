@@ -10,34 +10,39 @@ define('YOURLS_DB_USER', 'dbuser');
 define('YOURLS_DB_PASS', 'dbpassword');
 
 /** The name of the database for YOURLS */
-define('YOURLS_DB_NAME', 'shorturl');
+define('YOURLS_DB_NAME', 'yourls');
 
 /** MySQL hostname */
 define('YOURLS_DB_HOST', 'localhost');
 
-/** MySQL URL table name. Don't change this if in doubt. */
-define('YOURLS_DB_TABLE_URL', 'url');
+/** MySQL tables prefix */
+define('YOURLS_DB_PREFIX', 'yourls_');
 
-/** MySQL Next ID table name. Don't change this if in doubt. */
-define('YOURLS_DB_TABLE_NEXTDEC', 'next_id');
+		/**         !!! IMPORTANT !!!
+		 * If you are UPGRADING from version 1.3,
+		 * there are additional constants to define.
+		 * Refer to the readme.html for details .
+		 **/
 
 /*
  ** Site options
  */
 
-/** Turn this on to enable error reporting. Recommended value is false **/
-define('YOURLS_DEBUG', false);
- 
-/** Short domain URL, no trailing slash */
+/** YOURLS installation URL, no trailing slash */
 define('YOURLS_SITE', 'http://site.com'); //
 
 /** Timezone GMT offset */
 define('YOURLS_HOURS_OFFSET', 0); 
 
+/** Allow multiple short URLs for a same long URL
+ ** Set to true to have only one pair of shortURL/longURL (default YOURLS behavior)
+ ** Set to false to allow multiple short URLs pointing to the same long URL (bit.ly behavior) */
+define('YOURLS_UNIQUE_URLS', true);
+
 /** Private means protected with login/pass as defined below. Set to false for public usage. */
 define('YOURLS_PRIVATE', true);
 
-/** A random secret hash used to encrypt cookies. You don't have to remember it, make it long and complicated. Hint: copy from http://yourls.org/cookiekey.php **/
+/** A random secret hash used to encrypt cookies. You don't have to remember it, make it long and complicated. Hint: copy from http://yourls.org/cookie **/
 define('YOURLS_COOKIEKEY', 'qQ4KhL_pu|s@Zm7n#%:b^{A[vhm');
 
 /**  Username(s) and password(s) allowed to access the site */
@@ -57,7 +62,6 @@ define('YOURLS_URL_CONVERT', 36);
  * 62: generate case sensitive keywords (ie: 13jKm or 13JKm)
  * Stick to one setting, don't change after you've created links as it will change all your short URLs!
  * Base 36 should be picked. Use 62 only if you understand what it implies.
- * Using base 62 means you *need* PHP extension BCMath
  */
 
 /** 
@@ -68,11 +72,7 @@ $yourls_reserved_URL = array(
 	'porn', 'faggot', 'sex', 'nigger', 'fuck', 'cunt', 'dick', 'gay',
 );
 
+/*
+ ** Personal settings would go after here
+ */
 
-/******************** DO NOT EDIT ANYTHING ELSE ********************/
-
-// Include everything except auth functions
-require_once (dirname(__FILE__).'/version.php');
-require_once (dirname(__FILE__).'/functions.php');
-require_once (dirname(__FILE__).'/functions-baseconvert.php');
-require_once (dirname(__FILE__).'/class-mysql.php');

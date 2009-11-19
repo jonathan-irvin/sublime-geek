@@ -17,12 +17,17 @@
 */
 
 
-### ezSQL Constants
-define('EZSQL_VERSION','2.0');
-define('OBJECT','OBJECT',true);
-define('ARRAY_A','ARRAY_A',true);
-define('ARRAY_N','ARRAY_N',true);
-define('EZSQL_CORE_ERROR','ezSQLcore can not be used by itself (it is designed for use by database specific modules).');
+### ezSQL Constants. Might be defined in the WordPress environment if YOURLS plugin used.
+if( !defined('EZSQL_VERSION') )
+	define('EZSQL_VERSION','2.0');
+if( !defined('OBJECT') )
+	define('OBJECT','OBJECT',true);
+if( !defined('ARRAY_A') )
+	define('ARRAY_A','ARRAY_A',true);
+if( !defined('ARRAY_N') )
+	define('ARRAY_N','ARRAY_N',true);
+if( !defined('EZSQL_CORE_ERROR') )
+	define('EZSQL_CORE_ERROR','ezSQLcore can not be used by itself (it is designed for use by database specific modules).');
 
 
 ### ezSQL Core Class
@@ -297,6 +302,11 @@ class ezSQL_mysql extends ezSQLcore {
 		}
 		return $return_val;
 	}
+	
+	## Close
+	function close() {
+		return mysql_close($this->dbh);
+	}
 
 	## Try to select a mySQL database
 	function select($dbname='') {
@@ -388,6 +398,10 @@ class ezSQL_mysql extends ezSQLcore {
 		// If debug ALL queries
 		$this->trace || $this->debug_all ? $this->debug() : null ;
 		return $return_val;
+	}
+	
+	function mysql_version() {
+		return  mysql_get_server_info( $this->dbh ) ;
 	}
 }
 ?>
