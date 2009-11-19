@@ -57,10 +57,14 @@ if($topnum > 0){
 	else if($rank == 2){$tags = "<a href='$slurl' title='2nd Place'><img src='./images/trophy_silver.png'></a>";}
 	else if($rank == 3){$tags = "<a href='$slurl' title='3rd Place'><img src='./images/trophy_bronze.png'></a>";}
 <<<<<<< HEAD:popular/weekly.php
+<<<<<<< HEAD:popular/weekly.php
 	else if($rank >= 4){$tags = "";}
 =======
 	else{$tags}
 >>>>>>> metavotr:popular/weekly.php
+=======
+	else if($rank >= 4){$tags = "";}
+>>>>>>> livemark:popular/weekly.php
 	if($type == 'PAID'){$tags .= "<a href='$slurl' title='Featured Location'><img src='./images/star_1.png'></a>";}
 	
 	if($type == "FREE"){

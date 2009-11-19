@@ -38,7 +38,11 @@ define('YOURLS_HOURS_OFFSET', -6);
 define('YOURLS_PRIVATE', true);
 
 /** A random secret hash used to encrypt cookies. You don't have to remember it, make it long and complicated. Hint: copy from http://yourls.org/cookiekey.php **/
+<<<<<<< HEAD:lmrk.in/includes/config.php
 define('YOURLS_COOKIEKEY', 'Jaa7UM$Mp~%wDmBC3k%Y@1t5m[xOr]@ah}]vC85v');
+=======
+define('YOURLS_COOKIEKEY', 'BjTthj#KYZ|@qQLz}5TF1WEZQ6Nw1I(&6yk9Q|0C');
+>>>>>>> livemark:lmrk.in/includes/config.php
 
 /**  Username(s) and password(s) allowed to access the site */
 $yourls_user_passwords = array(	'admin' => 'Jurb1f!ed'

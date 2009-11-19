@@ -30,7 +30,11 @@ FROM `mvs_votes`
 WHERE 
 `voter_key` = '$voterkey' AND
 `locname`   = '$locname'  AND
+<<<<<<< HEAD:backend/pvote.php
 `timestamp` >= DATE_SUB(NOW(),INTERVAL 1 HOUR)"; 
+=======
+`timestamp` >= CURDATE()"; 
+>>>>>>> livemark:backend/pvote.php
 
 //print("FOR DEBUG PURPOSES ONLY: $sel_vote");
 
@@ -66,4 +70,8 @@ if($sel_num < 1){
 	print ("I'm sorry $votername, you've already voted for this location today!
 	See how this location stands up with the rest at http://popular.sublimegeek.com/");
 }
+<<<<<<< HEAD:backend/pvote.php
 ?>
+=======
+?>
+>>>>>>> livemark:backend/pvote.php
