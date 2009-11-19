@@ -30,7 +30,7 @@ if($topnum > 0){
 	print($chart->getCode());
 	print("</div>");
   }else{print("<br><br><div align='center'><b>I'm sorry, the pie chart is not available for selections greater than 15</b></div><br>");}  
-	genRanks();
+	genRanks($topres);
 }
 else{print("I'm sorry, no data is available at this time, go vote for your favorite location!<br><br>");}
 include 'b_content.php';
