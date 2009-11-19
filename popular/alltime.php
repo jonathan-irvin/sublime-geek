@@ -56,15 +56,7 @@ if($topnum > 0){
 	if($rank == 1){$tags = "<a href='$slurl' title='1st Place'><img src='./images/trophy.png'></a>";}
 	else if($rank == 2){$tags = "<a href='$slurl' title='2nd Place'><img src='./images/trophy_silver.png'></a>";}
 	else if($rank == 3){$tags = "<a href='$slurl' title='3rd Place'><img src='./images/trophy_bronze.png'></a>";}
-<<<<<<< HEAD:popular/alltime.php
-<<<<<<< HEAD:popular/alltime.php
 	else if($rank >= 4){$tags = "";}
-=======
-	else{$tags}
->>>>>>> metavotr:popular/alltime.php
-=======
-	else if($rank >= 4){$tags = "";}
->>>>>>> livemark:popular/alltime.php
 	if($type == 'PAID'){$tags .= "<a href='$slurl' title='Featured Location'><img src='./images/star_1.png'></a>";}
 	
 	if($type == "FREE"){
