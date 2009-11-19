@@ -50,7 +50,7 @@ $addlmk_sql="INSERT INTO `livemark_profiles` (
 `location_slurl` ,
 `timestamp`
 )
-VALUES ('', '$profilename', '$ownerName', '$ownerkey', '$locname', '$slurl|$data', NOW())";
+VALUES ('', '$profilename', '$ownerName', '$ownerKey', '$locname', '$slurl|$data', NOW())";
 mysql_query($addlmk_sql);
 
 $urlpath  = str_replace("http://lmrk.in/","",$data);
