@@ -144,7 +144,7 @@ $chart->setConfig('animation.pull_out_time', '1.5');
 
 
 function genRanks($tres){  
-  print("<br><div align='center'><i>Note: Some cropping may occur on longer names, <br>please refer to the data below for ranking, votes, and names.<br>Pardon the mess, we are using this page for testing :)</i></div><br>");
+  print("<br><div align='center'><i>Note: Some cropping may occur on longer names, <br>please refer to the data below for ranking, votes, and names.</i></div><br>");
   
   print("
   <table width=100%>
