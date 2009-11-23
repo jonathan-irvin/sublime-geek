@@ -61,9 +61,11 @@ if($l_num == 0){
 if($sel_num < 1){
 	mysql_query($ins_vote);
 	print ("Thank you $votername, your vote has been accepted!
-	See how this location stands up with the rest at http://popular.sublimegeek.com/");
+	See how this location stands up with the rest at http://popular.sublimegeek.com/
+	Vote faster, vote better, make your vote count more with metaVotr Premium (http://bit.ly/8ctk1b)");
 }else{
 	print ("I'm sorry $votername, you've already voted for this location today!
-	See how this location stands up with the rest at http://popular.sublimegeek.com/");
+	See how this location stands up with the rest at http://popular.sublimegeek.com/
+	Vote faster, vote better, make your vote count more with metaVotr Premium (http://bit.ly/8ctk1b)");
 }
 ?>
