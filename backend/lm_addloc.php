@@ -3,10 +3,13 @@
 include 'config.php';
 connect2slm();
 
-$simname   		 = addslashes($_POST['simname']);
-$locname   		 = addslashes($_POST['locname']);
-$slurl     		 = $_POST['slurl'];
-$profilename     = $_POST['profname'];
+$simname   		 	 = addslashes($_POST['simname']);
+$locname   		 	 = addslashes($_POST['locname']);
+$slurl     		 	 = $_POST['slurl'];
+$exurl     		 	 = $_POST['exurl'];
+$profilename     	 = $_POST['profname'];
+$landdesc     		 = $_POST['pdesc'];
+$landarea     		 = $_POST['parea'];
 
 /* BEGIN LMRK.IN API */
 // EDIT THIS: your auth parameters
@@ -14,7 +17,7 @@ $username = 'admin';
 $password = 'Jurb1f!ed';
 
 // EDIT THIS: the query parameters
-$url = $slurl; // URL to shrink
+$url = $exurl; // URL to shrink
 $keyword;				// optional keyword
 $format = 'simple';				// output format: 'json', 'xml' or 'simple'
 
@@ -47,10 +50,22 @@ $addlmk_sql="INSERT INTO `livemark_profiles` (
 `owner_name` ,
 `owner_key` ,
 `location_name` ,
+`location_url` ,
 `location_slurl` ,
+`location_desc` ,
+`location_area` ,
 `timestamp`
 )
-VALUES ('', '$profilename', '$ownerName', '$ownerKey', '$locname', '$slurl|$data', NOW())";
+VALUES ('',
+ '$profilename', 
+ '$ownerName', 
+ '$ownerKey', 
+ '$locname', 
+ '$slurl|$data', 
+ '$exurl',
+ '$landdesc',
+ '$landarea',
+ NOW())";
 mysql_query($addlmk_sql);
 
 $urlpath  = str_replace("http://lmrk.in/","",$data);
