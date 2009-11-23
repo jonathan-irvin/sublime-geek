@@ -152,7 +152,7 @@ function genRanks($tres){
     <td align=center><b>Rank:</b>            </td>
     <td ><b>Location:</b>        			 </td>
     <td align=center><b>Sim:</b>             </td>
-    <td align=center><b>SL Url:</b>          </td>
+    <td align=center><b>Tags:</b>            </td>
     <td align=center><b>Votes:</b>           </td>
     <td align=center><b>Rating:</b>          </td>
    </tr>");
