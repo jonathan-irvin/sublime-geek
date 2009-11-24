@@ -170,7 +170,7 @@ function genRanks($tres){
 	else if($rank == 2){$tags = "<a href='$slurl' title='2nd Place'><img src='./images/trophy_silver.png'></a>";}
 	else if($rank == 3){$tags = "<a href='$slurl' title='3rd Place'><img src='./images/trophy_bronze.png'></a>";}
 	else if($rank >= 4){$tags = "";}
-	if($type == 'PAID'){$tags .= "<a href='$slurl' title='Featured Location'><img src='./images/star_1.png'></a>";}
+	if($type == 'PAID'){$tags .= "<a href='https://xstreetsl.com/modules.php?name=Marketplace&file=item&ItemID=1943564' title='Featured Location - Get a Premium metaVotr today!'><img src='./images/star_1.png'></a>";}
 	
 	if($type == "FREE"){
 		print("
