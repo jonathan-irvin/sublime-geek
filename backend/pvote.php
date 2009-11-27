@@ -62,7 +62,7 @@ if($sel_num < 1){
 	print ("Thank you $votername, your vote has been accepted!
 	See how this location stands up with the rest at http://popular.sublimegeek.com/");
 }else{
-	print ("I'm sorry $votername, you've already voted for this location today!
+	print ("I'm sorry $votername, you've already voted for this location within the last 60 minutes!
 	See how this location stands up with the rest at http://popular.sublimegeek.com/");
 }
 ?>
