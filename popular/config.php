@@ -10,8 +10,8 @@ AVG(  `rating` ) as `rating` ,  `type` ,
 `timestamp` 
 FROM  `mvs_votes` 
 WHERE  `timestamp` >= DATE_SUB( CURDATE( ) , INTERVAL $interval ) 
-GROUP BY  `locname` 
-ORDER BY  `total` DESC , `rating` DESC, `locname` ASC
+GROUP BY  `locname` , `type`
+ORDER BY  `total` DESC , `rating` DESC, `locname` ASC, `type` DESC
 LIMIT 0 , $sel";
 
 $topres = mysql_query($toploc);
