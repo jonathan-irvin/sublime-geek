@@ -531,5 +531,5 @@ if($auth_config == $auth_recv){//This is not an imposter
 	}
 	elseif($sys_status == "OFFLINE") {print("OFFLINE;The GridSplode system is currently offline.  We will be back up shortly.  Refunding your money now.");}
 	elseif($sys_status == "SHUTDOWN"){print("SHUTDOWN;The GridSplode system has been shut down.  Thank you for playing.  Refunding your money now.");}
-}else{print("AUTH_FAIL;I'm sorry, this unit is unauthorized to be used in the GridSplode network. Refunding your money now.");}
+}else{print("AUTH_FAIL;I'm sorry, this unit is unauthorized to be used in the GridSplode network. Please get a new copy. Refunding your money now.");}
 ?>
