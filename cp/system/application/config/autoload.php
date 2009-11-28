@@ -110,7 +110,13 @@ $autoload['language'] = array();
 
 $autoload['model'] = array();
 
+/*
+| -------------------------------------------------------------------
+|  Auto-load Db
+| -------------------------------------------------------------------
+*/
 
+$autoload['database'] = array();
 
 /* End of file autoload.php */
 /* Location: ./system/application/config/autoload.php */

@@ -11,7 +11,7 @@
 |	http://example.com/
 |
 */
-$config['base_url']	= "http://example.com/";
+$config['base_url']	= "http://localhost/cp/";
 
 /*
 |--------------------------------------------------------------------------
@@ -251,7 +251,7 @@ $config['sess_time_to_update'] 	= 300;
 |
 */
 $config['cookie_prefix']	= "";
-$config['cookie_domain']	= "";
+$config['cookie_domain']	= ".sublimegeek.com";
 $config['cookie_path']		= "/";
 
 /*

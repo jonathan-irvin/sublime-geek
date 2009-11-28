@@ -1,11 +1,3 @@
-<?
-include "../backend/config.php";
-connect2slm();
-?>
-
-<? include "header.php"; ?>
-<? include "menu.php"; ?>
-
 		<!--[if !IE]>start content<![endif]-->
 		<div id="content">
 			<div class="inner">
@@ -98,5 +90,3 @@ connect2slm();
 					<!--[if !IE]>end section content<![endif]-->
 				</div>
 				<!--[if !IE]>end section<![endif]-->
-				
-<? include "footer.php" ?>

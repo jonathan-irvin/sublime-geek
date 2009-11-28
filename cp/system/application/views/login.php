@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="imagetoolbar" content="no" />
-<title>Sublime Geek CP v2.0</title>
+<title><?=$title;?></title>
 <link media="screen" rel="stylesheet" type="text/css" href="css/login.css"  />
 <!-- blue theme is default -->
 <link rel="stylesheet" type="text/css" href="css/black-theme-login.css" />
@@ -12,8 +12,7 @@
 
 <body>
 	<div id="wrapper">
-
-	<form action="#" class="login_form">
+	<?=form_open('index',array('class'=>'login_form'))."\n";?>
 		<fieldset>
 			<div class="title_wrapper">
 				<h1>Please Log in</h1>
@@ -21,28 +20,21 @@
 			</div>
 			<div class="inputs">
 				<div class="inputs_inner">
+					
 					<label>
 						<strong>Username:</strong>
-						<span class="input"><input name="" type="text" /></span>
+						<span class="input"><?=form_input('username','');?></span>
 					</label>
 					<label>
 						<strong>Password:</strong>
-						<span class="input"><input name="" type="text" /></span>
+						<span class="input"><?=form_password('password','');?></span>
 					</label>
-					<span class="button first_btn"><span><span>Log in</span></span><input name="" type="submit" /></span>
+					<span class="button first_btn"><span><span>Log in</span></span><?=form_submit('submit','submit');?></span>
 				</div>
-				
-				
-				
 			</div>
 			<div class="reminder">
-				<input name="" type="checkbox" value="" /> Remember me on this computer
+				<?=form_checkbox('remember','keepalive',FALSE);?> Remember me on this computer
 			</div>
-			
-			<ul class="system_messages">
-				<li class="red"><strong class="system_title">Access Denied</strong> - Username or password is wrong, please try again</li>
-			</ul>
-			
 		</fieldset>
 	</form>
 	

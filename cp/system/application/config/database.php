@@ -34,21 +34,34 @@
 | the active record class
 */
 
-$active_group = "default";
+$active_group = "dev";
 $active_record = TRUE;
 
-$db['default']['hostname'] = "localhost";
-$db['default']['username'] = "";
-$db['default']['password'] = "";
-$db['default']['database'] = "";
-$db['default']['dbdriver'] = "mysql";
-$db['default']['dbprefix'] = "";
-$db['default']['pconnect'] = TRUE;
-$db['default']['db_debug'] = TRUE;
-$db['default']['cache_on'] = FALSE;
-$db['default']['cachedir'] = "";
-$db['default']['char_set'] = "utf8";
-$db['default']['dbcollat'] = "utf8_general_ci";
+$db['dev']['hostname'] = "localhost";
+$db['dev']['username'] = "geekfox";
+$db['dev']['password'] = "jurby5000";
+$db['dev']['database'] = "";
+$db['dev']['dbdriver'] = "mysql";
+$db['dev']['dbprefix'] = "";
+$db['dev']['pconnect'] = FALSE;
+$db['dev']['db_debug'] = FALSE;
+$db['dev']['cache_on'] = FALSE;
+$db['dev']['cachedir'] = "";
+$db['dev']['char_set'] = "utf8";
+$db['dev']['dbcollat'] = "utf8_general_ci";
+
+$db['prod']['hostname'] = "localhost";
+$db['prod']['username'] = "geekfox";
+$db['prod']['password'] = "jurby5000";
+$db['prod']['database'] = "geekfox_ms";
+$db['prod']['dbdriver'] = "mysql";
+$db['prod']['dbprefix'] = "";
+$db['prod']['pconnect'] = FALSE;
+$db['prod']['db_debug'] = FALSE;
+$db['prod']['cache_on'] = FALSE;
+$db['prod']['cachedir'] = "";
+$db['prod']['char_set'] = "utf8";
+$db['prod']['dbcollat'] = "utf8_general_ci";
 
 
 /* End of file database.php */

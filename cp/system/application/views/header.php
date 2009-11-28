@@ -3,9 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="imagetoolbar" content="no" />
-<title>Sublime Geek Control Panel</title>
+<title><?=$title;?></title>
 <link media="screen" rel="stylesheet" type="text/css" href="css/style.css"  />
-<!-- blue theme is default -->
 <link rel="stylesheet" type="text/css" href="css/black-theme.css" />
 <!--[if lte IE 6]><link media="screen" rel="stylesheet" type="text/css" href="css/ie.css" /><![endif]-->
 <script type="text/javascript" src="js/css.js"></script>
@@ -18,9 +17,9 @@
 		<!--[if !IE]>start header<![endif]-->
 		<div id="header">
 			<div class="inner">
-				<h1 id="logo"><a href="#">Sublime Geek <span>CP</span><em>v2.0</em></a></h1>
+				<h1 id="logo"><a href="#"><?=$logo;?></a></h1>
 				<ul id="user_menu">
-					<li>Welcome <strong>Username</strong></li>
+					<li>Welcome <strong><?=$username;?></strong></li>
 					<li class="last"><a href="#">Log out</a></li>
 				</ul>
 			</div>
