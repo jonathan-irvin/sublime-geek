@@ -12,7 +12,7 @@
 
 <body>
 	<div id="wrapper">
-	<?=form_open('index',array('class'=>'login_form'))."\n";?>
+	<?=form_open('dashboard',array('class'=>'login_form'))."\n";?>
 		<fieldset>
 			<div class="title_wrapper">
 				<h1>Please Log in</h1>
