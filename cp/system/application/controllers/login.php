@@ -1,20 +1,18 @@
 <?php
-class login extends Controller {
+class Login extends Controller {
 	
-	function login()
+	function Login()
 	{
-		parent::Controller();
-		$this->load->library('session');
+		parent::Controller();		
 		$this->load->helper('form');
 		$this->load->helper('url');
 	}
 	
 	function index()
-	{
-		$session_id = $this->session->userdata('session_id');
+	{		
 		$h_data = array('title' => 'Sublime Geek Control Panel - Please Login');
 		$this->load->view('login',$h_data);
-		$this->output->enable_profiler(TRUE);			
+		$this->output->enable_profiler(FALSE);			
 	}	
 }
 ?>
