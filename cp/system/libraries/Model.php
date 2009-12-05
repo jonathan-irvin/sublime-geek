@@ -1,83 +1,31 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * CodeIgniter
+ * Model base class.
  *
- * An open source application development framework for PHP 4.3.2 or newer
+ * $Id: Model.php 4007 2009-02-20 01:54:00Z jheathco $
  *
- * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
- * @license		http://codeigniter.com/user_guide/license.html
- * @link		http://codeigniter.com
- * @since		Version 1.0
- * @filesource
+ * @package    Core
+ * @author     Kohana Team
+ * @copyright  (c) 2007-2009 Kohana Team
+ * @license    http://kohanaphp.com/license.html
  */
+class Model_Core {
 
-// ------------------------------------------------------------------------
-
-/**
- * CodeIgniter Model Class
- *
- * @package		CodeIgniter
- * @subpackage	Libraries
- * @category	Libraries
- * @author		ExpressionEngine Dev Team
- * @link		http://codeigniter.com/user_guide/libraries/config.html
- */
-class Model {
-
-	var $_parent_name = '';
+	// Database object
+	protected $db = 'default';
 
 	/**
-	 * Constructor
+	 * Loads the database instance, if the database is not already loaded.
 	 *
-	 * @access public
+	 * @return  void
 	 */
-	function Model()
+	public function __construct()
 	{
-		// If the magic __get() or __set() methods are used in a Model references can't be used.
-		$this->_assign_libraries( (method_exists($this, '__get') OR method_exists($this, '__set')) ? FALSE : TRUE );
-		
-		// We don't want to assign the model object to itself when using the
-		// assign_libraries function below so we'll grab the name of the model parent
-		$this->_parent_name = ucfirst(get_class($this));
-		
-		log_message('debug', "Model Class Initialized");
-	}
-
-	/**
-	 * Assign Libraries
-	 *
-	 * Creates local references to all currently instantiated objects
-	 * so that any syntax that can be legally used in a controller
-	 * can be used within models.  
-	 *
-	 * @access private
-	 */	
-	function _assign_libraries($use_reference = TRUE)
-	{
-		$CI =& get_instance();				
-		foreach (array_keys(get_object_vars($CI)) as $key)
+		if ( ! is_object($this->db))
 		{
-			if ( ! isset($this->$key) AND $key != $this->_parent_name)
-			{			
-				// In some cases using references can cause
-				// problems so we'll conditionally use them
-				if ($use_reference == TRUE)
-				{
-					$this->$key = NULL; // Needed to prevent reference errors with some configurations
-					$this->$key =& $CI->$key;
-				}
-				else
-				{
-					$this->$key = $CI->$key;
-				}
-			}
-		}		
+			// Load the default database
+			$this->db = Database::instance($this->db);
+		}
 	}
 
-}
-// END Model Class
-
-/* End of file Model.php */
-/* Location: ./system/libraries/Model.php */
+} // End Model
