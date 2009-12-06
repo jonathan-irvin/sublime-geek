@@ -1,7 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * @package  Core
- *
  * A list of mime types. Our list is generally more complete and accurate than
  * the operating system MIME list.
  *
@@ -9,7 +7,7 @@
  * http://kohanaphp.com/trac/newticket. Be sure to give the filename and
  * expected MIME type, as well as any additional information you can provide.
  */
-$config = array
+return array
 (
 	'323'   => array('text/h323'),
 	'7z'    => array('application/x-7z-compressed'),
