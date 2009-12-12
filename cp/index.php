@@ -1,103 +1,118 @@
 <?php
+/*
+|---------------------------------------------------------------
+| PHP ERROR REPORTING LEVEL
+|---------------------------------------------------------------
+|
+| By default CI runs with error reporting set to ALL.  For security
+| reasons you are encouraged to change this when your site goes live.
+| For more info visit:  http://www.php.net/error_reporting
+|
+*/
+	error_reporting(E_ALL);
 
-/**
- * The directory in which your application specific resources are located.
- * The application directory must contain the config/kohana.php file.
- *
- * @see  http://docs.kohanaphp.com/install#application
- */
-$application = 'application';
+/*
+|---------------------------------------------------------------
+| SYSTEM FOLDER NAME
+|---------------------------------------------------------------
+|
+| This variable must contain the name of your "system" folder.
+| Include the path if the folder is not in the same  directory
+| as this file.
+|
+| NO TRAILING SLASH!
+|
+*/
+	$system_folder = "system";
 
-/**
- * The directory in which your modules are located.
- *
- * @see  http://docs.kohanaphp.com/install#modules
- */
-$modules = 'modules';
+/*
+|---------------------------------------------------------------
+| APPLICATION FOLDER NAME
+|---------------------------------------------------------------
+|
+| If you want this front controller to use a different "application"
+| folder then the default one you can set its name here. The folder 
+| can also be renamed or relocated anywhere on your server.
+| For more info please see the user guide:
+| http://codeigniter.com/user_guide/general/managing_apps.html
+|
+|
+| NO TRAILING SLASH!
+|
+*/
+	$application_folder = "application";
 
-/**
- * The directory in which the Kohana resources are located. The system
- * directory must contain the classes/kohana.php file.
- *
- * @see  http://docs.kohanaphp.com/install#system
- */
-$system = 'system';
+/*
+|===============================================================
+| END OF USER CONFIGURABLE SETTINGS
+|===============================================================
+*/
 
-/**
- * The default extension of resource files. If you change this, all resources
- * must be renamed to use the new extension.
- *
- * @see  http://docs.kohanaphp.com/install#ext
- */
-define('EXT', '.php');
 
-/**
- * Set the PHP error reporting level. If you set this in php.ini, you remove this.
- * @see  http://php.net/error_reporting
- *
- * When developing your application, it is highly recommended to enable notices
- * and strict warnings. Enable them by using: E_ALL | E_STRICT
- *
- * In a production environment, it is safe to ignore notices and strict warnings.
- * Disable them by using: E_ALL ^ E_NOTICE
- * 
- * When using a legacy application with PHP >= 5.3, it is recommended to disable
- * deprecated notices. Disable with: E_ALL & ~E_DEPRECATED
- */
-error_reporting(E_ALL | E_STRICT);
-
-/**
- * End of standard configuration! Changing any of the code below should only be
- * attempted by those with a working knowledge of Kohana internals.
- *
- * @see  http://docs.kohanaphp.com/bootstrap
- */
-
-// Set the full path to the docroot
-define('DOCROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
-
-// Make the application relative to the docroot
-if ( ! is_dir($application) AND is_dir(DOCROOT.$application))
-	$application = DOCROOT.$application;
-
-// Make the modules relative to the docroot
-if ( ! is_dir($modules) AND is_dir(DOCROOT.$modules))
-	$modules = DOCROOT.$modules;
-
-// Make the system relative to the docroot
-if ( ! is_dir($system) AND is_dir(DOCROOT.$system))
-	$system = DOCROOT.$system;
-
-// Define the absolute paths for configured directories
-define('APPPATH', realpath($application).DIRECTORY_SEPARATOR);
-define('MODPATH', realpath($modules).DIRECTORY_SEPARATOR);
-define('SYSPATH', realpath($system).DIRECTORY_SEPARATOR);
-
-// Clean up the configuration vars
-unset($application, $modules, $system);
-
-if (file_exists('install'.EXT))
+/*
+|---------------------------------------------------------------
+| SET THE SERVER PATH
+|---------------------------------------------------------------
+|
+| Let's attempt to determine the full-server path to the "system"
+| folder in order to reduce the possibility of path problems.
+| Note: We only attempt this if the user hasn't specified a 
+| full server path.
+|
+*/
+if (strpos($system_folder, '/') === FALSE)
 {
-	// Load the installation check
-	return include 'install'.EXT;
-}
-
-// Load the base, low-level functions
-require SYSPATH.'base'.EXT;
-
-// Load the core Kohana class
-require SYSPATH.'classes/kohana/core'.EXT;
-
-if (is_file(APPPATH.'classes/kohana'.EXT))
-{
-	// Application extends the core
-	require APPPATH.'classes/kohana'.EXT;
+	if (function_exists('realpath') AND @realpath(dirname(__FILE__)) !== FALSE)
+	{
+		$system_folder = realpath(dirname(__FILE__)).'/'.$system_folder;
+	}
 }
 else
 {
-	// Load empty core extension
-	require SYSPATH.'classes/kohana'.EXT;
+	// Swap directory separators to Unix style for consistency
+	$system_folder = str_replace("\\", "/", $system_folder); 
 }
 
-// Bootstrap the application
-require APPPATH.'bootstrap'.EXT;
+/*
+|---------------------------------------------------------------
+| DEFINE APPLICATION CONSTANTS
+|---------------------------------------------------------------
+|
+| EXT		- The file extension.  Typically ".php"
+| SELF		- The name of THIS file (typically "index.php")
+| FCPATH	- The full server path to THIS file
+| BASEPATH	- The full server path to the "system" folder
+| APPPATH	- The full server path to the "application" folder
+|
+*/
+define('EXT', '.php');
+define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
+define('FCPATH', str_replace(SELF, '', __FILE__));
+define('BASEPATH', $system_folder.'/');
+
+if (is_dir($application_folder))
+{
+	define('APPPATH', $application_folder.'/');
+}
+else
+{
+	if ($application_folder == '')
+	{
+		$application_folder = 'application';
+	}
+
+	define('APPPATH', BASEPATH.$application_folder.'/');
+}
+
+/*
+|---------------------------------------------------------------
+| LOAD THE FRONT CONTROLLER
+|---------------------------------------------------------------
+|
+| And away we go...
+|
+*/
+require_once BASEPATH.'codeigniter/CodeIgniter'.EXT;
+
+/* End of file index.php */
+/* Location: ./index.php */
