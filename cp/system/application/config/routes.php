@@ -40,7 +40,8 @@
 |
 */
 
-$route['default_controller'] = "Dashboard";
+
+$route['default_controller'] = "welcome";
 $route['scaffolding_trigger'] = "";
 
 
