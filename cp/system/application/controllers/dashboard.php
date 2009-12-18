@@ -1,6 +1,5 @@
 <?php
 class Dashboard extends Controller {
-
     function index()
     {   
         //For Testing
@@ -34,5 +33,4 @@ class Dashboard extends Controller {
         //Display them
         $this->output->set_output($output);        
     }    
-
 }
