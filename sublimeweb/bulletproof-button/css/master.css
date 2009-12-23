@@ -1,0 +1,58 @@
+/*
+-----------------------------------------------
+Style Sheet
+
+Bulletproof Button
+Author:   Cameron Moll | www.cameronmoll.com
+Version:  2006.10
+----------------------------------------------- */
+
+body {
+	margin: 2em;
+	padding: 0;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: small;
+	color: #333;
+	}
+	
+a img {
+	border: none;
+	}	
+
+#button {
+	float: left;
+	background: url(../img/box-right.gif) top right no-repeat;
+	}
+	
+#btn-inner {
+	margin: 0;
+	padding: 5px 0 0 0;
+	background: url(../img/box-left.gif) top left no-repeat;
+	}	
+	
+#btn-inner a {
+	display: block;
+	margin: 0;
+	padding: 0 0 0 17px;
+	font: bold 1.2em Arial, sans-serif;
+	color: #039;
+	text-decoration: none;
+	background: url(../img/box-left.gif) bottom left no-repeat;
+	}	
+	
+#btn-inner a:hover {
+	color: #F90;
+	}		
+
+#btn-inner em {
+	display: block;
+	margin: 0;
+	padding: 0 20px 5px 0;
+	font-style: normal;
+	background: url(../img/box-right.gif) bottom right no-repeat;
+	}
+
+#btn-inner img {
+	margin-right: 5px;
+	vertical-align: middle;
+	}

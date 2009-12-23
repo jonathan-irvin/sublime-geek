@@ -1,0 +1,14 @@
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_HOST} www.sublimegeek.com$ [NC]
+RewriteRule ^(.*)$ http://forums.sublimegeek.com/$1 [L,R=301]
+
+<Files "config.php">
+Order Allow,Deny
+Deny from All
+</Files>
+
+<Files "common.php">
+Order Allow,Deny
+Deny from All
+</Files>

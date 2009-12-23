@@ -1,0 +1,241 @@
+<!--[* $Id: admin.tpl 244 2009-04-26 17:25:32Z stephenmg $ *]-->
+<!--[include file='header.tpl']-->
+
+
+  <h2>Administration</h2>
+  <p class="mcenter">
+    <span style="color:#aaaaaa;">
+    <!--[if $access]-->
+      &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp;
+      <a style="color:#aaaaaa;" href="#alliance" title="Alliance Database">Alliances</a>
+      &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp;
+      <a style="color:#aaaaaa;" href="#sov" title="Sovereignty">Sovereignty</a>
+      &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp;
+      <a style="color:#aaaaaa;" href="#posapi" title="Fuel Bill">API Pos Update</a>
+      &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp;
+      <a style="color:#aaaaaa;" href="#keys" title="API Key Management">API Keys</a>
+      &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp;
+      <a style="color:#aaaaaa;" href="admin.php?action=moons" title="Moons Management">Moons</a>
+      &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp;
+      <a style="color:#aaaaaa;" href="#users" title="Users Management">Users</a>
+      &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp;
+      <a style="color:#aaaaaa;" href="admin.php?op=modules" title="Addons Management">Addons</a>
+      &nbsp; &nbsp; &nbsp; |
+    <!--[/if]-->
+      <br /><br />
+    </span>
+  </p>
+
+  <!--[if $action]-->
+    <!--[if $action eq 'updatealliance']-->
+      <p>
+        Success<br />
+        Total Number of Alliances: <!--[$results.counttotal]--><br />
+        Total Number of Updates: <!--[$results.updatestotal]-->
+        <br /><br />
+        <a class="arialwhite14 txtunderlined" href="admin.php" title="Done">Done</a>
+        <br /><br />
+        <!--[if $results.updatestotal]-->
+        Alliances Added:<br />
+        <table class="mcenter tracktable" style="width:640px;">
+        <!--[foreach item='all' from=$results.alladded]-->
+          <tr>
+            <td><!--[$all.name]--></td>
+            <td><!--[$all.shortName]--></td>
+          </tr>
+        <!--[/foreach]-->
+        </table>
+        <!--[/if]-->
+      </p>
+    <!--[elseif $action eq 'updatedatafromapi']-->
+      <p>
+        Success<br />
+        Total Number of POS Added: <!--[$results.count_added]--><br />
+        Total Number of POS Updated: <!--[$results.count_updated]--><br />
+        Total POSes updated from API: <!--[$results.count_towers]-->
+        <br /><br />
+        <a class="arialwhite14 txtunderlined" href="admin.php" title="Done">Done</a>
+        <br /><br />
+        <!--[if $results]-->
+        Towers List:<br />
+        <table class="mcenter tracktable" style="width:640px;">
+        <!--[*assign var='posupdate' value=$results.posupdate*]-->
+        <!--[foreach item='posinfo' key='evetowerID' from=$posupdate]-->
+          <tr>
+            <td><!--[$evetowerID]--></td>
+            <td><!--[$posinfo]--></td>
+          </tr>
+        <!--[/foreach]-->
+        </table>
+        <!--[/if]-->
+      </p>
+    <!--[elseif $action eq 'updatesovereignty']-->
+      <p>
+      <!--[if $sovcount]-->
+        Success<br />
+        Systems Updated: <!--[$sovcount]--><br />
+      <!--[else]-->
+        ERROR!!
+      <!--[/if]-->
+        <br /><br />
+        <a class="arialwhite14 txtunderlined" href="admin.php" title="Done">Done</a>
+      </p>
+
+    <!--[elseif $action eq 'getcharacters']-->
+      <!--[foreach item='character' from=$characters]-->
+      <!--[assign var='alliance' value=$character.alliance]-->
+      <div style="margin-bottom:25px;">
+      <form id="u_<!--[$character.characterID]-->" method="post" action="admin.php">
+      <div>
+        <input type="hidden" name="action" value="saveapi" />
+        <input type="hidden" name="apikey" value="<!--[$apikey]-->" />
+        <input type="hidden" name="userid" value="<!--[$userid]-->" />
+        <input type="hidden" name="characterID" value="<!--[$character.characterID]-->" />
+        <input type="hidden" name="corporationName" value="<!--[$character.corporationName]-->" />
+        <input type="hidden" name="corporationID" value="<!--[$character.corporationID]-->" />
+        <input type="hidden" name="allianceName" value="<!--[$alliance.allianceName]-->" />
+        <input type="hidden" name="allianceID" value="<!--[$alliance.allianceID]-->" />
+        <input type="submit" value="Save <!--[$character.name]--> API Key" />
+      </div>
+      </form>
+      </div>
+      <!--[/foreach]-->
+
+
+    <!--[/if]-->
+  <!--[else]-->
+    <h4><a style="color:#ffffff;" name="alliance">Alliance Database</a></h4>
+    <div>
+      <!--[if $allyupdate]-->
+      <span style="color:red;font-weight:bold;">Warning, Your Alliance data is out of date. <!--[$allytime]--></span><br />
+      <!--[else]-->
+      Last Update: <!--[$allytime]--><br />
+      <!--[/if]-->
+      <form method="post" action="admin.php">
+      <div>
+        <input type="hidden" name="action" value="updatealliance" />
+        <input type="submit" value="UPDATE NOW" />
+      </div>
+      </form>
+    </div>
+    <hr />
+    <h4><a style="color:#ffffff;" name="sov">Sovereignty Database</a></h4>
+    <div>
+      <!--[if $systupdate]-->
+        <span style="color:red;font-weight:bold;">Warning, Your Sovereignty data is out of date. <!--[$sovtime]--></span><br />
+      <!--[else]-->
+      Last Update: <!--[$sovtime]--><br />
+      <!--[/if]-->
+      <form method="post" action="admin.php">
+      <div>
+        <input type="hidden" name="action" value="updatesovereignty" />
+        <input type="submit" value="UPDATE NOW" />
+      </div>
+      </form>
+    </div>
+    <hr />
+    <h4><a style="color:#ffffff;" name="posapi">Update POS from API</a></h4>
+    <div>
+      <!--[if $apiupdate]-->
+        <span style="color:red;font-weight:bold;">Warning, Your API POS data is out of date. <!--[$apitime]--></span><br />
+      <!--[else]-->
+      Last Update: <!--[$apitime]--><br />
+      <!--[/if]-->
+      <form method="post" action="admin.php">
+      <div>
+        <input type="hidden" name="action" value="updatedatafromapi" />
+        <input type="submit" value="UPDATE NOW" />
+      </div>
+      </form>
+      <br /><br />
+    </div>
+    <hr />
+    <h4><a style="color:#ffffff;" name="keys">ADD an API Key</a></h4>
+    <div class="mcenter">
+      <form method="post" action="admin.php?action=getcharacters">
+      <div>
+        USERID: <input type="text" name="userid" size="10" /> APIKEY: <input type="text" name="apikey" size="35" /> <input type="submit" value="Select Character" />
+      </div>
+      </form>
+      <br /><br />
+    </div>
+
+
+  <hr />
+    <h4>API Key Manager</h4>
+    <div class="mcenter">
+      <form method="post" action="admin.php">
+      <div>
+        <input type="hidden" name="action" value="updatekey" />
+        <table class="mcenter tracktable" style="width:640px;">
+        <thead>
+          <tr class="trackheader">
+            <th>Corp</th>
+            <th>UserID</th>
+            <th>API Key (first 5 characters)</th>
+            <th>Remove</th>
+          </tr>
+        </thead>
+        <tbody>
+        <!--[foreach item='key' from=$keys]-->
+          <tr>
+            <td><!--[$key.corp|default:"&nbsp;"]--></td>
+            <td><!--[$key.userID|default:"&nbsp;"]--></td>
+            <td><!--[$key.shortkey|default:"&nbsp;"]--></td>
+            <td><!--[if $userinfo.access > 4]--><input type="checkbox" name="keyremove[<!--[$key.id]-->]" /><!--[else]-->&nbsp;<!--[/if]--></td>
+           </tr>
+        <!--[/foreach]-->
+          <tr>
+            <td colspan="5"><input type="submit" value="Update/Remove" /></td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+      </form>
+    </div>
+    <hr />
+    <h4><a style="color:#ffffff;" name="moons">Manage Moons</a></h4>
+    <div class="mcenter">
+      <a href="admin.php?action=moons" title="Moon Database">Managed Moon Database</a>
+      <br /><br />
+    </div>
+
+    <hr />
+    <h4><a style="color:#ffffff;" name="users">Registered Users</a></h4>
+    <div class="mcenter">
+      <form method="post" action="admin.php">
+      <div>
+        <input type="hidden" name="action" value="updateusers" />
+        <table class="mcenter tracktable" style="width:640px;">
+        <thead>
+          <tr class="trackheader">
+            <th>Name</th>
+            <th>Corp</th>
+            <th>Access</th>
+            <th>Highly Trusted</th>
+            <th>Remove</th>
+            <!--<th>Modify</th>-->
+          </tr>
+        </thead>
+        <tbody>
+        <!--[foreach item='user' from=$users]-->
+          <tr>
+            <td><!--[$user.name]--></td>
+            <td><!--[$user.corp|default:"&nbsp;"]--></td>
+            <td><!--[if $user.access < $userinfo.access]--><select name="useraccess[<!--[$user.id]-->]"><!--[html_options options=$optaccess selected=$user.access]--></select><!--[else]--><!--[$user.access]--><input type="hidden" name="access[<!--[$user.id]-->]" value="<!--[$user.access]-->" /><!--[/if]--></td>
+            <td><!--[if $userinfo.access > 4]--><select name="usertrust[<!--[$user.id]-->]"><!--[html_options options=$opttrust selected=$user.highly_trusted]--></select><!--[else]--><!--[$user.highly_trusted]--><input type="hidden" name="usertrust[<!--[$user.id]-->]" value="<!--[$user.highly_trusted]-->" /><!--[/if]--></td>
+            <td><!--[if $user.access < $userinfo.access]--><input type="checkbox" name="userremove[<!--[$user.id]-->]" /><!--[else]-->&nbsp;<!--[/if]--></td>
+          </tr>
+        <!--[/foreach]-->
+          <tr>
+            <td colspan="5"><input type="submit" value="Update/Remove" /></td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+      </form>
+    </div>
+  <!--[/if]-->
+
+
+<!--[include file='footer.tpl']-->

@@ -1,0 +1,44 @@
+/*
+Title: Demo app style sheet - screen
+Author:   Cameron Moll, bored@cameronmoll.com
+Version:  2007.10
+*/
+
+/* These styles here dynamically override their counterparts in screen.css 
+	when the browser width is greater than 1024. */
+
+#content > p {
+	padding-right: 20%;
+	}	
+	
+#container-latest {
+	float: left;
+	margin: 20px -356px 0 0;
+	width: 100%;
+	}
+
+#content-latest {
+	margin: 0 339px 0 0;
+	}
+	
+#content-snapshot {
+	float: right;
+	width: 312px;
+	}
+
+form#search { 
+	width: 33%;
+	}
+
+form#search input[type="text"]	 {
+	width: 270px;
+	}
+	
+#bio {
+	float: right;
+	width: 74%;	
+	}
+	
+#toolbox-recent, #toolbox-blog, #toolbox-friends	{
+	width: 19%;
+	}

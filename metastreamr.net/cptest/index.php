@@ -1,0 +1,78 @@
+<?php
+include "config.php";
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<? print("<title>[metaStreamr] Network Control Panel v$version</title>"); ?>
+<meta http-equiv="Content-Language" content="English" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+
+<div id="wrap">
+
+<div id="header">
+<? print("<h1><a href='/'>[metaStreamr] Network Control Panel</a></h1>"); ?>
+<h2>A Sublime Geek Product</h2>
+</div>
+
+<div id="top"> </div>
+<div id="menu">
+<ul>
+<li><a href="dashboard.php" 						target="content">Home</a></li>
+<li><a href="mylocations.php" 					target="content">My Locations</a></li>
+<li><a href="radio_playlists.php" 					target="content">Radio Playlists</a></li>
+<li><a href="video_playlists.php" 					target="content">Video Playlists</a></li>
+<li><a href="http://metastreamr.com" 				target="_blank" >BroadCast Central</a></li>
+<li><a href="client_admins.php"				 	target="content">Admins</a></li>
+<li><a href="http://www.metastreamr.com/support" 	target="_blank" >Support</a></li>
+</ul>
+</div>
+
+<div id="content">
+<div class="left">
+
+<div class="articles">
+<iframe name="content" style="border:solid 1px #555;height:500px;width:100%" src="dashboard.php"></iframe>
+</div>
+
+</div>
+
+<div class="right">
+<?
+	print("
+	<h2>Network Metrics :</h2>
+	<ul>
+	<li><b>Total Active Locations:  	</b>$total_active_locations</li>
+	<li><b>Total Active Sims:		</b>$total_active_sim</li>
+	<li><b>Most Used Sim:	<br>		</b>$total_active_simname</li>
+	<li><b>Most Used Radio: <br>		</b>$total_active_radname</li>
+	<li><b>Most Used Video: 	<br>		</b>$total_active_vidname</li>
+	</ul>");
+
+	if( isset($key) )
+	{
+		print("
+		<h2>My Statistics :</h2>
+		<ul>
+		<li><b>My Locations: 	</b>$user_active_locations</li>
+		<li><b>My Sims: 		</b>$user_active_sims</li>
+		</ul>");
+	}
+?>
+
+</div>
+<div style="clear: both;"> </div>
+</div>
+
+<div id="bottom"> </div>
+<div id="footer">
+&copy; Sublime Geek 2008.  All rights Reserved.
+</div>
+</div>
+
+</body>
+</html>

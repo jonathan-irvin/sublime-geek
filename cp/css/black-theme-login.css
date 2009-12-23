@@ -1,0 +1,46 @@
+body {
+	background: #19191b;
+	color: #4d4c4c;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+	color: #4f4f4f;
+}
+
+.login_form fieldset {
+	
+	background-image:url(layout/black-theme/login_bg.gif);
+}
+
+.title_wrapper {
+	background: #313131;
+}
+
+.inputs {
+	background: #101010;
+	border-color: #313131;
+}
+
+.input {
+	background: #202020;
+	border-color: #313131;
+	
+}
+
+.input input {
+	color: #8d8d8d;
+}
+
+.reminder {
+	background: #1a1a1a;
+	border-color: #313131;
+}
+
+
+
+
+
+

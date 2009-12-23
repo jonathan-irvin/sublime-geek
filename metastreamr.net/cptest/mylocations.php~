@@ -1,0 +1,10 @@
+<?php
+//USER LOCATIONS
+
+include "config.php";
+connect();
+
+$sql =
+
+
+?>

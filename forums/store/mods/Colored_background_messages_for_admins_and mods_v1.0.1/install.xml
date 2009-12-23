@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="./modx.prosilver.en.xsl"?>
+<!--
+	For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this
+	MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee
+	that there are no security problems within the MOD. No support will be given for MODs not found
+	within the MODs Database which can be found at http://www.phpbb.com/mods/
+-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.1.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+		
+		<title lang="en">Colored background messages for admins and mods</title>
+		<title lang="fr">Coloriser le fond des messages des admins et modos</title>
+		<description lang="en"><![CDATA[This MOD colors background for administrators and moderators' posts when reading a topic. These options can be set up in the ACP.]]></description>
+		<description lang="fr"><![CDATA[Ce MOD change la couleur de fond des messages des administrateurs et modérateurs lors de la lecture d'un sujet. Ces options peuvent être modifiées dans le panneau d'administration.]]></description>
+		<author-notes lang="en">Thanks to Nadia P. for the idea.</author-notes>
+		<author-notes lang="fr">Merci à Nadia P. pour l'idée de ce MOD.</author-notes>
+    		
+		
+		<author-group>
+			<author>
+				<realname>Romain Kowalski</realname>
+				<email></email>
+				<username>Théonaute</username>
+				<homepage>http://forums.nosce-te-ipsum.net</homepage>
+			</author>
+		</author-group>
+		
+		<mod-version>1.0.1</mod-version>
+		
+		<installation>
+			<level>easy</level>
+			<time>120</time>
+			<target-version>3.0.2</target-version>
+		</installation>
+		
+		<history>
+			<entry>
+				<date>2008-09-19</date>
+				<rev-version>1.0.1</rev-version>
+				<changelog lang="en">
+					<change>[Feature] You can enable/disable this feature for each post.</change>
+					<change>[Feature] You can set the colors in the ACP.</change>
+				</changelog>
+				<changelog lang="fr">
+					<change>[Ajout] Il est maintenant possible d'activer ou non ce MOD pour chaque message.</change>
+					<change>[Ajout] Les couleurs peuvent être configurées dans l'ACP.</change>
+				</changelog>				
+			</entry>
+			<entry>
+				<date>2008-08-22</date>
+				<rev-version>1.0.0</rev-version>
+				<changelog lang="en">
+					<change>First version - hello world !</change>
+				</changelog>
+				<changelog lang="fr">
+					<change>Première version</change>
+				</changelog>				
+			</entry>
+		</history>
+
+		<link-group>
+			<link type="language" href="fr.xml" lang="fr">Français</link>
+			<link type="language" href="fr.xml" lang="en">French</link>
+			<link type="template" href="subsilver2.xml" lang="fr">subsilver2</link>
+			<link type="template" href="subsilver2.xml" lang="en">subsilver2</link>
+		</link-group>	
+	</header>
+	
+	<action-group>
+		<sql><![CDATA[INSERT INTO phpbb_config (config_name, config_value, is_dynamic) VALUES ('load_cbgm_default', '1', 1);
+INSERT INTO phpbb_config (config_name, config_value, is_dynamic) VALUES ('load_cbgm_admin', '1', 1);
+INSERT INTO phpbb_config (config_name, config_value, is_dynamic) VALUES ('cbgm_admin_color', 'F6DEE1', 1);
+INSERT INTO phpbb_config (config_name, config_value, is_dynamic) VALUES ('load_cbgm_mod', '1', 1);
+INSERT INTO phpbb_config (config_name, config_value, is_dynamic) VALUES ('cbgm_mod_color', 'DEF6E4', 1);
+ALTER TABLE phpbb_posts ADD enable_cbgm TINYINT(1) DEFAULT 0]]></sql>
+
+		<open src="posting.php">
+			<edit>
+				<find><![CDATA[$bbcode_status	= ($config['allow_bbcode'] && $auth->acl_get('f_bbcode', $forum_id)) ? true : false;]]></find>
+				<action type="before-add"><![CDATA[// Begin : Colored background messages for admin and moderators
+$cbgm_status	= (($config['load_cbgm_admin'] && $auth->acl_get('a_')) || ($config['load_cbgm_modo'] && $auth->acl_get('m_', $forum_id))) ? true : false;
+// End : Colored background messages for admin and moderators]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[	$post_data['enable_bbcode']		= (!$bbcode_status || isset($_POST['disable_bbcode'])) ? false : true;]]></find>
+				<action type="before-add"><![CDATA[// Begin : Colored background messages for admin and moderators
+	$post_data['enable_cbgm']		= (isset($_POST['enable_cbgm'])) ? true : false;
+// End : Colored background messages for admin and moderators	]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[				'post_approved'			=> (isset($post_data['post_approved'])) ? $post_data['post_approved'] : false,]]></find>
+				<action type="after-add"><![CDATA[// Begin : Colored background messages for admin and moderators
+				'enable_cbgm'			=> (bool) $post_data['enable_cbgm'],
+// End : Colored background messages for admin and moderators]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[$bbcode_checked		= (isset($post_data['enable_bbcode'])) ? !$post_data['enable_bbcode'] : (($config['allow_bbcode']) ? !$user->optionget('bbcode') : 1);]]></find>
+				<action type="before-add"><![CDATA[// Begin : Colored background messages for admin and moderators
+$cbgm_checked		= (isset($post_data['enable_cbgm'])) ? $post_data['enable_cbgm'] : (($config['load_cbgm_default']) ? $config['load_cbgm_default'] : 0);
+// End : Colored background messages for admin and moderators]]></action>
+			</edit>	
+			<edit>
+				<find><![CDATA[	'S_BBCODE_ALLOWED'			=> $bbcode_status,]]></find>
+				<action type="before-add"><![CDATA[// Begin : Colored background messages for admin and moderators
+	'S_CBGM_ALLOWED'			=> $cbgm_status,
+	'S_CBGM_CHECKED'			=> ($cbgm_checked) ? ' checked="checked"' : '',	
+// End : Colored background messages for admin and moderators]]></action>
+			</edit>				
+		</open>
+
+		<open src="viewtopic.php">
+			<edit>
+				<find><![CDATA[		'foe'				=> $row['foe'],]]></find>
+				<action type="after-add"><![CDATA[// Begin : Colored background messages for admin and moderators
+		'enable_cbgm'		=> $row['enable_cbgm'],
+// End : Colored background messages for admin and moderators]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[	// Dump vars into template]]></find>
+				<action type="before-add"><![CDATA[// Begin : Colored background messages for admin and moderators
+
+	$admin_forum_lists = array();
+	$mod_forum_lists = array();
+	$poster_is_admin = false;
+	$poster_is_mod = false;
+
+	
+	$admin_forum_lists = $auth->acl_raw_data($poster_id,"a_");	
+	if(sizeof($admin_forum_lists)>0)
+	{
+		$poster_is_admin = true;
+	}
+
+	$mod_forum_lists = $auth->acl_raw_data($poster_id,array("m_"),$forum_id);
+	if(sizeof($mod_forum_lists)>0 && !$poster_is_admin) //only if the poster isn't administrator (admin is considered as moderator)
+	{
+		$poster_is_mod = true;
+	}
+
+	$poster_level = array(
+		'S_POSTER_IS_ADMIN'	=> ($config['load_cbgm_admin'] && $row['enable_cbgm']) ? $poster_is_admin : false,
+		'S_POSTER_IS_MOD'	=> ($config['load_cbgm_mod'] && $row['enable_cbgm']) ? $poster_is_mod : false
+	);
+	$postrow = array_merge($postrow, $poster_level);
+	
+	unset($admin_forum_lists);
+	unset($mod_forum_lists);
+	unset($poster_is_admin);
+	unset($poster_is_mod);
+	unset($poster_level);
+	
+//End : Colored background messages for admin and moderators]]></action>
+			</edit>
+		</open>
+		
+		<open src="includes/functions.php">
+			<edit>
+				<find><![CDATA[		'T_THEME_PATH'			=> "{$phpbb_root_path}styles/" . $user->theme['theme_path'] . '/theme',]]></find>
+				<action type="before-add"><![CDATA[//Begin : Colored background messages for admin and moderators
+		'CBGM_ADMIN_COLOR'		=> $config['cbgm_admin_color'],
+		'CBGM_MOD_COLOR'		=> $config['cbgm_mod_color'],
+//End : Colored background messages for admin and moderators]]></action>
+			</edit>
+		</open>	
+
+		<open src="includes/functions_posting.php">
+			<edit>
+				<find><![CDATA[				'enable_bbcode'		=> $data['enable_bbcode'],]]></find>
+				<action type="before-add"><![CDATA[//Begin : Colored background messages for admin and moderators
+				'enable_cbgm'		=> $data['enable_cbgm'],
+//End : Colored background messages for admin and moderators]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[				'enable_bbcode'		=> $data['enable_bbcode'],]]></find>
+				<action type="before-add"><![CDATA[//Begin : Colored background messages for admin and moderators
+				'enable_cbgm'		=> $data['enable_cbgm'],
+//End : Colored background messages for admin and moderators]]></action>
+			</edit>			
+		</open>			
+		
+		<open src="includes/acp/acp_board.php">
+			<edit>
+				<find><![CDATA[						'load_cpf_viewtopic'	=> array('lang' => 'LOAD_CPF_VIEWTOPIC',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => false),]]></find>
+				<action type="after-add"><![CDATA[//Begin : Colored background messages for admin and moderators
+						'legend3'				=> 'ACP_LOAD_CBGM',						
+						'load_cbgm_default'		=> array('lang' => 'LOAD_CBGM_DEFAULT',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
+						'load_cbgm_admin'		=> array('lang' => 'LOAD_CBGM_ADMINS',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
+						'cbgm_admin_color'		=> array('lang' => 'CBGM_ADMINS_COLOR',	'validate' => 'string',	'type' => 'text:6:6', 'explain' => false),
+						'load_cbgm_mod'			=> array('lang' => 'LOAD_CBGM_MODS',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
+						'cbgm_mod_color'		=> array('lang' => 'CBGM_MODS_COLOR',	'validate' => 'string',	'type' => 'text:6:6', 'explain' => false),
+//End : Colored background messages for admin and moderators]]></action>
+			</edit>
+		</open>	
+
+		<open src="language/en/posting.php">
+			<edit>
+				<find><![CDATA[?>]]></find>
+				<action type="before-add"><![CDATA[//Begin : Colored background messages for admin and moderators
+$lang = array_merge($lang, array(
+	'ENABLE_CBGM'			=> 'Change background color for this post',	
+));
+//End : Colored background messages for admin and moderators]]></action>
+			</edit>
+		</open>
+
+
+		<open src="language/en/acp/board.php">
+			<edit>
+				<find><![CDATA[?>]]></find>
+				<action type="before-add"><![CDATA[//Begin : Colored background messages for admin and moderators
+$lang = array_merge($lang, array(
+	'ACP_LOAD_CBGM'				=> 'Colored background for admins and modos MOD settings',	
+	'LOAD_CBGM_DEFAULT'			=> 'Enable colored background by default',
+	'LOAD_CBGM_DEFAULT_EXPLAIN'	=> 'If you enable this option, the MOD will be enabled by defaut : the checkbox in posting.php will be checked by default.',
+	'LOAD_CBGM_ADMINS'			=> 'Change background color for administrators\' posts',
+	'CBGM_ADMINS_COLOR'			=> 'Administrators\' messages color',
+	'LOAD_CBGM_ADMINS_EXPLAIN'	=> 'When reading a topic, administrators\' background color posts is change.',
+	'LOAD_CBGM_MODS'			=> 'Change background color for moderators\' posts',
+	'CBGM_MODS_COLOR'			=> 'Moderators\' messages color',
+	'LOAD_CBGM_MODS_EXPLAIN'	=> 'When reading a topic, moderators\' background color posts is change, if moderators have moderators\' permissions in the current forum.',
+));
+//End : Colored background messages for admin and moderators]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/overall_header.html">
+			<edit>
+				<find><![CDATA[<title>{SITENAME} &bull; <!-- IF S_IN_MCP -->{L_MCP} &bull; <!-- ELSEIF S_IN_UCP -->{L_UCP} &bull; <!-- ENDIF -->{PAGE_TITLE}</title>]]></find>
+				<action type="after-add"><![CDATA[<style type="text/css">
+/* Begin : Colored background messages for admin and moderators */
+.cbgm_admin	{ background-color: #{CBGM_ADMIN_COLOR};}
+.cbgm_mod	{ background-color: #{CBGM_MOD_COLOR};}
+/* End : Colored background messages for admin and moderators */
+</style>]]></action>
+			</edit>
+		</open>	
+		
+		<open src="styles/prosilver/template/posting_editor.html">
+			<edit>
+				<find><![CDATA[			<!-- IF S_BBCODE_ALLOWED -->
+				<div><label for="disable_bbcode"><input type="checkbox" name="disable_bbcode" id="disable_bbcode"{S_BBCODE_CHECKED} /> {L_DISABLE_BBCODE}</label></div>
+			<!-- ENDIF -->]]></find>
+				<action type="before-add"><![CDATA[			<!-- IF S_CBGM_ALLOWED -->			
+				<div><label for="enable_cbgm"><input type="checkbox" name="enable_cbgm" id="enable_cbgm"{S_CBGM_CHECKED} /> {L_ENABLE_CBGM}</label></div>
+			<!-- ENDIF -->]]></action>
+			</edit>
+		</open>			
+		
+		<open src="styles/prosilver/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[	<div id="p{postrow.POST_ID}" class="post <!-- IF postrow.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- IF postrow.S_UNREAD_POST --> unreadpost<!-- ENDIF --><!-- IF postrow.S_POST_REPORTED --> reported<!-- ENDIF --><!-- IF postrow.S_ONLINE --> online<!-- ENDIF -->">]]></find>
+				<action type="replace-with"><![CDATA[	<div id="p{postrow.POST_ID}" class="post <!-- IF postrow.S_POSTER_IS_ADMIN -->cbgm_admin<!-- ELSEIF postrow.S_POSTER_IS_MOD -->cbgm_mod<!-- ELSE --><!-- IF postrow.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- ENDIF --><!-- IF postrow.S_UNREAD_POST --> unreadpost<!-- ENDIF --><!-- IF postrow.S_POST_REPORTED --> reported<!-- ENDIF --><!-- IF postrow.S_ONLINE --> online<!-- ENDIF -->">]]></action>
+			</edit>
+		</open>
+		
+	
+	<diy-instructions lang="en">Purge your board cache.
+Go to ACP > Board Features for configuring this MOD.</diy-instructions>	
+	<diy-instructions lang="fr">Purgez le cache du forum.
+Allez dans Panneau d'administration > Fonctionnalités du forum pour configurer ce MOD.</diy-instructions>
+	</action-group>
+</mod>

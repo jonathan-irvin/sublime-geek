@@ -1,0 +1,226 @@
+/*
+Theme Name: Foundation
+Theme URI: http://www.tonystreet.com/archives/2006/04/19/foundation-wordpress-theme/
+Description: Three-column theme by <a href="http://www.tonystreet.com">Tony</a>. Read the "readme.txt" file that came with this theme for instructions on some different features.
+Version: 2.0
+Author: Tony
+Author URI: http://www.tonystreet.com/
+
+Feel free to customize to your heart's desire, just please don't change the credits in the style.css or in the footer.
+
+This theme is licensed under the Creative Commons Attribution-ShareAlike 2.5
+
+This basically means that you are allowed to distribute and modify this theme, as long as you leave the credit in the footer of the theme, and you keep this license how it is.
+
+Of course, you can contact me and I'll probably allow you to do anything you want with it :-)
+
+Read the full license here: http://creativecommons.org/licenses/by-nc-sa/2.5/legalcode
+*/
+
+/* LINKS */
+a {color: #ffffff; text-decoration: none; border: none;}
+a:hover {text-decoration: line-through; border: none;}
+a img {border: none; }
+a.name {text-decoration: none; color: #ffffff; font-size: 30px;}
+a.postlink { text-decoration: none; color: #ffffff; font-size: 16px;}
+a.postlink:hover {text-decoration: line-through;}
+
+blockquote {
+border-left: 1px dashed #ccc;
+margin-left: 1.5em;
+padding-left: 5px;
+}
+
+body {
+background: #000000;
+color: #cccccc;
+font-family: Tahoma, Verdana, Sans;
+font-size: 12px;
+}
+
+.cats {
+font-size: 10px;
+padding-left: 5px;
+}
+
+.commentbox {
+padding-left: 10px;
+margin-left: 3px;
+padding: 5px;
+border: 1px solid #f0f0f0;
+width: 400px;
+}
+
+.commentover {
+border: 3px solid #000000;
+}
+
+.commentout {
+border: 3px solid #ffffff;
+}
+
+#content {
+text-align: justify;
+padding: 5px;
+margin-left: 200px;
+margin-right: 200px;
+}
+
+#desc {
+font-size: 13px;
+color: #dddddd;
+}
+
+.divider {
+padding-top: 15px;
+}
+
+#foot {           /* F00TER */
+font-size: 10px;
+margin-bottom: 10px;
+text-align: center;
+}
+
+#head {                 /* HEADER */
+text-align: left;
+background-image: url('<iframe src='http://www.sluniverse.com/pics/lp.aspx?type=latestname&name=Laylah+Mistral' width='160' height='600' frameborder='0' scrolling='no'></iframe>');
+background-position: center center;
+background-repeat: no-repeat;
+width: 700px;
+height: 115px;
+}
+
+li {list-style: none;}
+
+#main {
+width: 800px;
+}
+
+#menutitle {
+font-size: 24px;
+color: #669966;
+}
+
+#menu {           /* SIDEBAR */
+float: left;
+padding-top: 5px;
+padding-right: 2px;
+text-align: left;
+width: 200px;
+}
+
+#menu2 {           /* SIDEBAR */
+float: right;
+padding-top: 5px;
+padding-left: 3px;
+margin-left: 3px;
+width: 150px;
+text-align: right; /*
+background-image: url('http://tn3-2.deviantart.com/300W/fs7.deviantart.com/i/2005/212/8/0/broken_by_sickgirl23.jpg');
+background-repeat: no-repeat;
+background-position: top center; */
+}
+
+           /* /// Sidebar Titles \\\ */
+#linksbar {
+background-image: url('http://static.flickr.com/52/118308337_a4d1d38a54_o.jpg');
+background-repeat: no-repeat;
+background-position: center center;
+width: 81px;
+height: 25px;
+}
+#catsbar {
+background-image: url('http://static.flickr.com/48/118308336_a6208758bf_o.jpg');
+background-repeat: no-repeat;
+background-position: center center;
+width: 81px;
+height: 25px;
+}
+#metabar {
+background-image: url('http://static.flickr.com/35/118308338_8b8f9e0ea0_o.jpg');
+background-repeat: no-repeat;
+background-position: center center;
+width: 81px;
+height: 25px;
+}
+#archivesbar {
+background-image: url('http://static.flickr.com/41/118308335_38ddb6057a_o.jpg');
+background-repeat: no-repeat;
+background-position: center center;
+width: 135px;
+height: 26px;
+}
+#themesbar {
+background-image: url('http://static.flickr.com/19/118314299_9d48a67785_o.jpg');
+background-repeat: no-repeat;
+background-position: center center;
+width: 135px;
+height: 26px;
+}
+#aboutbar {
+background-image: url('http://static.flickr.com/40/118361301_807c3b6034_o.jpg');
+background-repeat: no-repeat;
+background-position: center right;
+width: 200px;
+height: 25px;
+}
+#briefsbar {
+background-image: url('http://static.flickr.com/19/118361300_aadb45f3f5_o.jpg');
+background-repeat: no-repeat;
+background-position: center right;
+padding-top: 10px;
+width: 200px;
+height: 25px;
+}
+
+#flickrbar {
+background-image: url('http://static.flickr.com/55/118361299_1683de016d_o.jpg');
+background-repeat: no-repeat;
+background-position: center right;
+padding-top: 10px;
+width: 200px;
+height: 25px;
+}
+
+.postdata {
+color: #aaaaaa;
+font-size: 10px;
+}
+
+#postcomment {
+background-image: url('http://static.flickr.com/37/118348594_d74762ee86_o.jpg');
+background-repeat: no-repeat;
+background-position: center center;
+width: 270px;
+height: 25px;
+}
+
+#search {
+background-color: #000000;
+color: #ffffff;
+border: 1px solid #ffffff;
+width: 55px;
+}
+
+#searchbox {
+position: fixed;
+bottom: 0px;
+width: 100%;
+}
+
+#searchbutton {
+border: 1px solid #669966;
+background-color: #ffffff;
+width: 55px;
+}
+
+#sidebarpostdata {
+background-color: #111111;
+text-align: justify;
+padding: 2px;
+margin-top: 45px;
+}
+
+#textbox {background-color: #669966; border: 1px solid #000000; color: #ffffff;}
+#textbox:focus {background-color: #ffffff; color: #669966;}
+textarea {font-family: Arial; font-size: 11px; border: 3px solid #ffffff; padding: 3px; width: 400px;}

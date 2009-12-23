@@ -1,0 +1,869 @@
+/*  phpBB 3.0 Style Sheet
+    --------------------------------------------------------------
+	Style name:		twilightBB
+	Author:		Daniel St. Jules ( http://www.gamexe.net/ )
+    --------------------------------------------------------------
+*/
+
+/* Layout
+ ------------ */
+* {
+	/* Reset browsers default margin, padding and font sizes */
+	margin: 0;
+	padding: 0;
+}
+
+.right { float: right; }
+
+.clear { clear: all; }
+
+html, body {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	height: 100%;
+	background: #252525;
+	font-size: 100%;
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+	color: #7C7C7C;
+	font-size: 10px;
+}
+
+#container {
+	height: 100%;
+	background: #1C1C1C;
+	width: 97%;
+	text-align: left;
+	border: 0;
+	padding: 0;
+	margin: 0 auto;
+	min-width: 900px;
+}
+
+#banner {
+	background: url('{T_THEME_PATH}/images/header.jpg') top center no-repeat; 
+	height: 99px;
+	text-align: center;
+}
+
+#header {
+	background: url('{T_THEME_PATH}/images/top_bg.jpg') top center no-repeat; 
+	height: 134px;
+	text-align: center;
+}
+
+#bgleft { width: 53px; background: #252525 url('{T_THEME_PATH}/images/bg_left.gif') top right repeat-y;}
+#bgright { width: 53px; background: #252525 url('{T_THEME_PATH}/images/bg_right.gif') top left repeat-y; }
+
+#wrapper { margin: 0; background: url('{T_THEME_PATH}/images/top.gif') top repeat-x; padding: 0; }
+
+#middle { padding: 0; margin: 0; }
+
+#ct { margin: 0 6px 0 6px; background: #111111 url('{T_THEME_PATH}/images/ct.gif') top repeat-x; }
+#ct2 { background: url('{T_THEME_PATH}/images/ct2.gif') top center no-repeat; }
+#ctl { background: url('{T_THEME_PATH}/images/ctl.gif') top left no-repeat; }
+#ctr { background: url('{T_THEME_PATH}/images/ctr.gif') top right no-repeat; }
+#cb { background: url('{T_THEME_PATH}/images/cb.gif') bottom repeat-x }
+#cbl { background: url('{T_THEME_PATH}/images/cbl.gif') bottom left no-repeat; }
+#cbr { background: url('{T_THEME_PATH}/images/cbr.gif') bottom right no-repeat; padding: 10px 10px 0 10px; }
+
+#logo {
+display: block;
+width: 100%;
+}
+
+#topnav {
+	height: 39px;
+	padding-top: 4px;
+}
+
+#wrapfooter {
+	text-align: center;
+	clear: both;
+}
+
+#findbar {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.forumrules {
+	background-color: #F9CC79;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #BB9860;
+	padding: 4px;
+	font-weight: normal;
+	font-size: 1.1em;
+	font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+}
+
+.forumrules h3 {
+	color: red;
+}
+
+.clear { clear: all; }
+
+/* Navigation
+ --------------------- */
+
+#menu { padding: 8px 0 0 14px; }
+
+.faq, .ucp, .members, .search, .nonewpms, .newpms, .mcp { 
+	float: left; 
+	display: block; 
+	width: 107px; 
+	height: 50px;
+	margin: 0 10px 0 10px;
+}
+
+/* hide from mac \*/
+* html img, * html .faq, * html .ucp, * html .members, * html .search, * html .nonewpms, * html .newpms, * html .mcp {behavior: url({T_TEMPLATE_PATH}/iepngfix.htc);}
+/* end hide */
+
+.faq { 
+	background: url("{T_IMAGESET_LANG_PATH}/faq.png") 0 0 no-repeat;
+}
+
+.ucp { 
+	background: url("{T_IMAGESET_LANG_PATH}/ucp.png") 0 0 no-repeat;
+}
+
+.members { 
+	background: url("{T_IMAGESET_LANG_PATH}/members.png") 0 0 no-repeat;
+}
+
+.search { 
+	background: url("{T_IMAGESET_LANG_PATH}/search.png") 0 0 no-repeat;
+}
+
+.nonewpms { 
+	background: url("{T_IMAGESET_LANG_PATH}/nonewpms.png") 0 0 no-repeat;
+}
+
+.newpms { 
+	background: url("{T_IMAGESET_LANG_PATH}/newpms.png") 0 0 no-repeat;
+}
+
+.mcp { 
+	background: url("{T_IMAGESET_LANG_PATH}/mcp.png") 0 0 no-repeat;
+}
+
+.faq span, .ucp span, .members span, .search span, .nonewpms span, .newpms span, .mcp span {
+	display: none; text-indent: -5000px;
+}
+
+.faq:hover, .ucp:hover, .members:hover, .search:hover, .nonewpms:hover, .newpms:hover, .mcp:hover {
+	background-position: 0 -50px;
+}
+
+#crumbs {
+	height: 48px;
+	padding: 6px 27px 0 27px;
+	text-align: left;
+}
+
+.breadcrumbs {
+	padding-top:18px;
+	font-weight: bold;
+}
+
+ul.breadcrumbs li {
+	list-style-type: none;
+}
+
+.breadcrumbs a:link, .breadcrumbs a:visited, .breadcrumbs a:hover{
+	color: #585858;
+	text-decoration: none;
+}
+
+.toplogin {
+	float: right;
+	width: 270px;
+}
+
+/* hide from mac \*/
+* html #navlist { position: relative; top: -3px;}
+/* end hide */
+
+#navlist li {
+	display:inline;
+	padding: 0 5px 0 5px;
+}
+
+#navlist {
+	font-size: 10px;
+	font-weight:bold;
+	text-align:center;
+}
+
+#navlist a {
+	padding: 0 4px 3px 4px;
+	color: #FC9049;
+}
+
+#navlist a:hover {
+	background: url("{T_THEME_PATH}/images/log_hover.gif") top repeat-x;
+	text-decoration: none;
+	color: #FC9049;
+}
+
+/* Round cornered boxes and backgrounds
+ --------------------------------------------------------- */
+
+.br { padding-bottom: 55px; }
+
+.navbar {
+	background-color: #D7D7C2;
+	padding: 10px 20px 10px 5px;
+	margin-bottom: 15px;
+	display: block;
+}
+
+ul.linklist li {
+	list-style-type: none;
+}
+
+/*  Text
+ --------------------- */
+h1 {
+	color: black;
+	font-family: "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 1.8em;
+	text-decoration: none;
+}
+
+h2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 1.5em;
+	text-decoration: none;
+	line-height: 120%;
+}
+
+h3 {
+	font-size: 1.3em;
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+	line-height: 120%;
+}
+
+h4 {
+	margin: 0;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+p {
+	font-size: 1.1em;
+}
+
+p.moderators {
+	margin: 0;
+	float: left;
+	color: black;
+	font-weight: bold;
+}
+
+.rtl p.moderators {
+	float: right;
+}
+
+p.linkmcp {
+	margin: 0;
+	float: right;
+	white-space: nowrap;
+}
+
+.rtl p.linkmcp {
+	float: left;
+}
+
+p.breadcrumbs {
+	margin: 0;
+	float: left;
+	color: black;
+	font-weight: bold;
+	white-space: normal;
+	font-size: 1em;
+}
+
+.rtl p.breadcrumbs {
+	float: right;
+}
+
+p.datetime {
+	margin: 0;
+	float: right;
+	white-space: nowrap;
+	font-size: 1em;
+}
+
+.rtl p.datetime {
+	float: left;
+}
+
+p.searchbar {
+	white-space: nowrap;
+} 
+
+p.searchbarreg {
+	margin: 0;
+	float: right;
+	white-space: nowrap;
+}
+
+.rtl p.searchbarreg {
+	float: left;
+}
+
+p.forumdesc {
+	padding-bottom: 4px;
+}
+
+p.topicauthor {
+	margin: 1px 0;
+}
+
+p.topicdetails {
+	margin: 1px 0;
+}
+
+.postreported, .postreported a:visited, .postreported a:hover, .postreported a:link, .postreported a:active {
+	margin: 1px 0;
+	color: #BBBBBB;
+	font-weight:bold;
+}
+
+.postapprove, .postapprove a:visited, .postapprove a:hover, .postapprove a:link, .postapprove a:active {
+	color: green;
+	font-weight:bold;
+}
+
+.postapprove img, .postreported img {
+	vertical-align: bottom;
+}
+
+.postauthor {
+	color: #6E6E6E;
+}
+
+.postdetails {
+	color: #6E6E6E;
+}
+
+.postbody {
+	font-size: 1.3em;
+	line-height: 1.4em;
+	font-family: "Lucida Grande", "Trebuchet MS", Helvetica, Arial, sans-serif;
+}
+
+.postbody li, ol, ul {
+	margin: 0 0 0 1.5em;
+}
+
+.rtl .postbody li, .rtl ol, .rtl ul {
+	margin: 0 1.5em 0 0;
+}
+
+.posthilit {
+	background-color: #FDB98D;
+}
+
+.nav {
+	margin: 0;
+	color: #7C7C7C;
+	font-weight: bold;
+}
+
+.pagination {
+	padding: 4px;
+	color: black;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.cattitle {
+
+}
+
+.gen {
+	margin: 1px 1px;
+	font-size: 1.2em;
+}
+
+.genmed {
+	margin: 1px 1px;
+	font-size: 1.1em;
+}
+
+.gensmall {
+	margin: 1px 1px;
+	font-size: 1em;
+}
+
+.acp {
+	font-size: 1em;
+	text-align: center;
+}
+
+.copyright {
+	color: #4D4D4D;
+	font-weight: normal;
+	font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+}
+
+.copyright a:link, .copyright a:visited {
+	color: #717171;
+}
+
+.copyright a:hover {
+	color: #C3C3C3;
+}
+
+.titles {
+	font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	font-size: 1.3em;
+	text-decoration: none;
+}
+
+.error {
+	color: red;
+}
+
+
+/* Tables
+ ------------ */
+th {
+	color: #FC9049;
+	font-size: 1.1em;
+	font-weight: bold;
+	background: url('{T_THEME_PATH}/images/cellpic3.gif') top repeat-x;
+	white-space: nowrap;
+	padding: 0 5px;
+	height: 29px;
+}
+
+td {
+	padding: 2px;
+}
+td.profile {
+	padding: 4px;
+}
+
+.tablebg {
+	background-color: #111111;
+}
+
+.catdiv {
+	height: 28px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: url('{T_THEME_PATH}/images/cellpic3.gif') top repeat-x;
+}
+.rtl .catdiv {
+	background: url('{T_THEME_PATH}/images/cellpic3.gif') top repeat-x;
+}
+
+.cat {
+	height: 28px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: #171717 url('{T_THEME_PATH}/images/cellpic1.gif') repeat-x;
+	text-indent: 4px;
+	border-bottom: 1px #2D2D2D solid;
+}
+
+.row1 {
+	background: #222222 url('{T_THEME_PATH}/images/row1.gif') top right repeat-x;
+	padding: 4px;
+	border-left: 1px #404040 solid;
+	border-top: 1px #444444 solid;
+}
+
+.row2 {
+	background: #222222 url('{T_THEME_PATH}/images/row1.gif') top right repeat-x;
+	padding: 4px;
+	border-left: 1px #404040 solid;
+	border-top: 1px #444444 solid;
+}
+
+.row3 {
+	background: #222222 url('{T_THEME_PATH}/images/row1.gif') top right repeat-x;
+	padding: 4px;
+	border-left: 1px #404040 solid;
+	border-top: 1px #444444 solid;
+}
+
+.row_h {
+	background: #222222 url('{T_THEME_PATH}/images/row2.gif') top left no-repeat;
+	padding: 4px;
+	border-left: 1px #404040 solid;
+	border-top: 1px #444444 solid;
+}
+
+.spacer {
+	background: #444444 url('{T_THEME_PATH}/images/space.gif') repeat-x;
+}
+
+hr {
+	height: 1px;
+	border-width: 0;
+	background-color: #444444;
+	color: #444444;
+}
+
+.legend {
+	text-align:center;
+	margin: 0 auto;
+}
+
+/* Links
+ ------------ */
+a:link	{ color: #A1A1A1; text-decoration: none; }
+a:visited	{ color: #A1A1A1; text-decoration: none; }
+a:hover	{ color: #C3C3C3; text-decoration: none; }
+a:active	{ color: #A1A1A1; text-decoration: none; }
+
+a.forumlink {
+	font-weight: bold;
+	font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+	font-size: 1.2em;
+}
+
+a.topictitle, a.topictitle:visited {
+	margin: 1px 0;
+	font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+th a,
+th a:visited {
+	color: #FC9049 !important;
+	text-decoration: none;
+}
+
+th a:hover {
+	text-decoration: none;
+}
+
+
+/* Form Elements
+ ------------ */
+form {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+input {
+	background: #2A2A2A url("{T_THEME_PATH}/images/input.gif") top repeat-x;
+	color: #7C7C7C;
+	font-size: 11px;
+	font-weight: normal;
+	padding: 2px;
+	border: 1px solid #040404;
+	vertical-align: middle;
+}
+
+input:hover, input:focus {
+	background: #3C3C3C url("{T_THEME_PATH}/images/input.gif") repeat-x;
+	background-position: 0 -41px;
+}
+
+textarea {
+	background: #252525 url("{T_THEME_PATH}/images/textarea.gif") top repeat-x;
+	color: #7C7C7C;
+	font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
+	font-size: 1.3em; 
+	line-height: 1.4em;
+	font-weight: normal;
+	border: 1px solid #040404;
+	padding: 2px;
+	vertical-align: middle;
+}
+
+select {
+	color: #7C7C7C;
+	background-color: #2A2A2A;
+	font-family: "Lucida Grande", Verdana, Helvetica, sans-serif;
+	font-size: 1.1em;
+	font-weight: normal;
+	border: 1px solid #040404;
+	padding: 1px;
+	vertical-align: middle;
+}
+
+option {
+	padding: 0 1em 0 0;
+	vertical-align: middle;
+}
+
+option.disabled-option {
+	color: graytext;
+}
+
+.rtl option {
+	padding: 0 0 0 1em;
+	vertical-align: middle;
+}
+
+input.radio {
+	border: none;
+	background: none;
+	vertical-align: middle;
+}
+
+.post {
+	background-color: white;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.btnbbcode {
+	font-weight: normal;
+	font-size: 1.1em;
+	font-family: "Lucida Grande", Verdana, Helvetica, sans-serif;
+}
+
+.btnmain {
+	font-weight: bold;
+	cursor: pointer;
+	padding: 1px 5px;
+	font-size: 1.1em;
+}
+
+.btnlite {
+	font-weight: normal;
+	cursor: pointer;
+	padding: 1px 5px;
+	font-size: 1.1em;
+}
+
+.btnfile {
+	font-weight: normal;
+	padding: 1px 5px;
+	font-size: 1.1em;
+}
+
+.btnmain, .btnlite, .btnfile {
+	background: url("{T_THEME_PATH}/images/submit.gif") top repeat-x;
+}
+
+.btnmain:hover, .btnmain:focus, .btnlite:hover, .btnlite:focus, .btnfile:hover, .btnfile:focus {
+	background: url("{T_THEME_PATH}/images/submit.gif") top repeat-x;
+	background-position: 0 -41px;
+}
+
+.btnbbcode {
+	background: #AFAFAF url("{T_THEME_PATH}/images/bbcode.gif") top repeat-x;
+	color: #2F2F2F;
+	border: 1px #222222 solid;
+}
+
+.btnbbcode:hover, .btnbbcode:focus {
+	background: #C1C1C1 url("{T_THEME_PATH}/images/bbcode.gif") top repeat-x;
+	background-position: 0 -41px;
+	color: #222222;
+}
+
+.helpline, .helpline:hover, .helpline:focus  {
+	background: transparent;
+	border-style: none;
+}
+
+
+/* BBCode
+ ------------ */
+.quotetitle, .attachtitle {
+	margin: 10px 5px 0 5px;
+	padding: 4px;
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #111111;
+	color: #4C4C4C;
+	font-size: 0.85em;
+	font-weight: bold;
+	background: url("{T_THEME_PATH}/images/cellpic1.gif") top repeat-x;
+}
+
+.quotetitle .quotetitle {
+	font-size: 1em;
+}
+
+.quotecontent, .attachcontent {
+	margin: 0 5px 10px 5px;
+	padding: 5px;
+	border-color: #111111;
+	border-width: 0 1px 1px 1px;
+	border-style: solid;
+	font-weight: normal;
+	font-size: 1em;
+	line-height: 1.4em;
+	font-family: "Lucida Grande", "Trebuchet MS", Helvetica, Arial, sans-serif;
+	background: #252525 url("{T_THEME_PATH}/images/textarea.gif") top repeat-x;
+	color: #808080;
+}
+
+.attachcontent {
+	font-size: 0.85em;
+}
+
+.codetitle {
+	margin: 10px 5px 0 5px;
+	padding: 2px 4px;
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	color: #4C4C4C;
+	font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
+	font-size: 0.8em;
+	border-color: #111111;
+	background: url("{T_THEME_PATH}/images/cellpic1.gif") top repeat-x;
+}
+
+.codecontent {
+	direction: ltr;
+	margin: 0 5px 10px 5px;
+	padding: 5px;
+	border-color: #111111;
+	border-width: 0 1px 1px 1px;
+	border-style: solid;
+	font-weight: normal;
+	color: #F47230;
+	font-size: 0.85em;
+	font-family: Monaco, 'Courier New', monospace;
+	background: #252525 url("{T_THEME_PATH}/images/textarea.gif") top repeat-x;
+}
+
+.syntaxbg {
+	color: #FFFFFF;
+}
+
+.syntaxcomment {
+	color: #FF8000;
+}
+
+.syntaxdefault {
+	color: #0000BB;
+}
+
+.syntaxhtml {
+	color: #000000;
+}
+
+.syntaxkeyword {
+	color: #007700;
+}
+
+.syntaxstring {
+	color: #DD0000;
+}
+
+
+/* Private messages
+ ------------------ */
+.pm_marked_colour {
+	background-color: #000000;
+}
+
+.pm_replied_colour {
+	background-color: #A9B8C2;
+}
+
+.pm_friend_colour {
+	background-color: #007700;
+}
+
+.pm_foe_colour {
+	background-color: #DD0000;
+}
+
+/* Buttons
+ --------------- */
+
+a.fontsize {
+	display: block;
+	overflow: hidden;
+	height: 18px;
+	text-indent: -5000px;
+	text-align: left;
+	background-repeat: no-repeat;
+	background-image: url("{T_THEME_PATH}/images/icon_fontsize.gif");
+	background-position: 0 -1px;
+	width: 29px;
+	position: absolute;
+	top: 6px;
+	left: 0px;
+}
+
+a.fontsize:hover {
+	background-position: 0 -20px;
+	text-decoration: none;
+}
+
+.reply-icon	{ 
+	float: left; display: block; width: 83px; height: 22px;
+	background: url("{IMG_BUTTON_TOPIC_REPLY_SRC}") 0 0 no-repeat;
+	margin-right: 10px;
+}
+.post-icon	{ 
+	float: left; display: block; width: 83px; height: 22px;
+	background: url("{IMG_BUTTON_TOPIC_NEW_SRC}") 0 0 no-repeat;
+	margin-right: 10px;
+}
+.locked-icon { 
+	float: left; display: block; width: 83px; height: 22px;
+	background: url("{IMG_BUTTON_TOPIC_LOCKED_SRC}") 0 0 no-repeat;
+	margin-right: 10px;
+}
+.pmreply-icon { 
+	float: left; display: block; width: 77px; height: 23px;
+	background: url("{T_IMAGESET_LANG_PATH}/pmreply.png") 0 0 no-repeat;
+	margin-right: 10px;
+}
+
+.reply-icon span, .post-icon span, .locked-icon span, .pmreply-icon span {
+	display: none; text-indent: -5000px;
+}
+
+.reply-icon:hover, .post-icon:hover {
+	background-position: 0 -22px;
+}
+
+/* Misc
+ ------------ */
+img {
+	border: none;
+}
+
+.sep {
+	color: black;
+	background-color: #FFA34F;
+}
+
+table.colortable td {
+	padding: 0;
+}
+
+pre {
+	font-size: 1.1em;
+	font-family: Monaco, 'Courier New', monospace;
+}
+
+.nowrap {
+	white-space: nowrap;
+}
+
+.username-coloured {
+	font-weight: bold;
+}
+
+.simple-header { background-color: #1C1C1C; }
+.simple-header .pagination {text-align: left;}
