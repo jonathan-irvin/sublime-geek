@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,18 +37,27 @@ define('HESK_PATH','');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
-$query = hesk_input($_GET['q']) or $query = 0;
+hesk_dbConnect();
+
+/* The user should only be suggested articles one per each ticket submitted */
+hesk_session_start();
+$_SESSION['ARTICLES_SUGGESTED'] = true;
+
+$query = (isset($_GET['q'])) ? hesk_input($_GET['q']) : 0;
 
 if (!$query)
 {
 	hesk_noArticles();
 }
+else
+{
+	$query = substr($query,0,2000);
+}
 
-$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'kb_articles` WHERE `type`=\'0\' AND MATCH(`subject`,`content`) AGAINST (\''.$query.'\') LIMIT '.$hesk_settings['kb_search_limit'];
+$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` WHERE `type`=\'0\' AND MATCH(`subject`,`content`) AGAINST (\''.hesk_dbEscape($query).'\') LIMIT '.hesk_dbEscape($hesk_settings['kb_search_limit']);
 $res = hesk_dbQuery($sql);
 $num = hesk_dbNumRows($res);
 
@@ -73,9 +83,9 @@ if ($num)
 
 	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+		<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 		<td class="roundcornerstop"></td>
-		<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+		<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 	</tr>
 	<tr>
 		<td class="roundcornersleft">&nbsp;</td>
@@ -96,7 +106,7 @@ if ($num)
 	            if ($hesk_settings['kb_rating'])
 	            {
 	            	$alt = $article['rating'] ? sprintf($hesklang['kb_rated'], sprintf("%01.1f", $article['rating'])) : $hesklang['kb_not_rated'];
-	                $rat = '<td width="1" valign="top"><img src="img/star_'.(hesk_round_to_half($article['rating'])*10).'.png" width="85" height="16" alt="'.$alt.'" border="0" style="vertical-align:text-bottom" /></td>';
+	                $rat = '<td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/star_'.(hesk_round_to_half($article['rating'])*10).'.png" width="85" height="16" alt="'.$alt.'" border="0" style="vertical-align:text-bottom" /></td>';
 	            }
 	            else
 	            {
@@ -108,14 +118,14 @@ if ($num)
 				<td>
 	                <table border="0" width="100%" cellspacing="0" cellpadding="1">
 	                <tr>
-	                <td width="1" valign="top"><img src="img/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
-	                <td valign="top"><a href="knowledgebase.php?article='.$article['id'].'">'.$article['subject'].'</a></td>
+	                <td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
+	                <td valign="top"><a href="knowledgebase.php?article='.$article['id'].'" target="_blank">'.$article['subject'].'</a></td>
 	                '.$rat.'
                     </tr>
 	                </table>
 	                <table border="0" width="100%" cellspacing="0" cellpadding="1">
 	                <tr>
-	                <td width="1" valign="top"><img src="img/blank.gif" width="16" height="10" style="vertical-align:middle" alt="" /></td>
+	                <td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/blank.gif" width="16" height="10" style="vertical-align:middle" alt="" /></td>
 	                <td><span class="article_list">'.$txt.'</span></td>
                     </tr>
 	                </table>
@@ -134,9 +144,9 @@ if ($num)
 		<td class="roundcornersright">&nbsp;</td>
 	</tr>
 	<tr>
-		<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+		<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 		<td class="roundcornersbottom"></td>
-		<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+		<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 	</tr>
 	</table>
 
@@ -157,6 +167,7 @@ else
 }
 
 function hesk_noArticles() {
+	global $hesk_settings, $hesklang;
 	?>
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -167,7 +178,7 @@ function hesk_noArticles() {
 	<script language="Javascript" type="text/javascript" src="hesk_javascript.js"></script>
 	</head>
 	<body onload="window.opener.document.form1.submit();window.close()">
-	<p><?php echo $hesklang['ns']; ?></p>
+	<p><?php echo $hesklang['nsfo']; ?></p>
 	<p align="center"><a href="javascript:void(0)" onclick="window.opener.document.form1.submit();window.close()"><?php echo $hesklang['cw']; ?></a></p>
 	</body>
 	</html>

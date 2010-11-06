@@ -7,7 +7,9 @@ connect2slm();
 $active = FALSE;
 
 //Message Scripts
-$loss_msg	  = "GridSplode had to purge all of the old GridSplodes with a security bug in them. Please re-rez your GridSplodes with the new version 1.2. New shapes included!";
+$loss_msg	  = "GridSplode bug has been fixed.  
+Feel free to re-rez your GridSplodes or visit any GridSplode location to play.
+  Questions?  Visit http://sublimegeek.com/support for assistance.";
 
 //Use this for messaging and send a "You Lost" message to the losers
 if($active){

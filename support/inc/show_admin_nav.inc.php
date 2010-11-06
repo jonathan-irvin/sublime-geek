@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 /* Check if this is a valid include */
@@ -71,12 +72,22 @@ if (!defined('IN_SCRIPT')) {die($hesklang['attempt']);}
 			<td>&nbsp;&nbsp;&nbsp;</td>
 			';
 		}
-		if ($hesk_settings['kb_enable'] && hesk_checkPermission('can_man_kb',0))
+		if ($hesk_settings['kb_enable'])
 		{
+        	if (hesk_checkPermission('can_man_kb',0))
+            {
 			echo '
 			<td><a href="manage_knowledgebase.php"><img src="../img/ico_kb.gif" width="26" height="26" border="0" alt="'.$hesklang['menu_kb'].'" title="'.$hesklang['menu_kb'].'" /><br />'.$hesklang['menu_kb'].'</a><br /><img src="../img/blank.gif" width="50" height="1" alt="" /></td>
 			<td>&nbsp;&nbsp;&nbsp;</td>
 			';
+            }
+            else
+            {
+			echo '
+			<td><a href="knowledgebase_private.php"><img src="../img/ico_kb.gif" width="26" height="26" border="0" alt="'.$hesklang['menu_kb'].'" title="'.$hesklang['menu_kb'].'" /><br />'.$hesklang['menu_kb'].'</a><br /><img src="../img/blank.gif" width="50" height="1" alt="" /></td>
+			<td>&nbsp;&nbsp;&nbsp;</td>
+			';
+            }
 		}
 		if (hesk_checkPermission('can_man_settings',0))
 		{

@@ -42,8 +42,11 @@ $l_num          = mysql_num_rows($l_result);
 $l_name           = $l_row['name'];
 $l_auth           = $l_row['auth_key'];
 $l_api            = $l_row['api_key'] ;
-//Debug
-//$l_api = "9354f9133ecc061fc604d2963e05f0d841d55704";
+
+$gApi = "9354f9133ecc061fc604d2963e05f0d841d55704";
+$selection = "`owner_api` =  '$l_api'";
+
+if($gApi == $l_api){$selection = "`owner_api` =  '$l_api' OR `owner_api` != '$l_api'";}
 
 if(!isset($api,$auth,$ok)){die('Error: You must access this page from your metaTip Control Panel');}
 
@@ -71,14 +74,14 @@ $log_num  = mysql_num_rows($log_res);
 /////////////////////Begin Regular Chart Queries/////////////////////////////
 //Last 24 Hours
 $last24_sql  = "SELECT 
-Date_format(`timestamp`,'%h %p') as 'date',
+Date_format(`timestamp`,'%H') as 'date',
 AVG(`pmt_amt`) AS  `total`
 FROM  `mtipcomm_translog` 
-WHERE  `owner_api` =  '$l_api'
+WHERE  $selection
 AND  `pmt_type`  =  'pmt'
 AND  `pmt_type` !=  'usg'
 AND  `timestamp` >= DATE_SUB( CURDATE() , INTERVAL 24 HOUR ) 
-GROUP BY HOUR(`timestamp`) ";
+GROUP BY HOUR(`timestamp`) LIMIT 0,24";
 
 $last24_res   = mysql_query($last24_sql);
 $last24_res2  = mysql_query($last24_sql);
@@ -101,14 +104,14 @@ $last24->add_labels('x',array_keys($l24));
 
 //Last 7 Days
 $last7_sql  = "SELECT 
-Date_format(`timestamp`,'%c-%d') as 'date',
+Date_format(`timestamp`,'%c-%e') as 'date',
 SUM(`pmt_amt`) AS  `total`
 FROM  `mtipcomm_translog` 
-WHERE  `owner_api` =  '$l_api'
+WHERE  $selection
 AND  `pmt_type` =  'pmt'
 AND  `pmt_type` !=  'usg'
 AND  `timestamp` >= DATE_SUB( CURDATE( ) , INTERVAL 1 WEEK ) 
-GROUP BY DAY(  `timestamp` ) ";
+GROUP BY DAY(  `timestamp` ) LIMIT 0,7";
 
 $last7_res   = mysql_query($last7_sql);
 $last7_res2  = mysql_query($last7_sql);
@@ -134,11 +137,11 @@ $lastmon_sql  = "SELECT
 Date_format(`timestamp`,'%U') as 'date',
 SUM(`pmt_amt`) AS  `total`
 FROM  `mtipcomm_translog` 
-WHERE  `owner_api` =  '$l_api'
+WHERE  $selection
 AND  `pmt_type` =  'pmt'
 AND  `pmt_type` !=  'usg'
 AND  `timestamp` >= DATE_SUB( CURDATE( ) , INTERVAL 4 WEEK ) 
-GROUP BY WEEK(  `timestamp` ) ";
+GROUP BY WEEK(  `timestamp` ) LIMIT 0,4";
 
 $lastmon_res   = mysql_query($lastmon_sql);
 $lastmon_res2  = mysql_query($lastmon_sql);
@@ -164,14 +167,14 @@ $lastmon->add_labels('x',array_keys($lmont));
 //Begin Queries
 //Last 12 Months
 $last6mon_sql  = "SELECT 
-date_format(`timestamp`,'%b %y') as 'date',
+date_format(`timestamp`,'%b') as 'date',
 SUM(`pmt_amt`) AS  `total`
 FROM  `mtipcomm_translog` 
-WHERE  `owner_api` =  '$l_api'
+WHERE  $selection
 AND  `pmt_type` =  'pmt'
 AND  `pmt_type` !=  'usg'
 AND  `timestamp` >= DATE_SUB( CURDATE( ) , INTERVAL 12 MONTH) 
-GROUP BY MONTH(`timestamp`)";
+GROUP BY MONTH(`timestamp`) LIMIT 0,12";
 
 $last6mon_res   = mysql_query($last6mon_sql);
 $last6mon_res2  = mysql_query($last6mon_sql);
@@ -197,11 +200,11 @@ $last4y_sql  = "SELECT
 date_format(`timestamp`,'%Y') as 'date',
 SUM(`pmt_amt`) AS  `total`
 FROM  `mtipcomm_translog` 
-WHERE  `owner_api` =  '$l_api'
+WHERE  $selection
 AND  `pmt_type` =  'pmt'
 AND  `pmt_type` !=  'usg'
 AND  `timestamp` >= DATE_SUB( CURDATE( ) , INTERVAL 4 YEAR) 
-GROUP BY YEAR(`timestamp`)";
+GROUP BY YEAR(`timestamp`) LIMIT 0,4";
 
 $last4y_res   = mysql_query($last4y_sql);
 $last4y_res2  = mysql_query($last4y_sql);
@@ -228,7 +231,7 @@ $fromsql = "SELECT
 COUNT( * ) AS  'num',
 SUM(  `pmt_amt` ) AS  'total'
 FROM  `mtipcomm_translog`
-WHERE  `owner_api` =  '$l_api'
+WHERE  $selection
 AND `pmt_from` != '$ok'
 GROUP BY  `name`
 ORDER BY  `total` DESC
@@ -242,7 +245,7 @@ $tosql = "SELECT
 COUNT( * ) AS  'num',
 SUM(  `pmt_amt` ) AS  'total'
 FROM  `mtipcomm_translog`
-WHERE  `owner_api` =  '$l_api'
+WHERE  $selection
 AND `pmt_to` != '$ok'
 GROUP BY  `name`
 ORDER BY  `total` DESC
@@ -256,7 +259,7 @@ COUNT( * ) AS  'num',
 sum(`pmt_amt`) as 'tot',
 avg(`pmt_amt`) as 'avg'
 FROM  `mtipcomm_translog` 
-WHERE  `owner_api` =  '$l_api'
+WHERE  $selection
 GROUP BY  `owner_api`";
 $ustatres = mysql_query($ustatsql);
 $ustatnum = mysql_num_rows($ustatres);
@@ -297,7 +300,7 @@ else if($act == 'deluser'){
 else if($act == 'addgrp'){
   $chktot = "SELECT SUM(`payout`) AS  'total'
   FROM  `mtip_groups` 
-  WHERE  `owner_api` =  '$l_api'";
+  WHERE  $selection";
   $chkres = mysql_query($chktot) or die("Error Check Total: $chktot");
   $chknum = mysql_num_rows($chkres);
   

@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,14 +26,19 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 /* Check if this is a valid include */
 if (!defined('IN_SCRIPT')) {die($hesklang['attempt']);}
+
+if (!isset($status))
+{
+	$status = 6;
+}
 ?>
 
 <div align="center">
@@ -95,7 +101,7 @@ if (!defined('IN_SCRIPT')) {die($hesklang['attempt']);}
 	            <select name="category">
 				<option value="0" ><?php echo $hesklang['any_cat']; ?></option>
 <?php
-$sql_private = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'categories` WHERE ';
+$sql_private = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'categories` WHERE ';
 $sql_private .= hesk_myCategories('id');
 $sql_private .= ' ORDER BY `cat_order` ASC';
 
@@ -135,14 +141,7 @@ while ($row=hesk_dbFetchAssoc($result))
 	</table>
 </td>
 <?php
-if (isset($_GET['what']))
-{
-	$what = hesk_input($_GET['what']) or $what = 'trackid';
-}
-else
-{
-	$what = 'trackid';
-}
+$what = isset($_GET['what']) ? hesk_input($_GET['what']) : 'trackid';
 ?>
 <td valign="top" width="50%">
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="height: 360px;">
@@ -158,19 +157,63 @@ else
 		<h3 align="center"><?php echo $hesklang['find_ticket_by']; ?>:</h3>
 		<table border="0" cellpadding="3" cellspacing="0" width="100%">
 		<tr>
-		<td><label><input type="radio" name="what" value="trackid" <?php $value=''; if ($what == 'trackid') {$value = hesk_input($_GET['trackid']); echo 'checked="checked"';} ?> /> <b><?php echo $hesklang['trackID']; ?></b></label>: &nbsp; </td>
+		<td><label><input type="radio" name="what" value="trackid"
+        <?php
+        $value='';
+        if ($what == 'trackid')
+        {
+	        echo 'checked="checked"';
+			if (isset($_GET['trackid']))
+	        {
+		        $value = hesk_input($_GET['trackid']);
+	        }
+        }
+        ?> /> <b><?php echo $hesklang['trackID']; ?></b></label>: &nbsp; </td>
 		<td><input type="text" name="trackid" value="<?php echo $value; ?>" size="12" maxlength="10" onfocus="Javascript:document.findby.what[0].checked=true;" /></td>
 		</tr>
 		<tr>
-		<td><label><input type="radio" name="what" value="name" <?php $value=''; if ($what == 'name') {$value = hesk_input($_GET['name']); echo 'checked="checked"';} ?> /> <b><?php echo $hesklang['name']; ?></b></label>: &nbsp; </td>
+		<td><label><input type="radio" name="what" value="name"
+        <?php
+        $value='';
+        if ($what == 'name')
+        {
+	        echo 'checked="checked"';
+			if (isset($_GET['name']))
+	        {
+		        $value = hesk_input($_GET['name']);
+	        }
+        }
+        ?> /> <b><?php echo $hesklang['name']; ?></b></label>: &nbsp; </td>
 		<td><input type="text" name="name" value="<?php echo $value; ?>" size="20" onfocus="Javascript:document.findby.what[1].checked=true;" /></td>
 		</tr>
 		<tr>
-		<td><label><input type="radio" name="what" value="dt" <?php $value='YYYY-MM-DD'; if ($what == 'dt') {$value = hesk_input($_GET['dt']); echo 'checked="checked"';} ?> /> <b><?php echo $hesklang['date_posted']; ?></b></label>: &nbsp; </td>
+		<td><label><input type="radio" name="what" value="dt"
+        <?php
+        $value='';
+        if ($what == 'dt')
+        {
+	        echo 'checked="checked"';
+			if (isset($_GET['dt']))
+	        {
+		        $value = hesk_input($_GET['dt']);
+	        }
+        }
+        ?> /> <b><?php echo $hesklang['date_posted']; ?></b></label>: &nbsp; </td>
 		<td><input type="text" name="dt" value="<?php echo $value; ?>" size="12" maxlength="10" onfocus="Javascript:document.findby.what[2].checked=true;" /></td>
 		</tr>
 		<tr>
-		<td><label><input type="radio" name="what" value="subject" <?php $value=''; if ($what == 'subject') {$value = hesk_input($_GET['subject']); echo 'checked="checked"';} ?> /> <b><?php echo $hesklang['subject']; ?></b></label>: &nbsp; </td>
+		<td><label><input type="radio" name="what" value="subject"
+        <?php
+        $value='';
+        if ($what == 'subject')
+        {
+	        echo 'checked="checked"';
+			if (isset($_GET['subject']))
+	        {
+		        $value = hesk_input($_GET['subject']);
+	        }
+        }
+        ?> /> <b><?php echo $hesklang['subject']; ?></b></label>: &nbsp; </td>
 		<td><input type="text" name="subject" value="<?php echo $value; ?>" size="25" onfocus="Javascript:document.findby.what[3].checked=true;" /></td>
 		</tr>
 		<tr>
@@ -179,7 +222,7 @@ else
 		</tr>
 		<tr>
 		<td><b><?php echo $hesklang['display']; ?></b>: &nbsp; </td>
-		<td><input type="text" name="limit" value="<?php echo $hesk_settings['max_listings']; ?>" size="4" /> <?php echo $hesklang['results_page']; ?></td>
+		<td><input type="text" name="limit" value="<?php echo $maxresults; ?>" size="4" /> <?php echo $hesklang['results_page']; ?></td>
 		</tr>
 		</table>
 		<p><label><input type="checkbox" name="archive" value="1" /> <?php echo $hesklang['search_only_archived']; ?></label></p>

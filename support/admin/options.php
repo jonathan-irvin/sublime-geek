@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,7 +37,6 @@ define('HESK_PATH','../');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 
 $id     = hesk_input($_GET['i']) or $query = '';
@@ -119,7 +119,15 @@ switch ($type)
         ';
     	break;
     case 'textarea':
-    	list($rows,$cols)=explode('#',$query);
+    	if (strpos($query,'#') !== false)
+        {
+        	list($rows,$cols)=explode('#',$query);
+        }
+        else
+        {
+        	$rows = '';
+            $cols = '';
+        }
     	echo '
         <script language="javascript">
         function hesk_saveOptions()
@@ -213,6 +221,44 @@ switch ($type)
         </script>
 
         <p>'.$hesklang['opt3'].'</p>
+        <textarea name="o1" id="o1" rows="6" cols="40">'.$options.'</textarea>
+        <p><input type="button" value="  '.$hesklang['ok'].'  " onclick="Javascript:hesk_saveOptions()" /></p>
+        ';
+    	break;
+    case 'checkbox':
+    	$options=str_replace('#HESK#',"\n",$query);
+    	echo '
+        <script language="javascript">
+        function hesk_saveOptions()
+        {
+        	text = document.getElementById(\'o1\').value;
+            text = text.replace(/^\s\s*/, \'\').replace(/\s\s*$/, \'\');
+			text = escape(text);
+			if(text.indexOf(\'%0D%0A\') > -1)
+			{
+				re_nlchar = /%0D%0A/g ;
+			}
+		    else if(text.indexOf(\'%0A\') > -1)
+			{
+				re_nlchar = /%0A/g ;
+            }
+			else if(text.indexOf(\'%0D\') > -1)
+			{
+				re_nlchar = /%0D/g ;
+			}
+            else
+            {
+            	alert(\''.$hesklang['atl2'].'\');
+                return false;
+            }
+			text = unescape(text.replace(re_nlchar,\'#HESK#\'));
+
+        	window.opener.document.getElementById(\'s_'.$id.'_val\').value = text;
+            window.close();
+        }
+        </script>
+
+        <p>'.$hesklang['opt4'].'</p>
         <textarea name="o1" id="o1" rows="6" cols="40">'.$options.'</textarea>
         <p><input type="button" value="  '.$hesklang['ok'].'  " onclick="Javascript:hesk_saveOptions()" /></p>
         ';

@@ -179,11 +179,14 @@ function GetXmlHttpObject()
 function hesk_suggestKB()
 {
  var d = document.form1;
- if (d.kb.value == 'N' && d.subject.value != '' && d.message.value != '')
+ var s = d.subject.value;
+ var m = d.message.value;
+
+ if (s != '' && m != '')
  {
-  var myURL = "suggest_articles.php?q=" + escape(d.subject.value+" "+d.message.value);
+
+  var myURL = "suggest_articles.php?q=" + escape(s.substr(0,100)+" "+m.substr(0,1900));
   window.open(myURL,"Hesk_window","height=600,width=800,menubar=0,location=0,toolbar=0,status=0,resizable=1,scrollbars=1");
-  d.kb.value = 'Y';
   return false;
  }
  return true;

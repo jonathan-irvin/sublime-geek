@@ -2,7 +2,7 @@
 include 'config.php';
 connect2slm();
 
-$auth_config    = "ED20F44C5B3A71A345189ACFBA0C25A16F11D960";
+$auth_config    = "ED20F44C5B3A71A345189ACFBA0C25A16F11D960ED20F44C5B3A71A345189ACFBA0C25A16F11D960";
 $auth			= $_POST['auth'];
 $chkpmtsql      = "SELECT * FROM `gsplode_pending_payouts`";
 $chkpmtres      = mysql_query($chkpmtsql);

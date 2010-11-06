@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,7 +37,6 @@ define('HESK_PATH','');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
@@ -60,7 +60,7 @@ $track_id = hesk_input($_GET['trackid']);
 hesk_dbConnect();
 
 /* Make sure the ticket tracking ID matches */
-$sql = "SELECT `trackid` FROM `".$hesk_settings['db_pfix']."tickets` WHERE `trackid`='$track_id' LIMIT 1";
+$sql = "SELECT `trackid` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` WHERE `trackid`='".hesk_dbEscape($track_id)."' LIMIT 1";
 $result = hesk_dbQuery($sql);
 if (hesk_dbNumRows($result) != 1)
 {
@@ -73,7 +73,7 @@ if ($ticket['trackid'] != $track_id)
 }
 
 /* Already rated? */
-$sql = "SELECT `rating`,`staffid` FROM `".$hesk_settings['db_pfix']."replies` WHERE `id`='$reply_id' LIMIT 1";
+$sql = "SELECT `rating`,`staffid` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` WHERE `id`='".hesk_dbEscape($reply_id)."' LIMIT 1";
 $result = hesk_dbQuery($sql);
 $reply  = hesk_dbFetchAssoc($result);
 if (!empty($reply['rating']))
@@ -82,11 +82,11 @@ if (!empty($reply['rating']))
 }
 
 /* OK, update rating now */
-$sql = "UPDATE `".$hesk_settings['db_pfix']."replies` SET `rating`='$rating' WHERE `id`='$reply_id'";
+$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` SET `rating`='".hesk_dbEscape($rating)."' WHERE `id`='".hesk_dbEscape($reply_id)."'";
 hesk_dbQuery($sql);
 
 /* Also update staff rating */
-$sql = 'UPDATE `'.$hesk_settings['db_pfix'].'users` SET  `rating`=((`rating`*(`ratingpos`+`ratingneg`))+'.$rating.')/(`ratingpos`+`ratingneg`+1), ';
+$sql = 'UPDATE `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` SET  `rating`=((`rating`*(`ratingpos`+`ratingneg`))+'.hesk_dbEscape($rating).')/(`ratingpos`+`ratingneg`+1), ';
 if ($rating == 5)
 {
 	$sql .= '`ratingpos`=`ratingpos`+1';
@@ -95,7 +95,7 @@ else
 {
 	$sql .= '`ratingneg`=`ratingneg`+1';
 }
-$sql .= ' WHERE `id`='.$reply['staffid'];
+$sql .= ' WHERE `id`='.hesk_dbEscape($reply['staffid']);
 hesk_dbQuery($sql);
 
 header("Cache-Control: no-store, no-cache, must-revalidate");

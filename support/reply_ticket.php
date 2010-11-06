@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,7 +37,6 @@ define('HESK_PATH','');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
@@ -74,35 +74,47 @@ if ($hesk_settings['attachments']['use'] && !empty($attachments))
 {
     foreach ($attachments as $myatt)
     {
-        $sql = "INSERT INTO `".$hesk_settings['db_pfix']."attachments` (`ticket_id`,`saved_name`,`real_name`,`size`) VALUES ('$trackingID', '$myatt[saved_name]', '$myatt[real_name]', '$myatt[size]')";
+        $sql = "INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."attachments` (`ticket_id`,`saved_name`,`real_name`,`size`) VALUES (
+        '".hesk_dbEscape($trackingID)."',
+        '".hesk_dbEscape($myatt['saved_name'])."',
+        '".hesk_dbEscape($myatt['real_name'])."',
+        '".hesk_dbEscape($myatt['size'])."'
+        )";
         $result = hesk_dbQuery($sql);
         $myattachments .= hesk_dbInsertID() . '#' . $myatt['real_name'] .',';
     }
 }
 
 /* Make sure the ticket is open */
-$sql = "UPDATE `".$hesk_settings['db_pfix']."tickets` SET `status`='1',`lastreplier`='0',`lastchange`=NOW() WHERE `id`=$replyto LIMIT 1";
+$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `status`='1',`lastreplier`='0',`lastchange`=NOW() WHERE `id`=".hesk_dbEscape($replyto)." LIMIT 1";
 $result = hesk_dbQuery($sql);
 
 /* Add reply */
 $sql = "
-INSERT INTO `".$hesk_settings['db_pfix']."replies` (
+INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (
 `replyto`,`name`,`message`,`dt`,`attachments`
 )
 VALUES (
-'$replyto','$orig_name','$message',NOW(),'$myattachments'
+'".hesk_dbEscape($replyto)."',
+'".hesk_dbEscape($orig_name)."',
+'".hesk_dbEscape($message)."',
+NOW(),
+'".hesk_dbEscape($myattachments)."'
 )
 ";
 $result = hesk_dbQuery($sql);
 
-$sql = "SELECT `subject`,`category` FROM `".$hesk_settings['db_pfix']."tickets` WHERE `id`=$replyto LIMIT 1";
+$sql = "SELECT `name`,`subject`,`category` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` WHERE `id`=".hesk_dbEscape($replyto)." LIMIT 1";
 $result = hesk_dbQuery($sql);
 $ticket = hesk_dbFetchAssoc($result);
+
+$name=$ticket['name'];
+$subject=$ticket['subject'];
 $category=$ticket['category'];
 
 /* Need to notify any admins? */
 $admins=array();
-$sql = "SELECT `email`,`isadmin`,`categories` FROM `".$hesk_settings['db_pfix']."users` WHERE `notify`='1'";
+$sql = "SELECT `email`,`isadmin`,`categories` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."users` WHERE `notify`='1'";
 $result = hesk_dbQuery($sql);
 while ($myuser=hesk_dbFetchAssoc($result))
 {
@@ -116,34 +128,38 @@ while ($myuser=hesk_dbFetchAssoc($result))
         $admins[]=$myuser['email']; continue;
     }
 }
+
 if (count($admins)>0)
 {
-$trackingURL_admin=$hesk_settings['hesk_url'].'/admin/admin_ticket.php?track='.$trackingID;
+	/* Prepare ticket message for the e-mail */
+	$message = hesk_msgToPlain($message,1);
 
-/* Get e-mail message for customer */
-$message=file_get_contents(HESK_PATH.'emails/new_reply_by_customer.txt');
-$message=str_replace('%%NAME%%',$orig_name,$message);
-$message=str_replace('%%SUBJECT%%',$ticket['subject'],$message);
-$message=str_replace('%%TRACK_ID%%',$trackingID,$message);
-$message=str_replace('%%TRACK_URL%%',$trackingURL_admin,$message);
-$message=str_replace('%%SITE_TITLE%%',$hesk_settings['site_title'] ,$message);
-$message=str_replace('%%SITE_URL%%',$hesk_settings['site_url'] ,$message);
+	$trackingURL_admin = $hesk_settings['hesk_url'].'/admin/admin_ticket.php?track='.$trackingID;
 
-/* Send e-mail to staff */
-$email=implode(',',$admins);
-$headers="From: $hesk_settings[noreply_mail]\n";
-$headers.="Reply-to: $hesk_settings[noreply_mail]\n";
-$headers.="Return-Path: $hesk_settings[webmaster_mail]\n";
-@mail($email,$hesklang['new_reply_ticket'],$message,$headers);
-} // End if
+	$msg = hesk_getEmailMessage('new_reply_by_customer');
+	$msg = str_replace('%%NAME%%',$name,$msg);
+	$msg = str_replace('%%SUBJECT%%',$subject,$msg);
+	$msg = str_replace('%%TRACK_ID%%',$trackingID,$msg);
+	$msg = str_replace('%%TRACK_URL%%',$trackingURL_admin,$msg);
+	$msg = str_replace('%%SITE_TITLE%%',$hesk_settings['site_title'],$msg);
+	$msg = str_replace('%%SITE_URL%%',$hesk_settings['site_url'],$msg);
+	$msg = str_replace('%%MESSAGE%%',$message,$msg);
 
+	/* Send e-mail to staff */
+	$email=implode(',',$admins);
+	$headers = "From: $hesk_settings[noreply_mail]\n";
+	$headers.= "Reply-to: $hesk_settings[noreply_mail]\n";
+	$headers.= "Return-Path: $hesk_settings[webmaster_mail]\n";
+	$headers.= "Content-type: text/plain; charset=".$hesklang['ENCODING'];
+	@mail($email,$hesklang['new_reply_ticket'],$msg,$headers);
+}
 ?>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="3"><img src="img/headerleftsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerleftsm.jpg" width="3" height="25" alt="" /></td>
 <td class="headersm"><?php echo $hesklang['cid'].': '.$trackingID; ?></td>
-<td width="3"><img src="img/headerrightsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerrightsm.jpg" width="3" height="25" alt="" /></td>
 </tr>
 </table>
 
@@ -165,7 +181,7 @@ $headers.="Return-Path: $hesk_settings[webmaster_mail]\n";
 <div align="center">
 <table border="0" width="600" id="ok" cellspacing="0" cellpadding="3">
 <tr>
-<td align="left" class="ok_header">&nbsp;<img src="img/ok.gif" style="vertical-align:text-bottom" width="16" height="16" alt="" />&nbsp; <?php echo $hesklang['reply_submitted']; ?></td>
+<td align="left" class="ok_header">&nbsp;<img src="https://s3.amazonaws.com/sg-support-static/ok.gif" style="vertical-align:text-bottom" width="16" height="16" alt="" />&nbsp; <?php echo $hesklang['reply_submitted']; ?></td>
 </tr>
 <tr>
 <td align="left" class="ok_body"><?php echo $hesklang['reply_submitted_success']; ?><br /><br />

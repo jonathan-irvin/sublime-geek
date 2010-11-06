@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,17 +37,17 @@ define('HESK_PATH','../');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
 hesk_session_start();
-hesk_isLoggedIn();
 hesk_dbConnect();
+hesk_isLoggedIn();
 
 if (isset($_SERVER['HTTP_REFERER']))
 {
 	$url = hesk_input($_SERVER['HTTP_REFERER']);
+    $url = str_replace('&amp;','&',$url);
 	if ($tmp = strstr($url,'show_tickets.php'))
     {
     	$referer = $tmp;
@@ -89,14 +90,17 @@ if ($_POST['a']=='delete')
     foreach ($_POST['id'] as $this_id)
     {
         $this_id = hesk_isNumber($this_id,$hesklang['id_not_valid']);
-        $sql = 'SELECT `trackid` FROM `'.$hesk_settings['db_pfix'].'tickets` WHERE `id`='.$this_id.' LIMIT 1';
+        $sql = 'SELECT `trackid`,`category` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` WHERE `id`='.hesk_dbEscape($this_id).' LIMIT 1';
         $result = hesk_dbQuery($sql);
-        $trackingID = hesk_dbResult($result,0,0);
-        $sql = 'DELETE FROM `'.$hesk_settings['db_pfix'].'attachments` WHERE `ticket_id`=\''.$trackingID.'\'';
+        $ticket = hesk_dbFetchAssoc($result);
+
+        hesk_okCategory($ticket['category']);
+
+        $sql = 'DELETE FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'attachments` WHERE `ticket_id`=\''.hesk_dbEscape($ticket['trackid']).'\'';
         hesk_dbQuery($sql);
-        $sql = 'DELETE FROM `'.$hesk_settings['db_pfix'].'tickets` WHERE `id`='.$this_id.' LIMIT 1';
+        $sql = 'DELETE FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` WHERE `id`='.hesk_dbEscape($this_id).' LIMIT 1';
         hesk_dbQuery($sql);
-        $sql = 'DELETE FROM `'.$hesk_settings['db_pfix'].'replies` WHERE `replyto`='.$this_id;
+        $sql = 'DELETE FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'replies` WHERE `replyto`='.hesk_dbEscape($this_id);
         hesk_dbQuery($sql);
         $i++;
     }
@@ -112,7 +116,7 @@ elseif (isset($_GET['delete_ticket']))
     $trackingID = strtoupper(hesk_input($_GET['track']));
 
 	/* Get ticket info */
-	$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."tickets` WHERE `trackid`='$trackingID' LIMIT 1";
+	$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` WHERE `trackid`='".hesk_dbEscape($trackingID)."' LIMIT 1";
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbNumRows($result) != 1)
 	{
@@ -124,11 +128,11 @@ elseif (isset($_GET['delete_ticket']))
 	hesk_okCategory($ticket['category']);
 
 	$this_id = $ticket['id'];
-	$sql = 'DELETE FROM `'.$hesk_settings['db_pfix'].'attachments` WHERE `ticket_id`=\''.$trackingID.'\'';
+	$sql = 'DELETE FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'attachments` WHERE `ticket_id`=\''.hesk_dbEscape($trackingID).'\'';
 	hesk_dbQuery($sql);
-	$sql = 'DELETE FROM `'.$hesk_settings['db_pfix'].'tickets` WHERE `id`='.$this_id.' LIMIT 1';
+	$sql = 'DELETE FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` WHERE `id`='.hesk_dbEscape($this_id).' LIMIT 1';
 	hesk_dbQuery($sql);
-	$sql = 'DELETE FROM `'.$hesk_settings['db_pfix'].'replies` WHERE `replyto`='.$this_id;
+	$sql = 'DELETE FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'replies` WHERE `replyto`='.hesk_dbEscape($this_id);
 	hesk_dbQuery($sql);
 
 	$_SESSION['HESK_NOTICE']  = $hesklang['tickets_deleted'];
@@ -143,7 +147,14 @@ else /* JUST CLOSE */
 	foreach ($_POST['id'] as $this_id)
 	{
 		$this_id = hesk_isNumber($this_id,$hesklang['id_not_valid']);
-		$sql = 'UPDATE `'.$hesk_settings['db_pfix'].'tickets` SET `status`=\'3\' WHERE `id`='.$this_id.' LIMIT 1';
+
+        $sql = 'SELECT `category` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` WHERE `id`='.hesk_dbEscape($this_id).' LIMIT 1';
+        $result = hesk_dbQuery($sql);
+        $ticket = hesk_dbFetchAssoc($result);
+
+        hesk_okCategory($ticket['category']);
+
+		$sql = 'UPDATE `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` SET `status`=\'3\' WHERE `id`='.hesk_dbEscape($this_id).' LIMIT 1';
 		hesk_dbQuery($sql);
 		$i++;
 	}

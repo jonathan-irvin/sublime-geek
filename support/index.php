@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,8 +37,12 @@ define('HESK_PATH','');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
+
+if (!isset($_REQUEST['a']))
+{
+	$_REQUEST['a'] = '';
+}
 
 /* Will we use the anti-SPAM image? */
 if ($_REQUEST['a']=='add')
@@ -48,6 +53,10 @@ if ($_REQUEST['a']=='add')
 		$_SESSION['secnum']=rand(10000,99999);
 		$_SESSION['checksum']=crypt($_SESSION['secnum'],$hesk_settings['secimg_sum']);
 	}
+    if (!isset($_SESSION['ARTICLES_SUGGESTED']))
+    {
+    	$_SESSION['ARTICLES_SUGGESTED']=false;
+    }
 }
 
 /* Print header */
@@ -72,9 +81,9 @@ global $hesk_settings, $hesklang;
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="3"><img src="img/headerleftsm.jpg" width="3" height="25" alt="" /></td>
-<td class="headersm"><?php echo $hesklang['submit_ticket']; ?></td>
-<td width="3"><img src="img/headerrightsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerleftsm.jpg" width="3" height="25" alt="" /></td>
+<td class="headersm"><?php hesk_showTopBar($hesklang['submit_ticket']); ?></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerrightsm.jpg" width="3" height="25" alt="" /></td>
 </tr>
 </table>
 
@@ -82,7 +91,8 @@ global $hesk_settings, $hesklang;
 <tr>
 <td><span class="smaller"><a href="<?php echo $hesk_settings['site_url']; ?>" class="smaller"><?php echo $hesk_settings['site_title']; ?></a> &gt;
 <a href="<?php echo $hesk_settings['hesk_url']; ?>" class="smaller"><?php echo $hesk_settings['hesk_title']; ?></a>
-&gt; <?php echo $hesklang['submit_ticket']; ?></span></td>
+&gt; <?php echo $hesklang['submit_ticket']; ?></span>
+</td>
 </tr>
 </table>
 
@@ -98,7 +108,7 @@ global $hesk_settings, $hesklang;
 	        <div align="center">
 	        <table border="0" width="600" id="error" cellspacing="0" cellpadding="3">
 		        <tr>
-		        	<td align="left" class="error_header">&nbsp;<img src="img/error.gif" style="vertical-align:text-bottom" width="16" height="16" alt="" />&nbsp; <?php echo $hesklang['error']; ?></td>
+		        	<td align="left" class="error_header">&nbsp;<img src="https://s3.amazonaws.com/sg-support-static/error.gif" style="vertical-align:text-bottom" width="16" height="16" alt="" />&nbsp; <?php echo $hesklang['error']; ?></td>
 		        </tr>
 		        <tr>
 		        	<td align="left" class="error_body"><ul><?php echo $_SESSION['HESK_MESSAGE']; ?></ul></td>
@@ -114,9 +124,9 @@ global $hesk_settings, $hesklang;
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornerstop"></td>
-	<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 </tr>
 <tr>
 	<td class="roundcornersleft">&nbsp;</td>
@@ -128,7 +138,7 @@ global $hesk_settings, $hesklang;
 
 	<form method="post" action="submit_ticket.php" name="form1" enctype="multipart/form-data"
 	<?php
-	if ($hesk_settings['kb_enable'] && $hesk_settings['kb_recommendanswers'])
+	if ($hesk_settings['kb_enable'] && $hesk_settings['kb_recommendanswers'] && $_SESSION['ARTICLES_SUGGESTED'] == false)
 	{
 		echo 'onsubmit="Javascript: return hesk_suggestKB();"';
 	}
@@ -139,11 +149,11 @@ global $hesk_settings, $hesklang;
 	<table border="0" width="100%">
 	<tr>
 	<td style="text-align:right" width="150"><?php echo $hesklang['name']; ?>: <font class="important">*</font></td>
-	<td width="80%"><input type="text" name="name" size="40" maxlength="30" value="<?php echo stripslashes(hesk_input($_SESSION['c_name']));?>" /></td>
+	<td width="80%"><input type="text" name="name" size="40" maxlength="30" value="<?php if (isset($_SESSION['c_name'])) {echo stripslashes(hesk_input($_SESSION['c_name']));} ?>" /></td>
 	</tr>
 	<tr>
 	<td style="text-align:right" width="150"><?php echo $hesklang['email']; ?>: <font class="important">*</font></td>
-	<td width="80%"><input type="text" name="email" size="40" maxlength="50" value="<?php echo stripslashes(hesk_input($_SESSION['c_email']));?>" /></td>
+	<td width="80%"><input type="text" name="email" size="40" maxlength="50" value="<?php if (isset($_SESSION['c_email'])) {echo stripslashes(hesk_input($_SESSION['c_email']));} ?>" /></td>
 	</tr>
 	</table>
 
@@ -158,11 +168,11 @@ global $hesk_settings, $hesklang;
 	require(HESK_PATH . 'inc/database.inc.php');
 
 	hesk_dbConnect();
-	$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'categories` ORDER BY `cat_order` ASC';
+	$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'categories` ORDER BY `cat_order` ASC';
 	$result = hesk_dbQuery($sql);
 	while ($row=hesk_dbFetchAssoc($result))
 	{
-	    if ($_SESSION['c_category'] == $row['id']) {$selected = ' selected="selected"';}
+	    if (isset($_SESSION['c_category']) && $_SESSION['c_category'] == $row['id']) {$selected = ' selected="selected"';}
 	    else {$selected = '';}
 	    echo '<option value="'.$row['id'].'"'.$selected.'>'.$row['name'].'</option>';
 	}
@@ -173,9 +183,9 @@ global $hesk_settings, $hesklang;
 	<tr>
 	<td style="text-align:right" width="150"><?php echo $hesklang['priority']; ?>: <font class="important">*</font></td>
 	<td width="80%"><select name="priority">
-	<option value="3" <?php if($_SESSION['c_priority']==3) {echo 'selected="selected"';} ?>><?php echo $hesklang['low']; ?></option>
-	<option value="2" <?php if($_SESSION['c_priority']==2) {echo 'selected="selected"';} ?>><?php echo $hesklang['medium']; ?></option>
-	<option value="1" <?php if($_SESSION['c_priority']==1) {echo 'selected="selected"';} ?>><?php echo $hesklang['high']; ?></option>
+	<option value="3" <?php if(isset($_SESSION['c_priority']) && $_SESSION['c_priority']==3) {echo 'selected="selected"';} ?>><?php echo $hesklang['low']; ?></option>
+	<option value="2" <?php if(isset($_SESSION['c_priority']) && $_SESSION['c_priority']==2) {echo 'selected="selected"';} ?>><?php echo $hesklang['medium']; ?></option>
+	<option value="1" <?php if(isset($_SESSION['c_priority']) && $_SESSION['c_priority']==1) {echo 'selected="selected"';} ?>><?php echo $hesklang['high']; ?></option>
 	</select></td>
 	</tr>
 	</table>
@@ -199,7 +209,26 @@ global $hesk_settings, $hesklang;
 	        }
 
 			$v['req'] = $v['req'] ? '<font class="important">*</font>' : '';
-			$k_value  = stripslashes(hesk_input($_SESSION["c_$k"]));
+
+			if ($v['type'] == 'checkbox')
+            {
+            	$k_value = array();
+                if (isset($_SESSION["c_$k"]) && is_array($_SESSION["c_$k"]))
+                {
+	                foreach ($_SESSION["c_$k"] as $myCB)
+	                {
+	                	$k_value[] = stripslashes(hesk_input($myCB));
+	                }
+                }
+            }
+            elseif (isset($_SESSION["c_$k"]))
+            {
+            	$k_value  = stripslashes(hesk_input($_SESSION["c_$k"]));
+            }
+            else
+            {
+            	$k_value  = '';
+            }
 
 	        switch ($v['type'])
 	        {
@@ -259,6 +288,35 @@ global $hesk_settings, $hesklang;
 	                }
 
 	                echo '</select></td>
+					</tr>
+					';
+	            break;
+
+	            /* Checkbox */
+	        	case 'checkbox':
+					echo '
+					<tr>
+					<td style="text-align:right" width="150" valign="top">'.$v['name'].': '.$v['req'].'</td>
+	                <td width="80%">';
+
+	            	$options = explode('#HESK#',$v['value']);
+
+	                foreach ($options as $option)
+	                {
+
+		            	if (in_array($option,$k_value))
+		                {
+							$checked = 'checked="checked"';
+	                    }
+	                    else
+	                    {
+	                    	$checked = '';
+	                    }
+
+	                	echo '<label><input type="checkbox" name="'.$k.'[]" value="'.$option.'" '.$checked.' /> '.$option.'</label><br />';
+	                }
+
+	                echo '</td>
 					</tr>
 					';
 	            break;
@@ -304,11 +362,11 @@ global $hesk_settings, $hesklang;
 	<table border="0" width="100%">
 	<tr>
 	<td style="text-align:right" width="150"><?php echo $hesklang['subject']; ?>: <font class="important">*</font></td>
-	<td width="80%"><input type="text" name="subject" size="40" maxlength="40" value="<?php echo stripslashes(hesk_input($_SESSION['c_subject']));?>" /></td>
+	<td width="80%"><input type="text" name="subject" size="40" maxlength="40" value="<?php if (isset($_SESSION['c_subject'])) {echo stripslashes(hesk_input($_SESSION['c_subject']));} ?>" /></td>
 	</tr>
 	<tr>
 	<td style="text-align:right" width="150" valign="top"><?php echo $hesklang['message']; ?>: <font class="important">*</font></td>
-	<td width="80%"><textarea name="message" rows="12" cols="60"><?php echo stripslashes(hesk_input($_SESSION['c_message']));?></textarea></td>
+	<td width="80%"><textarea name="message" rows="12" cols="60"><?php if (isset($_SESSION['c_message'])) {echo stripslashes(hesk_input($_SESSION['c_message']));} ?></textarea></td>
 	</tr>
 	</table>
 
@@ -330,7 +388,27 @@ global $hesk_settings, $hesklang;
 	        }
 
 			$v['req'] = $v['req'] ? '<font class="important">*</font>' : '';
-			$k_value  = stripslashes(hesk_input($_SESSION["c_$k"]));
+
+			if ($v['type'] == 'checkbox')
+            {
+            	$k_value = array();
+                if (isset($_SESSION["c_$k"]) && is_array($_SESSION["c_$k"]))
+                {
+	                foreach ($_SESSION["c_$k"] as $myCB)
+	                {
+	                	$k_value[] = stripslashes(hesk_input($myCB));
+	                }
+                }
+            }
+            elseif (isset($_SESSION["c_$k"]))
+            {
+            	$k_value  = stripslashes(hesk_input($_SESSION["c_$k"]));
+            }
+            else
+            {
+            	$k_value  = '';
+            }
+
 
 	        switch ($v['type'])
 	        {
@@ -390,6 +468,35 @@ global $hesk_settings, $hesklang;
 	                }
 
 	                echo '</select></td>
+					</tr>
+					';
+	            break;
+
+	            /* Checkbox */
+	        	case 'checkbox':
+					echo '
+					<tr>
+					<td style="text-align:right" width="150" valign="top">'.$v['name'].': '.$v['req'].'</td>
+	                <td width="80%">';
+
+	            	$options = explode('#HESK#',$v['value']);
+
+	                foreach ($options as $option)
+	                {
+
+		            	if (in_array($option,$k_value))
+		                {
+							$checked = 'checked="checked"';
+	                    }
+	                    else
+	                    {
+	                    	$checked = '';
+	                    }
+
+	                	echo '<label><input type="checkbox" name="'.$k.'[]" value="'.$option.'" '.$checked.' /> '.$option.'</label><br />';
+	                }
+
+	                echo '</td>
 					</tr>
 					';
 	            break;
@@ -464,13 +571,17 @@ global $hesk_settings, $hesklang;
 		<div align="center">
 		<table border="0">
 		<tr>
-		<td>
+		<td>                            
 
 		<?php
 		if ($hesk_settings['question_use'])
 	    {
-		    echo '<p>'.$hesk_settings['question_ask'].' <font class="important">*</font><br />
-	        <input type="text" name="question" size="10" value="'.stripslashes(hesk_input($_SESSION['c_question'])).'"  /></p>';
+        	$value = '';
+        	if (isset($_SESSION['c_question']))
+            {
+	        	$value = stripslashes(hesk_input($_SESSION['c_question']));
+            }
+		    echo '<p>'.$hesk_settings['question_ask'].' <font class="important">*</font><br /><input type="text" name="question" size="10" value="'.$value.'"  /></p>';
 		}
 
 		if ($hesk_settings['secimg_use'])
@@ -505,12 +616,11 @@ global $hesk_settings, $hesklang;
 
 	<b><?php echo $hesklang['we_have']; ?>:</b>
     <ul>
-    <li><?php echo $_SERVER['REMOTE_ADDR'].' '.$hesklang['recorded_ip']; ?></li>
+    <li><?php echo htmlspecialchars($_SERVER['REMOTE_ADDR']).' '.$hesklang['recorded_ip']; ?></li>
 	<li><?php echo $hesklang['recorded_time']; ?></li>
 	</ul>
 
-	<p align="center"><input type="hidden" name="kb" id="kb" value="N" />
-    <input type="submit" value="<?php echo $hesklang['sub_ticket']; ?>" class="orangebutton"  onmouseover="hesk_btn(this,'orangebuttonover');" onmouseout="hesk_btn(this,'orangebutton');" /></p>
+	<p align="center"><input type="submit" value="<?php echo $hesklang['sub_ticket']; ?>" class="orangebutton"  onmouseover="hesk_btn(this,'orangebuttonover');" onmouseout="hesk_btn(this,'orangebutton');" /></p>
 
     </td>
 	</tr>
@@ -524,9 +634,9 @@ global $hesk_settings, $hesklang;
 	<td class="roundcornersright">&nbsp;</td>
 </tr>
 <tr>
-	<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornersbottom"></td>
-	<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 </tr>
 </table>
 
@@ -540,9 +650,9 @@ global $hesk_settings, $hesklang;
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="3"><img src="img/headerleftsm.jpg" width="3" height="25" alt="" /></td>
-<td class="headersm"><?php echo $hesk_settings['hesk_title']; ?></td>
-<td width="3"><img src="img/headerrightsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerleftsm.jpg" width="3" height="25" alt="" /></td>
+<td class="headersm"><?php hesk_showTopBar($hesk_settings['hesk_title']); ?></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerrightsm.jpg" width="3" height="25" alt="" /></td>
 </tr>
 </table>
 
@@ -579,61 +689,62 @@ if ($hesk_settings['kb_enable'] && $hesk_settings['kb_search'])
 <!-- START SUBMIT -->
 	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+		<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 		<td class="roundcornerstop"></td>
-		<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+		<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 	</tr>
 	<tr>
 		<td class="roundcornersleft">&nbsp;</td>
 		<td>
 	    <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	    <tr>
-	    	<td width="1"><img src="img/newticket.png" alt="" width="60" height="60" /></td>
+	    	<td width="1">			
+			<img src="https://s3.amazonaws.com/sg-support-static/newticket.png" alt="" width="60" height="60" /></td>
 	        <td>
 	        <p><b><a href="index.php?a=add"><?php echo $hesklang['sub_support']; ?></a></b><br />
-            <?php echo $hesklang['open_ticket']; ?></p>
-	        </td>
-	    </tr>
+            <?php echo $hesklang['open_ticket']; ?></p>	        
+			</td>
+	    </tr>		
 	    </table>
 		</td>
 		<td class="roundcornersright">&nbsp;</td>
 	</tr>
 	<tr>
-		<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+		<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 		<td class="roundcornersbottom"></td>
-		<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+		<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 	</tr>
 	</table>
 <!-- END SUBMIT -->
 </td>
-<td width="1"><img src="img/blank.gif" width="5" height="1" alt="" /></td>
+<td width="1"><img src="https://s3.amazonaws.com/sg-support-static/blank.gif" width="5" height="1" alt="" /></td>
 <td width="50%">
 <!-- START VIEW -->
 	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+		<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 		<td class="roundcornerstop"></td>
-		<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+		<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 	</tr>
 	<tr>
 		<td class="roundcornersleft">&nbsp;</td>
 		<td>
 	    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-	    <tr>
-	    	<td width="1"><img src="img/existingticket.png" alt="" width="60" height="60" /></td>
+	    <tr rowspan=2>
+	    	<td width="1"><img src="https://s3.amazonaws.com/sg-support-static/existingticket.png" alt="" width="60" height="60" /></td>
 	        <td>
 	        <p><b><a href="ticket.php"><?php echo $hesklang['view_existing']; ?></a></b><br />
-            <?php echo $hesklang['vet']; ?></p>
+            <?php echo $hesklang['vet']; ?></p>			
 	        </td>
-	    </tr>
+	    </tr>		
 	    </table>
 		</td>
 		<td class="roundcornersright">&nbsp;</td>
 	</tr>
 	<tr>
-		<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+		<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 		<td class="roundcornersbottom"></td>
-		<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+		<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 	</tr>
 	</table>
 <!-- END VIEW -->
@@ -645,14 +756,15 @@ if ($hesk_settings['kb_enable'] && $hesk_settings['kb_search'])
 if ($hesk_settings['kb_enable'])
 {
 	require(HESK_PATH . 'inc/database.inc.php');
+    hesk_dbConnect();
 ?>
 	<br />
 
 	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+		<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 		<td class="roundcornerstop"></td>
-		<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+		<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 	</tr>
 	<tr>
 		<td class="roundcornersleft">&nbsp;</td>
@@ -671,7 +783,7 @@ if ($hesk_settings['kb_enable'])
         </tr>
         </table>
 		<?php
-		$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'kb_articles` WHERE `type`=\'0\' ORDER BY `views` DESC, `art_order` ASC LIMIT '.($hesk_settings['kb_index_popart']);
+		$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` WHERE `type`=\'0\' ORDER BY `views` DESC, `art_order` ASC LIMIT '.hesk_dbEscape($hesk_settings['kb_index_popart']);
 		$res = hesk_dbQuery($sql);
 		if (hesk_dbNumRows($res) == 0)
 		{
@@ -687,7 +799,7 @@ if ($hesk_settings['kb_enable'])
 				<td>
 	                <table border="0" width="100%" cellspacing="0" cellpadding="0">
 	                <tr>
-	                <td width="1" valign="top"><img src="img/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
+	                <td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
 	                <td valign="top">&nbsp;<a href="knowledgebase.php?article='.$article['id'].'">'.$article['subject'].'</a></td>
                     <td valign="top" style="text-align:right" width="200">'.$article['views'].'</td>
                     </tr>
@@ -711,7 +823,7 @@ if ($hesk_settings['kb_enable'])
         </tr>
         </table>
 		<?php
-		$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'kb_articles` WHERE `type`=\'0\' ORDER BY `dt` DESC LIMIT '.($hesk_settings['kb_index_latest']);
+		$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` WHERE `type`=\'0\' ORDER BY `dt` DESC LIMIT '.hesk_dbEscape($hesk_settings['kb_index_latest']);
 		$res = hesk_dbQuery($sql);
 		if (hesk_dbNumRows($res) == 0)
 		{
@@ -727,7 +839,7 @@ if ($hesk_settings['kb_enable'])
 				<td>
 	                <table border="0" width="100%" cellspacing="0" cellpadding="0">
 	                <tr>
-	                <td width="1" valign="top"><img src="img/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
+	                <td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
 	                <td valign="top">&nbsp;<a href="knowledgebase.php?article='.$article['id'].'">'.$article['subject'].'</a></td>
                     <td valign="top" style="text-align:right" width="200">'.hesk_date($article['dt']).'</td>
                     </tr>
@@ -747,9 +859,9 @@ if ($hesk_settings['kb_enable'])
 		<td class="roundcornersright">&nbsp;</td>
 	</tr>
 	<tr>
-		<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+		<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 		<td class="roundcornersbottom"></td>
-		<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+		<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 	</tr>
 	</table>
 
@@ -771,6 +883,11 @@ if ($hesk_settings['kb_enable'])
 function forgot_tid() {
 global $hesk_settings, $hesklang;
 
+if (!isset($_POST['email']))
+{
+	hesk_error($hesklang['enter_valid_email']);
+}
+
 $email=hesk_validateEmail($_POST['email'],$hesklang['enter_valid_email']);
 
 /* Prepare ticket statuses */
@@ -785,7 +902,7 @@ $my_status = array(
 require(HESK_PATH . 'inc/database.inc.php');
 hesk_dbConnect();
 
-$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'tickets` WHERE `email` LIKE \''.$email.'\'';
+$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` WHERE `email` LIKE \''.hesk_dbEscape($email).'\'';
 $result = hesk_dbQuery($sql);
 $num=hesk_dbNumRows($result);
 if ($num < 1)
@@ -807,26 +924,27 @@ $hesk_settings[hesk_url]/ticket.php?track=$my_ticket[trackid]
 }
 
 /* Get e-mail message for customer */
-$message=file_get_contents(HESK_PATH.'emails/forgot_ticket_id.txt');
-$message=str_replace('%%NAME%%',$name,$message);
-$message=str_replace('%%NUM%%',$num,$message);
-$message=str_replace('%%LIST_TICKETS%%',$tid_list,$message);
-$message=str_replace('%%SITE_TITLE%%',$hesk_settings['site_title'] ,$message);
-$message=str_replace('%%SITE_URL%%',$hesk_settings['site_url'] ,$message);
+$msg = hesk_getEmailMessage('forgot_ticket_id');
+$msg = str_replace('%%NAME%%',$name,$msg);
+$msg = str_replace('%%NUM%%',$num,$msg);
+$msg = str_replace('%%LIST_TICKETS%%',$tid_list,$msg);
+$msg = str_replace('%%SITE_TITLE%%',$hesk_settings['site_title'],$msg);
+$msg = str_replace('%%SITE_URL%%',$hesk_settings['site_url'],$msg);
 
 /* Send e-mail */
-$headers="From: $hesk_settings[noreply_mail]\n";
-$headers.="Reply-to: $hesk_settings[noreply_mail]\n";
-@mail($email,$hesklang['tid_email_subject'],$message,$headers);
+$headers = "From: $hesk_settings[noreply_mail]\n";
+$headers.= "Reply-to: $hesk_settings[noreply_mail]\n";
+$headers.= "Return-Path: $hesk_settings[webmaster_mail]\n";
+$headers.= "Content-type: text/plain; charset=".$hesklang['ENCODING'];
+@mail($email,$hesklang['tid_email_subject'],$msg,$headers);
 
 ?>
 
-
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="3"><img src="img/headerleftsm.jpg" width="3" height="25" alt="" /></td>
-<td class="headersm"><?php echo $hesklang['tid_sent']; ?></td>
-<td width="3"><img src="img/headerrightsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerleftsm.jpg" width="3" height="25" alt="" /></td>
+<td class="headersm"><?php hesk_showTopBar($hesklang['tid_sent']); ?></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerrightsm.jpg" width="3" height="25" alt="" /></td>
 </tr>
 </table>
 
@@ -845,9 +963,9 @@ $headers.="Reply-to: $hesk_settings[noreply_mail]\n";
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornerstop"></td>
-	<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 </tr>
 <tr>
 	<td class="roundcornersleft">&nbsp;</td>
@@ -864,9 +982,9 @@ $headers.="Reply-to: $hesk_settings[noreply_mail]\n";
 	<td class="roundcornersright">&nbsp;</td>
 </tr>
 <tr>
-	<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornersbottom"></td>
-	<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 </tr>
 </table>
 

@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,19 +37,18 @@ define('HESK_PATH','../');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
 hesk_session_start();
-hesk_isLoggedIn();
 hesk_dbConnect();
+hesk_isLoggedIn();
 
 /* Check permissions for this feature */
 hesk_checkPermission('can_man_users');
 
 /* What should we do? */
-$action=hesk_input($_REQUEST['a']);
+$action = isset($_REQUEST['a']) ? hesk_input($_REQUEST['a']) : '';
 if ($action == 'new') {new_user();}
 elseif ($action == 'edit') {edit_user();}
 elseif ($action == 'save') {update_user();}
@@ -119,7 +119,7 @@ if ($hesk_settings['rating'])
 </tr>
 
 <?php
-$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'users` ORDER BY `id` ASC';
+$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` ORDER BY `id` ASC';
 $result = hesk_dbQuery($sql);
 
 $i=1;
@@ -226,7 +226,7 @@ EOC;
 		<td valign="top" width="100" style="text-align:right;white-space:nowrap;"><?php echo $hesklang['allowed_cat']; ?>: <font class="important">*</font></td>
 		<td valign="top">
 		<?php
-		$sql_private = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'categories` ORDER BY `cat_order` ASC';
+		$sql_private = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'categories` ORDER BY `cat_order` ASC';
 		$result = hesk_dbQuery($sql_private);
 
         $i = 1;
@@ -262,6 +262,7 @@ EOC;
         <label><input type="checkbox" name="features[]" value="can_man_cat" /><?php echo $hesklang['can_man_cat']; ?></label><br />
         <label><input type="checkbox" name="features[]" value="can_man_canned" /><?php echo $hesklang['can_man_canned']; ?></label><br />
         <label><input type="checkbox" name="features[]" value="can_man_settings" /><?php echo $hesklang['can_man_settings']; ?></label><br />
+        <label><input type="checkbox" name="features[]" value="can_add_archive" /><?php echo $hesklang['can_add_archive']; ?></label><br />
 		<sup>1</sup> <i><?php echo $hesklang['in_all_cat']; ?></i><br />
         <sup>2</sup> <i><?php echo $hesklang['dan']; ?></i><br />&nbsp;
 		</td>
@@ -313,7 +314,7 @@ function edit_user()
 
 	$id=hesk_isNumber($_GET['id'],"$hesklang[int_error]: $hesklang[no_valid_id]");
 
-	$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'users` WHERE `id`='.$id.' LIMIT 1';
+	$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` WHERE `id`='.hesk_dbEscape($id).' LIMIT 1';
 	$result = hesk_dbQuery($sql);
 	$myuser=hesk_dbFetchAssoc($result);
 
@@ -351,15 +352,15 @@ function edit_user()
 	<table border="0" width="100%">
 	<tr>
 	<td width="200" style="text-align:right"><?php echo $hesklang['real_name']; ?>: <font class="important">*</font></td>
-	<td><input type="text" name="name" size="40" maxlength="50" value="<?php echo $myuser[name]; ?>" /></td>
+	<td><input type="text" name="name" size="40" maxlength="50" value="<?php echo $myuser['name']; ?>" /></td>
 	</tr>
 	<tr>
 	<td width="200" style="text-align:right"><?php echo $hesklang['email']; ?>: <font class="important">*</font></td>
-	<td><input type="text" name="email" size="40" maxlength="255" value="<?php echo $myuser[email]; ?>" /></td>
+	<td><input type="text" name="email" size="40" maxlength="255" value="<?php echo $myuser['email']; ?>" /></td>
 	</tr>
 	<tr>
 	<td width="200" style="text-align:right"><?php echo $hesklang['username']; ?>: <font class="important">*</font></td>
-	<td><input type="text" name="user" size="40" maxlength="20" value="<?php echo $myuser[user]; ?>" /></td>
+	<td><input type="text" name="user" size="40" maxlength="20" value="<?php echo $myuser['user']; ?>" /></td>
 	</tr>
 	<tr>
 	<td width="200" style="text-align:right"><?php echo $hesklang['pass']; ?>: </td>
@@ -383,7 +384,7 @@ function edit_user()
 			<td valign="top" width="100" style="text-align:right;white-space:nowrap;"><?php echo $hesklang['allowed_cat']; ?>: <font class="important">*</font></td>
 			<td valign="top">
 			<?php
-			$sql_private = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'categories` ORDER BY `cat_order` ASC';
+			$sql_private = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'categories` ORDER BY `cat_order` ASC';
 			$result = hesk_dbQuery($sql_private);
 
 			$cat=substr($myuser['categories'], 0, -1);
@@ -427,6 +428,7 @@ function edit_user()
 	        <label><input type="checkbox" name="features[]" value="can_man_cat"        <?php if (strpos($myuser['heskprivileges'], 'can_man_cat') !== false) {echo 'checked="checked"';} ?> /><?php echo $hesklang['can_man_cat']; ?></label><br />
 	        <label><input type="checkbox" name="features[]" value="can_man_canned"     <?php if (strpos($myuser['heskprivileges'], 'can_man_canned') !== false) {echo 'checked="checked"';} ?> /><?php echo $hesklang['can_man_canned']; ?></label><br />
 	        <label><input type="checkbox" name="features[]" value="can_man_settings"   <?php if (strpos($myuser['heskprivileges'], 'can_man_settings') !== false) {echo 'checked="checked"';} ?> /><?php echo $hesklang['can_man_settings']; ?></label><br />
+	        <label><input type="checkbox" name="features[]" value="can_add_archive"    <?php if (strpos($myuser['heskprivileges'], 'can_add_archive') !== false) {echo 'checked="checked"';} ?> /><?php echo $hesklang['can_add_archive']; ?></label><br />
 			<sup>1</sup> <i><?php echo $hesklang['in_all_cat']; ?></i><br />
 			<sup>2</sup> <i><?php echo $hesklang['dan']; ?></i><br />&nbsp;
 			</td>
@@ -438,14 +440,14 @@ function edit_user()
 	</tr>
 	<tr>
 	<td style="text-align:right" valign="top" width="200"><?php echo $hesklang['signature_max']; ?>:</td>
-	<td><textarea name="signature" rows="6" cols="40"><?php echo $myuser[signature]; ?></textarea><br />
+	<td><textarea name="signature" rows="6" cols="40"><?php echo $myuser['signature']; ?></textarea><br />
 	<?php echo $hesklang['sign_extra']; ?></td>
 	</tr>
 	</table>
 
 	<!-- Submit -->
 	<p align="center"><input type="hidden" name="a" value="save" />
-	<input type="hidden" name="userid" value="<?php echo $myuser[id]; ?>" />
+	<input type="hidden" name="userid" value="<?php echo $myuser['id']; ?>" />
 	<input type="submit" value="<?php echo $hesklang['save_changes']; ?>" class="orangebutton" onmouseover="hesk_btn(this,'orangebuttonover');" onmouseout="hesk_btn(this,'orangebutton');" /></p>
 
 	</form>
@@ -471,7 +473,7 @@ function new_user() {
 
 	$myuser = hesk_validateUserInfo();
 
-	$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'users` WHERE `user` = \''.$myuser['user'].'\' LIMIT 1';
+	$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` WHERE `user` = \''.hesk_dbEscape($myuser['user']).'\' LIMIT 1';
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbNumRows($result) != 0)
 	{
@@ -480,18 +482,32 @@ function new_user() {
 
     if ($myuser['isadmin'])
     {
-		$sql = "INSERT INTO `".$hesk_settings['db_pfix']."users` (`user`,`pass`,`isadmin`,`name`,`email`,`signature`) VALUES ('$myuser[user]','$myuser[pass]','$myuser[isadmin]','$myuser[name]','$myuser[email]','$myuser[signature]')";
+		$sql = "INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."users` (`user`,`pass`,`isadmin`,`name`,`email`,`signature`) VALUES (
+        '".hesk_dbEscape($myuser['user'])."',
+        '".hesk_dbEscape($myuser['pass'])."',
+        '".hesk_dbEscape($myuser['isadmin'])."',
+        '".hesk_dbEscape($myuser['name'])."',
+        '".hesk_dbEscape($myuser['email'])."',
+        '".hesk_dbEscape($myuser['signature'])."')";
     }
     else
     {
-    	$sql = "INSERT INTO `".$hesk_settings['db_pfix']."users` (`user`,`pass`,`isadmin`,`name`,`email`,`signature`,`categories`,`heskprivileges`) VALUES ('$myuser[user]','$myuser[pass]','$myuser[isadmin]','$myuser[name]','$myuser[email]','$myuser[signature]','$myuser[categories]','$myuser[heskprivileges]')";
+    	$sql = "INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."users` (`user`,`pass`,`isadmin`,`name`,`email`,`signature`,`categories`,`heskprivileges`) VALUES (
+        '".hesk_dbEscape($myuser['user'])."',
+        '".hesk_dbEscape($myuser['pass'])."',
+        '".hesk_dbEscape($myuser['isadmin'])."',
+        '".hesk_dbEscape($myuser['name'])."',
+        '".hesk_dbEscape($myuser['email'])."',
+        '".hesk_dbEscape($myuser['signature'])."',
+        '".hesk_dbEscape($myuser['categories'])."',
+        '".hesk_dbEscape($myuser['heskprivileges'])."')";
     }
 
 	$result = hesk_dbQuery($sql);
 
 	$_SESSION['HESK_NOTICE']  = $hesklang['user_added'];
 	$_SESSION['HESK_MESSAGE'] = sprintf($hesklang['user_added_success'],$myuser['user'],$myuser['cleanpass']);
-	Header('Location: manage_users.php');
+	header('Location: manage_users.php');
 	exit();
 } // End new_user()
 
@@ -502,7 +518,7 @@ function update_user() {
 	$myuser=hesk_validateUserInfo(0);
 	$myuser['id']=hesk_isNumber($_POST['userid'],"$hesklang[int_error]: $hesklang[no_valid_id]");
 
-	$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'users` WHERE `user` = \''.$myuser['user'].'\' LIMIT 1';
+	$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` WHERE `user` = \''.hesk_dbEscape($myuser['user']).'\' LIMIT 1';
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbNumRows($result) == 1)
 	{
@@ -518,17 +534,24 @@ function update_user() {
         $myuser['categories']='';
         $myuser['heskprivileges']='';
     }
-	$sql = "UPDATE `".$hesk_settings['db_pfix']."users` SET `user`='$myuser[user]',`name`='$myuser[name]',`email`='$myuser[email]',`signature`='$myuser[signature]',";
+	$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."users` SET
+    `user`='".hesk_dbEscape($myuser['user'])."',
+    `name`='".hesk_dbEscape($myuser['name'])."',
+    `email`='".hesk_dbEscape($myuser['email'])."',
+    `signature`='".hesk_dbEscape($myuser['signature'])."',";
 	if (isset($myuser['pass']))
 	{
-	    $sql .= "`pass`='$myuser[pass]',";
+	    $sql .= "`pass`='".hesk_dbEscape($myuser['pass'])."',";
 	}
-	$sql .= "`categories`='$myuser[categories]',`isadmin`='$myuser[isadmin]',`heskprivileges`='$myuser[heskprivileges]' WHERE `id`=$myuser[id] LIMIT 1";
+	$sql .= "
+    `categories`='".hesk_dbEscape($myuser['categories'])."',
+    `isadmin`='".hesk_dbEscape($myuser['isadmin'])."',
+    `heskprivileges`='".hesk_dbEscape($myuser['heskprivileges'])."' WHERE `id`=".hesk_dbEscape($myuser['id'])." LIMIT 1";
 	$result = hesk_dbQuery($sql);
 
 	$_SESSION['HESK_NOTICE']  = $hesklang['profile_updated'];
 	$_SESSION['HESK_MESSAGE'] = $hesklang['user_profile_updated_success'];
-	Header('Location: manage_users.php');
+	header('Location: manage_users.php');
 	exit();
 } // End update_profile()
 
@@ -548,16 +571,41 @@ function hesk_validateUserInfo($pass_required = 1) {
 
     if ($myuser['isadmin']==0)
     {
-		hesk_input($_POST['categories'],$hesklang['asign_one_cat']);
+    	if (empty($_POST['categories']))
+        {
+			hesk_error($hesklang['asign_one_cat']);
+        }
+
 	    foreach ($_POST['categories'] as $cat)
 	    {
-	        $myuser['categories'].="$cat,";
+			if ( !($cat = intval($cat)) )
+            {
+				continue;
+            }
+
+	        $myuser['categories'] .= intval($cat).',';
 	    }
 
-		hesk_input($_POST['features'],$hesklang['asign_one_feat']);
+    	if (empty($_POST['features']))
+        {
+			hesk_error($hesklang['asign_one_feat']);
+        }
+
+        $possible_features = array(
+        			'can_view_tickets','can_reply_tickets',
+                    'can_del_tickets','can_edit_tickets',
+                    'can_del_notes','can_change_cat',
+                    'can_man_kb','can_man_users',
+                    'can_man_cat','can_man_canned',
+                    'can_man_settings','can_add_archive');
+
 	    foreach ($_POST['features'] as $feat)
 	    {
-	        $myuser['heskprivileges'].="$feat,";
+        	if ( !in_array($feat,$possible_features) )
+            {
+            	continue;
+            }
+	        $myuser['heskprivileges'] .= hesk_input($feat) .',';
 	    }
 	}
 
@@ -596,7 +644,7 @@ function remove() {
     	hesk_error($hesklang['cant_del_own']);
     }
 
-	$sql = 'DELETE FROM `'.$hesk_settings['db_pfix'].'users` WHERE `id`='.$myuser.' LIMIT 1';
+	$sql = 'DELETE FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` WHERE `id`='.hesk_dbEscape($myuser).' LIMIT 1';
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbAffectedRows() != 1)
     {
@@ -605,7 +653,7 @@ function remove() {
 
 	$_SESSION['HESK_NOTICE']  = $hesklang['user_removed'];
 	$_SESSION['HESK_MESSAGE'] = $hesklang['sel_user_removed'];
-	Header('Location: manage_users.php');
+	header('Location: manage_users.php');
 	exit();
 } // End remove()
 

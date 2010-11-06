@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,19 +37,18 @@ define('HESK_PATH','../');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
 hesk_session_start();
-hesk_isLoggedIn();
 hesk_dbConnect();
+hesk_isLoggedIn();
 
 /* Check permissions for this feature */
 hesk_checkPermission('can_man_canned');
 
 /* What should we do? */
-$action=hesk_input($_REQUEST['a']);
+$action = isset($_REQUEST['a']) ? hesk_input($_REQUEST['a']) : '';
 if ($action == 'new') {new_saved();}
 elseif ($action == 'edit') {edit_saved();}
 elseif ($action == 'remove') {remove();}
@@ -130,12 +130,11 @@ myField.value += myValue;
 </tr>
 
 <?php
-$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'std_replies` ORDER BY `reply_order` ASC';
+$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'std_replies` ORDER BY `reply_order` ASC';
 $result = hesk_dbQuery($sql);
 $options='';
 $javascript_messages='';
 $javascript_titles='';
-$trans = array_flip(get_html_translation_table(HTML_SPECIALCHARS));
 
 $i=1;
 $j=0;
@@ -161,8 +160,8 @@ else
 		$i	   = $i ? 0 : 1;
 
         $options .= '<option value="'.$mysaved['id'].'">'.$mysaved['title'].'</option>';
-        $javascript_messages.='myMsgTxt['.$mysaved['id'].']=\''.str_replace("\r\n","\\r\\n' + \r\n'", strtr(addslashes($mysaved['message']), $trans))."';\n";
-        $javascript_titles.='myTitle['.$mysaved['id'].']=\''.strtr(addslashes($mysaved['title']), $trans)."';\n";
+        $javascript_messages.='myMsgTxt['.$mysaved['id'].']=\''.str_replace("\r\n","\\r\\n' + \r\n'", addslashes($mysaved['message']) )."';\n";
+        $javascript_titles.='myTitle['.$mysaved['id'].']=\''.addslashes($mysaved['title'])."';\n";
 
 	    echo '
 	    <tr>
@@ -307,16 +306,20 @@ exit();
 function edit_saved() {
 	global $hesk_settings, $hesklang;
 
+	$id=hesk_isNumber($_POST['saved_replies']);
+    if (empty($id))
+    {
+    	hesk_error($hesklang['selcan']);
+    }    
 	$savename=hesk_Input($_POST['name'],$hesklang['ent_saved_title']);
 	$msg=hesk_Input($_POST['msg'],$hesklang['ent_saved_msg']);
-	$id=hesk_isNumber($_POST['saved_replies'],$hesklang['id_not_valid']);
 
-	$sql = "UPDATE `".$hesk_settings['db_pfix']."std_replies` SET `title`='$savename',`message`='$msg' WHERE `id`=$id LIMIT 1";
+	$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."std_replies` SET `title`='".hesk_dbEscape($savename)."',`message`='".hesk_dbEscape($msg)."' WHERE `id`=".hesk_dbEscape($id)." LIMIT 1";
 	$result = hesk_dbQuery($sql);
 
 	$_SESSION['HESK_NOTICE']  = $hesklang['saved'];
 	$_SESSION['HESK_MESSAGE'] = $hesklang['your_saved'];
-	Header('Location: manage_canned.php');
+	header('Location: manage_canned.php');
 	exit();
 } // End edit_saved()
 
@@ -328,17 +331,17 @@ function new_saved() {
 	$msg=hesk_Input($_POST['msg'],$hesklang['ent_saved_msg']);
 
 	/* Get the latest reply_order */
-	$sql = 'SELECT `reply_order` FROM `'.$hesk_settings['db_pfix'].'std_replies` ORDER BY `reply_order` DESC LIMIT 1';
+	$sql = 'SELECT `reply_order` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'std_replies` ORDER BY `reply_order` DESC LIMIT 1';
 	$result = hesk_dbQuery($sql);
 	$row = hesk_dbFetchRow($result);
 	$my_order = $row[0]+10;
 
-	$sql = "INSERT INTO `".$hesk_settings['db_pfix']."std_replies` (`title`,`message`,`reply_order`) VALUES ('$savename','$msg','$my_order')";
+	$sql = "INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."std_replies` (`title`,`message`,`reply_order`) VALUES ('".hesk_dbEscape($savename)."','".hesk_dbEscape($msg)."','".hesk_dbEscape($my_order)."')";
 	$result = hesk_dbQuery($sql);
 
 	$_SESSION['HESK_NOTICE']  = $hesklang['saved'];
 	$_SESSION['HESK_MESSAGE'] = $hesklang['your_saved'];
-	Header('Location: manage_canned.php');
+	header('Location: manage_canned.php');
 	exit();
 } // End new_saved()
 
@@ -348,7 +351,7 @@ function remove() {
 
 	$mysaved=hesk_isNumber($_GET['id'],$hesklang['id_not_valid']);
 
-	$sql = 'DELETE FROM `'.$hesk_settings['db_pfix'].'std_replies` WHERE `id`='.$mysaved.' LIMIT 1';
+	$sql = 'DELETE FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'std_replies` WHERE `id`='.hesk_dbEscape($mysaved).' LIMIT 1';
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbAffectedRows() != 1)
     {
@@ -357,7 +360,7 @@ function remove() {
 
 	$_SESSION['HESK_NOTICE']  = $hesklang['saved_removed'];
 	$_SESSION['HESK_MESSAGE'] = $hesklang['saved_rem_full'];
-	Header('Location: manage_canned.php');
+	header('Location: manage_canned.php');
 	exit();
 } // End remove()
 
@@ -368,23 +371,23 @@ function order_saved() {
 	$replyid=hesk_isNumber($_GET['replyid'],$hesklang['reply_move_id']);
 	$reply_move=intval($_GET['move']);
 
-	$sql = "UPDATE `".$hesk_settings['db_pfix']."std_replies` SET `reply_order`=`reply_order`+$reply_move WHERE `id`=$replyid LIMIT 1";
+	$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."std_replies` SET `reply_order`=`reply_order`+".hesk_dbEscape($reply_move)." WHERE `id`=".hesk_dbEscape($replyid)." LIMIT 1";
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbAffectedRows() != 1) {hesk_error("$hesklang[int_error]: $hesklang[reply_not_found].");}
 
 	/* Update all category fields with new order */
-	$sql = 'SELECT `id` FROM `'.$hesk_settings['db_pfix'].'std_replies` ORDER BY `reply_order` ASC';
+	$sql = 'SELECT `id` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'std_replies` ORDER BY `reply_order` ASC';
 	$result = hesk_dbQuery($sql);
 
 	$i = 10;
 	while ($myreply=hesk_dbFetchAssoc($result))
 	{
-	    $sql = "UPDATE `".$hesk_settings['db_pfix']."std_replies` SET `reply_order`=$i WHERE `id`=$myreply[id] LIMIT 1";
+	    $sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."std_replies` SET `reply_order`=".hesk_dbEscape($i)." WHERE `id`=".hesk_dbEscape($myreply['id'])." LIMIT 1";
 	    hesk_dbQuery($sql);
 	    $i += 10;
 	}
 
-	Header('Location: manage_canned.php');
+	header('Location: manage_canned.php');
 	exit();
 } // End order_saved()
 

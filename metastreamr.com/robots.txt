@@ -1,7 +1,0 @@
-
-# BEGIN XML-SITEMAP-PLUGIN
-Sitemap: http://metastreamr.com/sitemap.xml.gz
-# END XML-SITEMAP-PLUGIN
-
-User-agent: *
-Disallow:

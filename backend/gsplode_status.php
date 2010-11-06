@@ -52,7 +52,7 @@ $tid = $_POST['tierid'];
 //Grab system information
 $sys_sql        = "SELECT * from `gsplode_config`";
 $sys_res        = mysql_query($sys_sql) or die();
-$sys_status     = mysql_result($sys_res,0,'status');     //System status
+$sys_status     = "SHUTDOWN";    //System status
 $sys_multi_base = mysql_result($sys_res,0,'multi_base'); //Base multiplier
 $sys_multi_prize= mysql_result($sys_res,0,'multi_prize');//Multiplier for prize money
 $sys_multi_tier = mysql_result($sys_res,0,'multi_tier'); //Multiplier for prize tiers
@@ -84,7 +84,7 @@ $pay_res		= mysql_query($pay_sql);
 //Search for active sessions
 $filled_sql = "SELECT * FROM `gsplode_sessions` WHERE 
 	`status` = 'FILLED'
-	AND `gs_type_id` = '$tier_id' ORDER BY `status` DESC";
+	AND `gs_type_id` = '$tier_id' ORDER BY `status` DESC LIMIT 1";
 $filled_res = mysql_query($filled_sql) or die();
 $filled_num = mysql_num_rows($filled_res);
 
@@ -111,7 +111,7 @@ Our Take  25% * 2
 Total    100%
 */
 
-if($filled_num == 1){
+if($filled_num >= 1){
 	$total_entries   = "///SPLODE IMMINENT///";
 	$exp_sl 	     = mysql_result($filled_res,0,'completed');	
 	$expires	     = nicetime($exp_sl);
@@ -126,7 +126,7 @@ if($filled_num == 1){
 	$p_three      	 = $tier_p_three + $p3_mod;
 	
 }else{
-	if($open_num == 1){
+	if($open_num >= 1){
 		$ent_total 		 = mysql_result($open_res,0,'ent_total');
 		$ent_min 		 = mysql_result($open_res,0,'ent_min');
 		$bal_surplus	 = mysql_result($open_res,0,'bal_surplus');
@@ -148,7 +148,7 @@ if($filled_num == 1){
 	}
 }
 
-print("$tier_name:::$p_three:::$p_two:::$p_one:::$tier_min_pay:::$total_entries:::$sys_status");
+print("$tier_name:::$p_three:::$p_two:::$p_one:::$tier_min_pay:::$total_entries:::OFFLINE");
 
 //Output pmt amounts
 while($pay_row		= mysql_fetch_array($pay_res)){
@@ -157,5 +157,5 @@ while($pay_row		= mysql_fetch_array($pay_res)){
 }
 
 //Time to Splode!!!
-print(":::$expires");
+//print(":::$expires");
 ?>

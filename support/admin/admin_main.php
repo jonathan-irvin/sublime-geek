@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,24 +26,25 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
-
 define('IN_SCRIPT',1);
 define('HESK_PATH','../');
 
+/* Make sure the install folder is deleted */
+if (is_dir(HESK_PATH . 'install')) {die('Please delete the <b>install</b> folder from your server for security reasons then refresh this page!');}
+
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
 hesk_session_start();
-hesk_isLoggedIn();
 hesk_dbConnect();
+hesk_isLoggedIn();
 
 /* Print header */
 require_once(HESK_PATH . 'inc/header.inc.php');
@@ -108,35 +110,21 @@ else
 	echo '<p><i>'.$hesklang['na_view_tickets'].'</i></p>';
 }
 
-eval(gzinflate(base64_decode('BcFHkqNIAADA50x3cKABISA25gAU3jQeocsEprBFCSPhXr+ZcM
-vRV3N1uEb5G34V+Qrvt38VLF8V/PoDSlYvZ1cURSCyQvMBo+8ihR+6KBSD3/wMgk72ZcsgvYna7iAYcV
-FT1cif5736ecC0fssqkcBmk0lfYGH2EBK6NdfmFG1b1wh6qM53qSpgpZr4ZoeCj5zoPTzpK3CLU90swL
-csihNdeUKYKtZWc9xBf8ikCOU9ADxVNRkxcwn/nLa5+Vng4uet6ziGjb1Dnh1PFpFkUxddIFsaJ5vdBt
-xLDFnl6YMgiJFabvYV4NTzdzDgUHMsVZXt2Anfy/xb6Z4rEKpWQBhTA9hjZpuE3tQVwExrOdS3Y9PJyJ
-XfkZhcgjfuW685x73zGDOzjLgVfVMvNneYkqrB9vn6mVHTMF3PGarPM2DefkHD+TM38v4cMn548PiuSF
-d8niadiwQt7LtDnbzzieB8GQQDTPu00IVvwLJK4C+Msc+Rfoup1ZduNNkcKXunjJBg4WqSmnti53UyEe
-KPESmusX14hiWNspJD+DHodlq3XbAQG9DsO5Cvotfrl1g1rK+2q2DGQtAoV7hJJXqePdZL6d5zgVGZrp
-Zl0bow2KO61cvolWV/clZCI4efgENlAlPACZIzV1q+f57qeI51+gDPB6vJqWXFNCjHaF7dSOa1nP19+x
-+stK/cyhRjTZyXhWqQCJSYHrkBFWGTsG2kL5J5TAKTELTZ9lmm+/pQIJwtyXEiV+uuy118KDVF5QH1fF
-ASIb76mzvoYdtNWSiLuF2loCP2zV5YosbCxf/98/39/d//')));
+eval(gzinflate(base64_decode('BcFHkptAAADA53i3OIAIQpRPJJERmYGLCxA5DTm83t35nnQ/5V
+0PRZes+U+aLPmT/PfNs/Gb//zhsrfcTqbCsgJLYSeRqewYhWYjVGXV6DzPDlJ8cF6eEw0TT8qaDPQ1Id
+eldrPtnbdZ8zoC3Qb6qHdDkpPE2LrR2c6vLJ908M5P2EuD0spYagSmUJqm708R1ZpOcT2YiPPOBoOlgG
+8kgnMloyn4sj4+AINylUuLG9HBELbj8QEaNEux0+wga676FiHUdZgRkjIRJKJmUErHr2pIkRzGUzCC20
+KO0B9grp09WqT1ifj+whoZwUmCAS/QCSa7goN8h3MpW5fJNC7uSvh2qTQckg150j3R297w/sy9gS0GtS
+nV6Ala0mNefwyaCZ11ErndjL7ePQqfMtD4Xn8+wLyrHi8K+OzOHRXhm6dcEtkzBhpOtGz6Z9e37gvzUx
+QrS0kdZqaRL5xSmU4zB739fuIScXYahMLBksnQNd4hlVp7hLAea4xH2Tza6XfQ427oWgzfon6RwcNhyY
+AoJA/DE2PAUwMqkW9t9IdUTV8VU/w5tYTM8t/OwyoMLAQTzRuoV4khenAAieo6R8DtRUinsIivdqikOX
+Ptxy00z/W6IpHfugebmZ2yAFfIxGLySgcbqH0LrJ4un1dWngekGnHnBoJ4Qar8LuOGSjTr2Few5oLXJ6
+/FbVJWB37JCwJ53m3sgqA7W5XvTbS2BA0gn9Yac85S6glfbNKQ+T1SrpQtfYWosGIPUMOPb/g402kb+t
+nXrZyq6K/oxJXLPGs0azhuBFXgJc8uLy28iTKabjYfaWRkOl+XLztKC4N1ebizHIHCUo+A7pZIq8GqNk
+DO3dstZE6ecOOF2umCCpbol+t+D+Hy1kd1fBjYe8/OkqqmfSiw6HaiTR3IBzPxXEwtzQe9b+Z0EABAF7
+6eN4Ys6JC8bP0TPGuvtibDiq2VMF/oTiMoimLWn9/f37//AQ==')));
 ?>
-
-<table border="0" width="100%">
-<tr>
-<td><b><?php echo $hesklang['stay_updated']; ?></b></td>
-<td style="text-align:right"><a href="Javascript:void(0)" onclick="Javascript:hesk_toggleLayerDisplay('divCheck')"><?php echo $hesklang['sh']; ?></a></td>
-</tr>
-</table>
-
-<div id="divCheck" style="display:none">
-<p><?php echo $hesklang['check_updates']; ?><br />
-<a href="http://www.phpjunkyard.com/check4updates.php?s=Hesk&amp;v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['check4updates']; ?></a></p>
-<p><?php echo $hesklang['join_news']; ?>.<br />
-<a href="http://www.phpjunkyard.com/newsletter.php" target="_blank"><?php echo $hesklang['click_info']; ?></a></p>
-</div>
-
 <hr />
-
 <table border="0" width="100%">
 <tr>
 <td><b><?php echo $hesklang['rate_script']; ?></b></td>

@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,18 +37,18 @@ define('HESK_PATH','../');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
 hesk_session_start();
-hesk_isLoggedIn();
 hesk_dbConnect();
+hesk_isLoggedIn();
 
 /* Check permissions for this feature */
 hesk_checkPermission('can_reply_tickets');
 
 $message = hesk_input($_POST['message'],$hesklang['enter_message']);
+
 /* Attach signature to the message? */
 if (!empty($_POST['signature']))
 {
@@ -82,7 +83,12 @@ if ($hesk_settings['attachments']['use'] && !empty($attachments))
 {
     foreach ($attachments as $myatt)
     {
-        $sql = "INSERT INTO `".$hesk_settings['db_pfix']."attachments` (`ticket_id`,`saved_name`,`real_name`,`size`) VALUES ('$trackingID', '$myatt[saved_name]', '$myatt[real_name]', '$myatt[size]')";
+        $sql = "INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."attachments` (`ticket_id`,`saved_name`,`real_name`,`size`) VALUES (
+        '".hesk_dbEscape($trackingID)."',
+        '".hesk_dbEscape($myatt['saved_name'])."',
+        '".hesk_dbEscape($myatt['real_name'])."',
+        '".hesk_dbEscape($myatt['size'])."'
+        )";
         $result = hesk_dbQuery($sql);
         $myattachments .= hesk_dbInsertID() . '#' . $myatt['real_name'] .',';
     }
@@ -90,11 +96,14 @@ if ($hesk_settings['attachments']['use'] && !empty($attachments))
 
 /* Add reply */
 $sql = "
-INSERT INTO `".$hesk_settings['db_pfix']."replies` (
-`replyto`,`name`,`message`,`dt`,`attachments`,`staffid`
-)
+INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` (`replyto`,`name`,`message`,`dt`,`attachments`,`staffid`)
 VALUES (
-'$replyto','$_SESSION[name]','$message',NOW(),'$myattachments','$_SESSION[id]'
+'".hesk_dbEscape($replyto)."',
+'".hesk_dbEscape(addslashes($_SESSION['name']))."',
+'".hesk_dbEscape($message)."',
+NOW(),
+'".hesk_dbEscape($myattachments)."',
+'".hesk_dbEscape($_SESSION['id'])."'
 )
 ";
 $result = hesk_dbQuery($sql);
@@ -102,7 +111,11 @@ $result = hesk_dbQuery($sql);
 /* Change the status of priority? */
 if (!empty($_POST['set_priority']))
 {
-    $priority = hesk_input($_POST['priority'],$hesklang['select_priority']);
+    $priority = intval($_POST['priority']);
+    if ($priority < 1 || $priority > 3)
+    {
+    	hesk_error($hesklang['select_priority']);
+    }
     $priority_sql = ",`priority`='$priority'";
 }
 else
@@ -113,34 +126,37 @@ else
 /* Update the original ticket */
 if (!empty($_POST['close']))
 {
-    $sql = "UPDATE `".$hesk_settings['db_pfix']."tickets` SET `status`='3',`lastreplier`='1',`lastchange`=NOW() $priority_sql WHERE `id`=$replyto LIMIT 1";
+    $sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `status`='3',`lastreplier`='1',`lastchange`=NOW() $priority_sql WHERE `id`=".hesk_dbEscape($replyto)." LIMIT 1";
 }
 else
 {
-    $sql = "UPDATE `".$hesk_settings['db_pfix']."tickets` SET `status`='2',`lastreplier`='1',`lastchange`=NOW() $priority_sql WHERE `id`=$replyto LIMIT 1";
+    $sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `status`='2',`lastreplier`='1',`lastchange`=NOW() $priority_sql WHERE `id`=".hesk_dbEscape($replyto)." LIMIT 1";
 }
 hesk_dbQuery($sql);
 
 /* Update number of replies in the users table */
-$sql = "UPDATE `".$hesk_settings['db_pfix']."users` SET `replies`=`replies`+1 WHERE `id`=$_SESSION[id] LIMIT 1";
+$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."users` SET `replies`=`replies`+1 WHERE `id`=".hesk_dbEscape($_SESSION['id'])." LIMIT 1";
 hesk_dbQuery($sql);
 
-
 /*** Send "New reply added" e-mail ***/
-/* Get e-mail message */
-$message=file_get_contents(HESK_PATH.'emails/new_reply_by_staff.txt');
-$message=str_replace('%%NAME%%',$orig_name,$message);
-$message=str_replace('%%SUBJECT%%',$orig_subject,$message);
-$message=str_replace('%%TRACK_ID%%',$trackingID,$message);
-$message=str_replace('%%TRACK_URL%%',$trackingURL,$message);
-$message=str_replace('%%SITE_TITLE%%',$hesk_settings['site_title'] ,$message);
-$message=str_replace('%%SITE_URL%%',$hesk_settings['site_url'] ,$message);
+$message = hesk_msgToPlain($message,1);
 
-/* Send the e-mail */
-$headers="From: $hesk_settings[noreply_mail]\n";
-$headers.="Reply-to: $hesk_settings[noreply_mail]\n";
-$headers.="Return-Path: $hesk_settings[webmaster_mail]\n";
-@mail($orig_email,$hesklang['new_reply_staff'],$message,$headers);
+/* Get e-mail message for customer */
+$msg = hesk_getEmailMessage('new_reply_by_staff');
+$msg = str_replace('%%NAME%%',stripslashes($orig_name),$msg);
+$msg = str_replace('%%SUBJECT%%',stripslashes($orig_subject),$msg);
+$msg = str_replace('%%TRACK_ID%%',$trackingID,$msg);
+$msg = str_replace('%%TRACK_URL%%',$trackingURL,$msg);
+$msg = str_replace('%%SITE_TITLE%%',$hesk_settings['site_title'],$msg);
+$msg = str_replace('%%SITE_URL%%',$hesk_settings['site_url'],$msg);
+$msg = str_replace('%%MESSAGE%%',$message,$msg);
+
+/* Send e-mail */
+$headers = "From: $hesk_settings[noreply_mail]\n";
+$headers.= "Reply-to: $hesk_settings[noreply_mail]\n";
+$headers.= "Return-Path: $hesk_settings[webmaster_mail]\n";
+$headers.= "Content-type: text/plain; charset=".$hesklang['ENCODING'];
+@mail($orig_email,$hesklang['new_reply_staff'],$msg,$headers);
 
 $_SESSION['HESK_NOTICE']  = $hesklang['reply_added'];
 $_SESSION['HESK_MESSAGE'] = $hesklang['reply_submitted'];
@@ -148,6 +164,35 @@ if (!empty($_POST['close']))
 {
     $_SESSION['HESK_MESSAGE'] .= '<br />'.$hesklang['ticket_marked'].' <span class="resolved">'.$hesklang['closed'].'</span>';
 }
-header('Location: admin_ticket.php?track='.$trackingID.'&Refresh='.rand(10000,99999));
+
+/* What to do after reply? */
+if ($_SESSION['afterreply'] == 1)
+{
+	header('Location: admin_main.php');
+}
+elseif ($_SESSION['afterreply'] == 2)
+{
+	/* Get the next open ticket that need a reply */
+	$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` WHERE ';
+	$sql .= hesk_myCategories();
+    $sql .= ' AND (`status`=\'0\' OR `status`=\'1\') ';
+    $sql .= ' ORDER BY `priority` ASC LIMIT 1';
+    $res  = hesk_dbQuery($sql);
+
+    if (hesk_dbNumRows($res) == 1)
+    {
+    	$row = hesk_dbFetchAssoc($res);
+        $_SESSION['HESK_MESSAGE'] .= '<br />'.$hesklang['rssn'];
+        header('Location: admin_ticket.php?track='.$row['trackid'].'&amp;Refresh='.rand(10000,99999));
+    }
+    else
+    {
+		header('Location: admin_main.php');
+    }
+}
+else
+{
+	header('Location: admin_ticket.php?track='.$trackingID.'&Refresh='.rand(10000,99999));
+}
 exit();
 ?>

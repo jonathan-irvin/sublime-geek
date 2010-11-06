@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,7 +37,6 @@ define('HESK_PATH','');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
@@ -63,7 +63,7 @@ require_once(HESK_PATH . 'inc/header.inc.php');
 
 /* Connect to database */
 hesk_dbConnect();
-$sql = "UPDATE `".$hesk_settings['db_pfix']."tickets` SET `status`='$status' WHERE `trackid`='$trackingID' LIMIT 1";
+$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `status`='".hesk_dbEscape($status)."' WHERE `trackid`='".hesk_dbEscape($trackingID)."' LIMIT 1";
 $result = hesk_dbQuery($sql);
 if (hesk_dbAffectedRows() != 1)
 {
@@ -74,9 +74,9 @@ $trackingURL = $hesk_settings['hesk_url'].'/ticket.php?track='.$trackingID.'&Ref
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="3"><img src="img/headerleftsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerleftsm.jpg" width="3" height="25" alt="" /></td>
 <td class="headersm"><?php echo $hesklang['ticket'].' '.$action; ?></td>
-<td width="3"><img src="img/headerrightsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerrightsm.jpg" width="3" height="25" alt="" /></td>
 </tr>
 </table>
 
@@ -98,7 +98,7 @@ $trackingURL = $hesk_settings['hesk_url'].'/ticket.php?track='.$trackingID.'&Ref
 <div align="center">
 <table border="0" width="600" id="ok" cellspacing="0" cellpadding="3">
 <tr>
-<td align="left" class="ok_header">&nbsp;<img src="img/ok.gif" style="vertical-align:text-bottom" width="16" height="16" alt="" />&nbsp; <?php echo $hesklang['ticket'].' '.$action; ?></td>
+<td align="left" class="ok_header">&nbsp;<img src="https://s3.amazonaws.com/sg-support-static/ok.gif" style="vertical-align:text-bottom" width="16" height="16" alt="" />&nbsp; <?php echo $hesklang['ticket'].' '.$action; ?></td>
 </tr>
 <tr>
 <td align="left" class="ok_body"><?php echo $hesklang['your_ticket_been'].' '.$action; ?><br /><br />

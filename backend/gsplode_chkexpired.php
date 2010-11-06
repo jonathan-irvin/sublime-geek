@@ -10,30 +10,34 @@ $loss_msg	  = "I\'m sorry, you were not a winner this time, but you still have a
 //This script is designed to check if we have any expired sessions for announcing splodes
 $check_sql    = "SELECT * FROM `gsplode_sessions` WHERE `status` = 'FILLED'";
 $check_res    = mysql_query($check_sql);
-$check_row    = mysql_fetch_object($check_res);
 $check_num    = mysql_num_rows($check_res);
-$check_id     = $check_row->gsid;
-$check_type   = $check_row->gs_type_id;
-$tid          = $check_row->gsid;
-$check_surplus= $check_row->bal_surplus;
-$bal_needed   = $check_row->bal_needed;
-$bal_surplus  = $check_surplus;
 
 $a_sql = "SELECT * FROM `gsplode_sessions` WHERE `status` = 'ANNOUNCE'";
 $a_res = mysql_query($a_sql);
 $a_row = mysql_fetch_object($a_res);
 $a_num = mysql_num_rows($a_res);
 
-if($check_num ==1){//We have a valid session to splode
-	$expires = $check_row->completed;
-	$created = $check_row->created;
-	$winners = $check_row->winners;
-	$gsid	 = $check_row->gsid;
+if($check_num >= 1){//We have a valid session to splode either one or more than one	
+	
+	$chkrow  		= mysql_fetch_array($check_res);
+	$expires 		= $chkrow['completed'];
+	$created 		= $chkrow['created'];
+	$winners 		= $chkrow['winners'];
+	$gsid	 		= $chkrow['gsid'];
+	
+	$check_id     	= $chkrow['gsid'];
+	$check_type   	= $chkrow['gs_type_id'];
+	$tid          	= $chkrow['gsid'];
+	$check_surplus	= $chkrow['bal_surplus'];
+	$bal_needed   	= $chkrow['bal_needed'];
+	$bal_surplus  	= $check_surplus;
+
+	
 	$exptime = strtotime($expires);		
 	$timedif = time() - $exptime;
-	//$timedif = 1;
-	
-	if((($timedif < 30)&&($timedif >= 0)&&($winners == ""))){
+	$timedif = 1;		//USE IN CASE OF SPLODE FREEZE
+
+	if( ( ($timedif < 30) && ($timedif >= 0) && ($winners == "") ) ){
 	//Expire time between 0-30sec & winners haven't been populated
 		$tier_sql       = "SELECT * FROM `gsplode_splode_config` WHERE `id` = '$check_type'";
 		$tier_res       = mysql_query($tier_sql) or die();
@@ -159,9 +163,10 @@ if($check_num ==1){//We have a valid session to splode
 		
 		die();
 	}
+	
 }
 
-if($a_num == 1){
+if($a_num >= 1){
 	$expires      = $a_row->completed;
 	$gsid         = $a_row->gsid;
 	$a_id         = $a_row->gsid;

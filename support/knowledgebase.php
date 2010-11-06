@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,7 +37,6 @@ define('HESK_PATH','');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
@@ -64,7 +64,7 @@ if (isset($_GET['rating']) && !hesk_detect_bots())
 
     if (empty($_COOKIE['hesk_kb_rate']) || strpos($_COOKIE['hesk_kb_rate'],'a'.$artid.'%')===false)
     {
-		$sql = 'UPDATE `'.$hesk_settings['db_pfix'].'kb_articles` SET `rating`=((`rating`*`votes`)+'.$rating.')/(`votes`+1), `votes`=`votes`+1 WHERE `id`=\''.$artid.'\' AND `type`=\'0\' LIMIT 1';
+		$sql = 'UPDATE `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` SET `rating`=((`rating`*`votes`)+'.hesk_dbEscape($rating).')/(`votes`+1), `votes`=`votes`+1 WHERE `id`=\''.hesk_dbEscape($artid).'\' AND `type`=\'0\' LIMIT 1';
 		hesk_dbQuery($sql);
     }
     setcookie('hesk_kb_rate', $_COOKIE['hesk_kb_rate'].'a'.$artid.'%', time()+2592000);
@@ -73,8 +73,8 @@ if (isset($_GET['rating']) && !hesk_detect_bots())
 }
 
 /* Any category ID set? */
-$catid = intval($_GET['category']) or $catid = 1;
-$artid = intval($_GET['article']) or $artid = 0;
+$catid = isset($_GET['category']) ? intval($_GET['category']) : 1;
+$artid = isset($_GET['article']) ? intval($_GET['article']) : 0;
 
 if (isset($_GET['search']))
 {
@@ -93,7 +93,7 @@ if ($hesk_settings['kb_search'] && $query)
 }
 elseif ($artid)
 {
-	$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'kb_articles` WHERE `id`=\''.$artid.'\' AND `type`=\'0\' LIMIT 1';
+	$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` WHERE `id`=\''.hesk_dbEscape($artid).'\' AND `type`=\'0\' LIMIT 1';
 	$result  = hesk_dbQuery($sql);
     $article = hesk_dbFetchAssoc($result) or hesk_error($hesklang['kb_art_id']);
     hesk_show_kb_article($artid);
@@ -114,9 +114,9 @@ function hesk_kb_header($kb_link) {
 	?>
 	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-	<td width="3"><img src="img/headerleftsm.jpg" width="3" height="25" alt="" /></td>
-	<td class="headersm"><?php echo $hesklang['kb_text']; ?></td>
-	<td width="3"><img src="img/headerrightsm.jpg" width="3" height="25" alt="" /></td>
+	<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerleftsm.jpg" width="3" height="25" alt="" /></td>
+	<td class="headersm"><?php hesk_showTopBar($hesklang['kb_text']); ?></td>
+	<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerrightsm.jpg" width="3" height="25" alt="" /></td>
 	</tr>
 	</table>
 
@@ -161,7 +161,7 @@ function hesk_kb_search($query) {
 	require_once(HESK_PATH . 'inc/header.inc.php');
 	hesk_kb_header($hesk_settings['kb_link']);
 
-	$sql = 'SELECT t1.* FROM `'.$hesk_settings['db_pfix'].'kb_articles` AS t1 LEFT JOIN `'.$hesk_settings['db_pfix'].'kb_categories` AS t2 ON t1.`catid` = t2.`id`  WHERE t1.`type`=\'0\' AND t2.`type`=\'0\' AND MATCH(`subject`,`content`) AGAINST (\''.$query.'\') LIMIT '.$hesk_settings['kb_search_limit'];
+	$sql = 'SELECT t1.* FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` AS t1 LEFT JOIN `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_categories` AS t2 ON t1.`catid` = t2.`id`  WHERE t1.`type`=\'0\' AND t2.`type`=\'0\' AND MATCH(`subject`,`content`) AGAINST (\''.hesk_dbEscape($query).'\') LIMIT '.hesk_dbEscape($hesk_settings['kb_search_limit']);
 	$res = hesk_dbQuery($sql);
     $num = hesk_dbNumRows($res);
 
@@ -179,9 +179,9 @@ function hesk_kb_search($query) {
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornerstop"></td>
-	<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 </tr>
 <tr>
 	<td class="roundcornersleft">&nbsp;</td>
@@ -200,7 +200,7 @@ function hesk_kb_search($query) {
 	            if ($hesk_settings['kb_rating'])
 	            {
 	            	$alt = $article['rating'] ? sprintf($hesklang['kb_rated'], sprintf("%01.1f", $article['rating'])) : $hesklang['kb_not_rated'];
-	                $rat = '<td width="1" valign="top"><img src="img/star_'.(hesk_round_to_half($article['rating'])*10).'.png" width="85" height="16" alt="'.$alt.'" border="0" style="vertical-align:text-bottom" /></td>';
+	                $rat = '<td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/star_'.(hesk_round_to_half($article['rating'])*10).'.png" width="85" height="16" alt="'.$alt.'" border="0" style="vertical-align:text-bottom" /></td>';
 	            }
 	            else
 	            {
@@ -212,14 +212,14 @@ function hesk_kb_search($query) {
 				<td>
 	                <table border="0" width="100%" cellspacing="0" cellpadding="1">
 	                <tr>
-	                <td width="1" valign="top"><img src="img/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
+	                <td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
 	                <td valign="top"><a href="knowledgebase.php?article='.$article['id'].'">'.$article['subject'].'</a></td>
 	                '.$rat.'
                     </tr>
 	                </table>
 	                <table border="0" width="100%" cellspacing="0" cellpadding="1">
 	                <tr>
-	                <td width="1" valign="top"><img src="img/blank.gif" width="16" height="10" style="vertical-align:middle" alt="" /></td>
+	                <td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/blank.gif" width="16" height="10" style="vertical-align:middle" alt="" /></td>
 	                <td><span class="article_list">'.$txt.'</span></td>
                     </tr>
 	                </table>
@@ -234,9 +234,9 @@ function hesk_kb_search($query) {
 	<td class="roundcornersright">&nbsp;</td>
 </tr>
 <tr>
-	<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornersbottom"></td>
-	<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 </tr>
 </table>
 
@@ -255,7 +255,7 @@ function hesk_show_kb_article($artid) {
 	require_once(HESK_PATH . 'inc/header.inc.php');
 	hesk_kb_header($hesk_settings['kb_link']);
 
-	$sql = 'SELECT `name`,`type` FROM `'.$hesk_settings['db_pfix'].'kb_categories` WHERE `id`=\''.$article['catid'].'\' LIMIT 1';
+	$sql = 'SELECT `name`,`type` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_categories` WHERE `id`=\''.hesk_dbEscape($article['catid']).'\' LIMIT 1';
 	$result   = hesk_dbQuery($sql);
     $category = hesk_dbFetchAssoc($result) or hesk_error($hesklang['kb_cat_inv']);
 
@@ -267,7 +267,7 @@ function hesk_show_kb_article($artid) {
 
     if (!isset($_GET['rated']) && !hesk_detect_bots())
     {
-	    $sql = 'UPDATE `'.$hesk_settings['db_pfix'].'kb_articles` SET `views`=`views`+1 WHERE `id`=\''.$artid.'\' AND `type`=\'0\' LIMIT 1';
+	    $sql = 'UPDATE `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` SET `views`=`views`+1 WHERE `id`=\''.hesk_dbEscape($artid).'\' AND `type`=\'0\' LIMIT 1';
 		hesk_dbQuery($sql);
     }
 
@@ -276,6 +276,19 @@ function hesk_show_kb_article($artid) {
     <fieldset>
 	<legend>'.$hesklang['as'].'</legend>
     '. $article['content'];
+
+    if (!empty($article['attachments']))
+    {
+		echo '<p><b>'.$hesklang['attachments'].':</b><br />';
+		$att=explode(',',substr($article['attachments'], 0, -1));
+		foreach ($att as $myatt)
+        {
+			list($att_id, $att_name) = explode('#', $myatt);
+			echo '<img src="https://s3.amazonaws.com/sg-support-static/clip.png" width="16" height="16" alt="'.$att_name.'" style="align:text-bottom" /> <a href="download_attachment.php?kb_att='.$att_id.'" rel="nofollow">'.$att_name.'</a><br />';
+		}
+		echo '</p>';
+    }
+
 	if ($hesk_settings['kb_rating'] && (empty($_COOKIE['hesk_kb_rate']) || strpos($_COOKIE['hesk_kb_rate'],'a'.$artid.'%')===false))
 	{
 		echo '
@@ -323,7 +336,7 @@ function hesk_show_kb_article($artid) {
 		echo '
         <tr>
         <td>'.$hesklang['rating'].' ('.$hesklang['votes'].'):</td>
-        <td><img src="img/star_'.(hesk_round_to_half($article['rating'])*10).'.png" width="85" height="16" alt="'.$alt.'" title="'.$alt.'" border="0" style="vertical-align:text-bottom" /> ('.$article['votes'].')</td>
+        <td><img src="https://s3.amazonaws.com/sg-support-static/star_'.(hesk_round_to_half($article['rating'])*10).'.png" width="85" height="16" alt="'.$alt.'" title="'.$alt.'" border="0" style="vertical-align:text-bottom" /> ('.$article['votes'].')</td>
         </tr>
         ';
 	}
@@ -331,7 +344,7 @@ function hesk_show_kb_article($artid) {
     </table>
     </fieldset>
 
-    <p>&nbsp;<br />&lt;&lt; <a href="javascript:history.go(-1)"><?php echo $hesklang['back']; ?></a></p>
+    <p>&nbsp;<br />&lt;&lt; <a href="javascript:history.go(<?php echo isset($_GET['rated']) ? '-2' : '-1'; ?>)"><?php echo $hesklang['back']; ?></a></p>
 
     <?php
 } // END hesk_show_kb_article()
@@ -352,7 +365,7 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 	    }
     }
 
-	$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'kb_categories` WHERE `id`=\''.$catid.'\' LIMIT 1';
+	$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_categories` WHERE `id`=\''.hesk_dbEscape($catid).'\' LIMIT 1';
 	$res = hesk_dbQuery($sql);
     $thiscat = hesk_dbFetchAssoc($res) or hesk_error($hesklang['kb_cat_inv']);
 
@@ -364,7 +377,7 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 		';
 	}
 
-	$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'kb_categories` WHERE `parent`=\''.$catid.'\' AND `type`=\'0\' ORDER BY `parent` ASC, `cat_order` ASC';
+	$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_categories` WHERE `parent`=\''.hesk_dbEscape($catid).'\' AND `type`=\'0\' ORDER BY `parent` ASC, `cat_order` ASC';
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbNumRows($result) > 0)
 	{
@@ -374,9 +387,9 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornerstop"></td>
-	<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 </tr>
 <tr>
 	<td class="roundcornersleft">&nbsp;</td>
@@ -399,20 +412,20 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 			echo '
 		    <td width="50%" valign="top">
 			<table border="0">
-			<tr><td><img src="img/folder.gif" width="20" height="20" alt="" style="vertical-align:middle" /><a href="knowledgebase.php?category='.$cat['id'].'">'.$cat['name'].'</a></td></tr>
+			<tr><td><img src="https://s3.amazonaws.com/sg-support-static/folder.gif" width="20" height="20" alt="" style="vertical-align:middle" /><a href="knowledgebase.php?category='.$cat['id'].'">'.$cat['name'].'</a></td></tr>
 			';
 
 			/* Print two most popular articles */
 			if ($hesk_settings['kb_numshow'] && $cat['articles'])
 		    {
-		    	$sql = 'SELECT `id`,`subject` FROM `'.$hesk_settings['db_pfix'].'kb_articles` WHERE `catid`=\''.$cat['id'].'\' AND `type`=\'0\' ORDER BY `views` DESC, `art_order` ASC LIMIT '.($hesk_settings['kb_numshow']+1);
+		    	$sql = 'SELECT `id`,`subject` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` WHERE `catid`=\''.hesk_dbEscape($cat['id']).'\' AND `type`=\'0\' ORDER BY `views` DESC, `art_order` ASC LIMIT '.hesk_dbEscape($hesk_settings['kb_numshow']+1);
 		        $res = hesk_dbQuery($sql);
 		        $num = 1;
 				while ($art = hesk_dbFetchAssoc($res))
 				{
 					echo '
 		            <tr>
-		            <td><img src="img/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" />
+		            <td><img src="https://s3.amazonaws.com/sg-support-static/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" />
 		            <a href="knowledgebase.php?article='.$art['id'].'" class="article">'.$art['subject'].'</a></td>
 		            </tr>';
 
@@ -465,9 +478,9 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 	<td class="roundcornersright">&nbsp;</td>
 </tr>
 <tr>
-	<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornersbottom"></td>
-	<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 </tr>
 </table>
 
@@ -479,16 +492,16 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornerstop"></td>
-	<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 </tr>
 <tr>
 	<td class="roundcornersleft">&nbsp;</td>
 	<td>
 
 	<?php
-	$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'kb_articles` WHERE `catid`=\''.$catid.'\' AND `type`=\'0\' ORDER BY `art_order` ASC';
+	$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` WHERE `catid`=\''.hesk_dbEscape($catid).'\' AND `type`=\'0\' ORDER BY `art_order` ASC';
 	$res = hesk_dbQuery($sql);
 	if (hesk_dbNumRows($res) == 0)
 	{
@@ -508,7 +521,7 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 	            if ($hesk_settings['kb_rating'])
 	            {
 	            	$alt = $article['rating'] ? sprintf($hesklang['kb_rated'], sprintf("%01.1f", $article['rating'])) : $hesklang['kb_not_rated'];
-	                $rat = '<td width="1" valign="top"><img src="img/star_'.(hesk_round_to_half($article['rating'])*10).'.png" width="85" height="16" alt="'.$alt.'" title="'.$alt.'" border="0" style="vertical-align:text-bottom" /></td>';
+	                $rat = '<td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/star_'.(hesk_round_to_half($article['rating'])*10).'.png" width="85" height="16" alt="'.$alt.'" title="'.$alt.'" border="0" style="vertical-align:text-bottom" /></td>';
 	            }
 	            else
 	            {
@@ -520,14 +533,14 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 				<td>
 	                <table border="0" width="100%" cellspacing="0" cellpadding="1">
 	                <tr>
-	                <td width="1" valign="top"><img src="img/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
+	                <td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
 	                <td valign="top"><a href="knowledgebase.php?article='.$article['id'].'">'.$article['subject'].'</a></td>
 	                '.$rat.'
                     </tr>
 	                </table>
 	                <table border="0" width="100%" cellspacing="0" cellpadding="1">
 	                <tr>
-	                <td width="1" valign="top"><img src="img/blank.gif" width="16" height="10" style="vertical-align:middle" alt="" /></td>
+	                <td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/blank.gif" width="16" height="10" style="vertical-align:middle" alt="" /></td>
 	                <td><span class="article_list">'.$txt.'</span></td>
                     </tr>
 	                </table>
@@ -542,9 +555,9 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 	<td class="roundcornersright">&nbsp;</td>
 </tr>
 <tr>
-	<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornersbottom"></td>
-	<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 </tr>
 </table>
 
@@ -560,7 +573,7 @@ function hesk_show_kb_category($catid, $is_search = 0) {
         </tr>
         </table>
 		<?php
-		$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'kb_articles` WHERE `type`=\'0\' ORDER BY `views` DESC, `rating` DESC, `art_order` ASC LIMIT '.($hesk_settings['kb_popart']);
+		$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` WHERE `type`=\'0\' ORDER BY `views` DESC, `rating` DESC, `art_order` ASC LIMIT '.hesk_dbEscape($hesk_settings['kb_popart']);
 		$res = hesk_dbQuery($sql);
 		if (hesk_dbNumRows($res) == 0)
 		{
@@ -576,7 +589,7 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 				<td>
 	                <table border="0" width="100%" cellspacing="0" cellpadding="0">
 	                <tr>
-	                <td width="1" valign="top"><img src="img/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
+	                <td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
 	                <td valign="top">&nbsp;<a href="knowledgebase.php?article='.$article['id'].'">'.$article['subject'].'</a></td>
                     <td valign="top" style="text-align:right" width="200">'.$article['views'].'</td>
                     </tr>
@@ -600,7 +613,7 @@ function hesk_show_kb_category($catid, $is_search = 0) {
         </tr>
         </table>
 		<?php
-		$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'kb_articles` WHERE `type`=\'0\' ORDER BY `dt` DESC LIMIT '.($hesk_settings['kb_latest']);
+		$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'kb_articles` WHERE `type`=\'0\' ORDER BY `dt` DESC LIMIT '.hesk_dbEscape($hesk_settings['kb_latest']);
 		$res = hesk_dbQuery($sql);
 		if (hesk_dbNumRows($res) == 0)
 		{
@@ -616,7 +629,7 @@ function hesk_show_kb_category($catid, $is_search = 0) {
 				<td>
 	                <table border="0" width="100%" cellspacing="0" cellpadding="0">
 	                <tr>
-	                <td width="1" valign="top"><img src="img/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
+	                <td width="1" valign="top"><img src="https://s3.amazonaws.com/sg-support-static/article_text.png" width="16" height="16" border="0" alt="" style="vertical-align:middle" /></td>
 	                <td valign="top">&nbsp;<a href="knowledgebase.php?article='.$article['id'].'">'.$article['subject'].'</a></td>
                     <td valign="top" style="text-align:right" width="200">'.hesk_date($article['dt']).'</td>
                     </tr>

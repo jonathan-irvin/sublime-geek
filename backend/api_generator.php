@@ -18,7 +18,7 @@ $api            = $l_row['api_key'];
 
 $task           = $_POST['task']; //Are we generating an API key or Auth key?
 
-$api_data       = $name.$key.microtime().uniqid().genPass();
+$api_data       = $name.$key.microtime().uniqid().genPass().seqid();
 $gen_api        = SHA1($api_data);
 
 if($l_num == 0){ //No User Detected, Create their account

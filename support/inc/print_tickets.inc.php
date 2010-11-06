@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,18 +26,18 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 /* Check if this is a valid include */
 if (!defined('IN_SCRIPT')) {die($hesklang['attempt']);}
 
-$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'tickets` WHERE ';
+$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` WHERE ';
 
-if ($_GET['archive'])
+if (!empty($_GET['archive']))
 {
     $archive=1;
     $sql .= '`archive`=\'1\' AND ';
@@ -78,25 +79,32 @@ else
     }
     elseif ($status!=4)
     {
-        $sql .= ' AND `status`=\''.$status.'\' ';
+        $sql .= ' AND `status`=\''.hesk_dbEscape($status).'\' ';
     }
 
 }
 
-$category = hesk_isNumber($_GET['category']) or $category=0;
+$category = (isset($_GET['category'])) ? hesk_isNumber($_GET['category']) : 0;
 if ($category)
 {
-    $sql .= ' AND `category`=\''.$category.'\' ';
+    $sql .= ' AND `category`=\''.hesk_dbEscape($category).'\' ';
 }
 
 $sql_copy=$sql;
 
-$maxresults = hesk_isNumber($_GET['limit']) or $maxresults = $hesk_settings['max_listings'];
-$page = hesk_isNumber($_GET['page']) or $page = 1;
+$tmp = (isset($_GET['limit'])) ? intval($_GET['limit']) : 0;
+$maxresults = ($tmp > 0) ? $tmp : $hesk_settings['max_listings'];
 
-if ($sort = hesk_input($_GET['sort']))
+$tmp  = (isset($_GET['page'])) ? intval($_GET['page']) : 1;
+$page = ($tmp > 1) ? $tmp : 1;
+
+/* Acceptable $sort values */
+$sort_possible = array('trackid','lastchange','name','subject','status','lastreplier','priority','category','dt','id');
+
+if (isset($_GET['sort']) && in_array($_GET['sort'],$sort_possible))
 {
-    $sql .= ' ORDER BY `'.$sort.'` ';
+	$sort = hesk_input($_GET['sort']);
+    $sql .= ' ORDER BY `'.hesk_dbEscape($sort).'` ';
 }
 else
 {
@@ -200,11 +208,11 @@ if ($total > 0)
     }
 
     /* We have the full SQL query now, get tickets */
-    $sql .= " LIMIT $limit_down,$maxresults ";
+    $sql .= " LIMIT ".hesk_dbEscape($limit_down)." , ".hesk_dbEscape($maxresults)." ";
     $result = hesk_dbQuery($sql);
 
     /* This query string will be used to order and reverse display */
-    $query = "status=$status&amp;category=$category&amp;asc=" . (isset($is_default) ? 1 : $asc_rev) . "&amp;limit=$maxresults&amp;page=$page&amp;archive=$archive&amp;sort=";
+    $query = "status=$status&amp;category=$category&amp;asc=" . (isset($is_default) ? 1 : $asc_rev) . "&amp;limit=$maxresults&amp;page=1&amp;archive=$archive&amp;sort=";
 
     /* Print the table with tickets */
     $random=rand(10000,99999);

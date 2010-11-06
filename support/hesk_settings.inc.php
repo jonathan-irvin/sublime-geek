@@ -1,5 +1,5 @@
 <?php
-/* Settings file for Hesk 2.0 */
+/* Settings file for Hesk 2.1 */
 /*** Please read the README.HTM file for more information on these settings ***/
 
 /* General settings */
@@ -9,20 +9,27 @@ $hesk_settings['support_mail']='support@sublimegeek.com';
 $hesk_settings['webmaster_mail']='support@sublimegeek.com';
 $hesk_settings['noreply_mail']='support@sublimegeek.com';
 
+/* Language settings */
+$hesk_settings['can_sel_lang']=1;
+$hesk_settings['language']='English';
+$hesk_settings['languages']=array(
+'English' => array('folder'=>'en'),
+);
+
 /* Help desk settings */
 $hesk_settings['hesk_url']='http://www.sublimegeek.com/support';
 $hesk_settings['hesk_title']='Sublime Geek Support';
-$hesk_settings['server_path']='/home/geekfox/public_html/support';
-$hesk_settings['language']='english';
+$hesk_settings['server_path']='/var/www/support';
 $hesk_settings['max_listings']=10;
 $hesk_settings['print_font_size']=12;
 $hesk_settings['debug_mode']=0;
 $hesk_settings['secimg_use']=1;
-$hesk_settings['secimg_sum']='G6NHW3TL58';
+$hesk_settings['secimg_sum']='7RN1MUE647';
 $hesk_settings['question_use']=0;
 $hesk_settings['question_ask']='Which of these is NOT an animal: snow, dog, dolphin';
 $hesk_settings['question_ans']='snow';
-$hesk_settings['list_users']=1;
+$hesk_settings['list_users']=0;
+$hesk_settings['autologin']=1;
 $hesk_settings['autoclose']=5;
 $hesk_settings['custopen']=1;
 $hesk_settings['rating']=1;
@@ -47,10 +54,10 @@ $hesk_settings['kb_index_popart']=3;
 $hesk_settings['kb_index_latest']=3;
 
 /* Database settings */
-$hesk_settings['db_host']='localhost';
+$hesk_settings['db_host']='private-db12621.mysql.fathomdb.com:12621';
 $hesk_settings['db_name']='geekfox_msupport';
-$hesk_settings['db_user']='geekfox';
-$hesk_settings['db_pass']='jurby5000';
+$hesk_settings['db_user']='root';
+$hesk_settings['db_pass']='BPobsqNcYYR0tZVQ';
 $hesk_settings['db_pfix']='sighelp_';
 
 /* File attachments */
@@ -63,8 +70,8 @@ $hesk_settings['attachments']=array (
 
 /* Custom fields */
 $hesk_settings['custom_fields']=array (
-'custom1'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 1','maxlen'=>255,'value'=>''),
-'custom2'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 2','maxlen'=>255,'value'=>''),
+'custom1'=>array('use'=>1,'place'=>0,'type'=>'text','req'=>1,'name'=>'SL Name','maxlen'=>255,'value'=>''),
+'custom2'=>array('use'=>1,'place'=>0,'type'=>'text','req'=>0,'name'=>'Version Number','maxlen'=>255,'value'=>''),
 'custom3'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 3','maxlen'=>255,'value'=>''),
 'custom4'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 4','maxlen'=>255,'value'=>''),
 'custom5'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 5','maxlen'=>255,'value'=>''),
@@ -72,13 +79,23 @@ $hesk_settings['custom_fields']=array (
 'custom7'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 7','maxlen'=>255,'value'=>''),
 'custom8'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 8','maxlen'=>255,'value'=>''),
 'custom9'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 9','maxlen'=>255,'value'=>''),
-'custom10'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 10','maxlen'=>255,'value'=>'')
+'custom10'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 10','maxlen'=>255,'value'=>''),
+'custom11'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 11','maxlen'=>255,'value'=>''),
+'custom12'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 12','maxlen'=>255,'value'=>''),
+'custom13'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 13','maxlen'=>255,'value'=>''),
+'custom14'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 14','maxlen'=>255,'value'=>''),
+'custom15'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 15','maxlen'=>255,'value'=>''),
+'custom16'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 16','maxlen'=>255,'value'=>''),
+'custom17'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 17','maxlen'=>255,'value'=>''),
+'custom18'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 18','maxlen'=>255,'value'=>''),
+'custom19'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 19','maxlen'=>255,'value'=>''),
+'custom20'=>array('use'=>0,'place'=>0,'type'=>'text','req'=>0,'name'=>'Custom field 20','maxlen'=>255,'value'=>'')
 );
 
 #############################
 #     DO NOT EDIT BELOW     #
 #############################
-$hesk_settings['hesk_version']='2.0';
+$hesk_settings['hesk_version']='2.1';
 if ($hesk_settings['debug_mode'])
 {
     error_reporting(E_ALL ^ E_NOTICE);
@@ -89,5 +106,4 @@ else
     ini_set('log_errors', 1);
 }
 if (!defined('IN_SCRIPT')) {die('Invalid attempt!');}
-if (is_dir(HESK_PATH . 'install') && !defined('INSTALL')) {die('Please delete the <b>install</b> folder from your server for security reasons then refresh this page!');}
 ?>

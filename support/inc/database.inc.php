@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,14 +26,28 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 /* Check if this is a valid include */
 if (!defined('IN_SCRIPT')) {die($hesklang['attempt']);}
+
+
+/***************************
+Function hesk_dbEscape()
+***************************/
+function hesk_dbEscape($in) {
+	global $hesk_db_link;
+
+    $in = mysql_real_escape_string(stripslashes($in), $hesk_db_link);
+    $in = str_replace('`','&#96;',$in);
+
+    return $in;
+} // END hesk_dbEscape()
+
 
 /***************************
 Function hesk_dbConnect()
@@ -42,13 +57,19 @@ function hesk_dbConnect() {
 	global $hesk_db_link;
     global $hesklang;
 
-    $hesk_db_link = @mysql_connect($hesk_settings['db_host'], $hesk_settings['db_user'], $hesk_settings['db_pass'])
-    or	hesk_error(
-		"$hesklang[cant_connect_db]</p>
-		<p>$hesklang[mysql_said]:<br />".mysql_error()."</p>
-		<p>$hesklang[contact_webmsater]
-		<a href=\"mailto:$hesk_settings[webmaster_mail]\">$hesk_settings[webmaster_mail]</a></p>"
-		);
+    $hesk_db_link = @mysql_connect($hesk_settings['db_host'], $hesk_settings['db_user'], $hesk_settings['db_pass']);
+
+    if (!$hesk_db_link)
+    {
+    	if ($hesk_settings['debug_mode'])
+        {
+			hesk_error("$hesklang[cant_connect_db]</p><p>$hesklang[mysql_said]:<br />".mysql_error()."</p>");
+        }
+        else
+        {
+			hesk_error("$hesklang[cant_connect_db]</p><p>$hesklang[contact_webmsater] <a href=\"mailto:$hesk_settings[webmaster_mail]\">$hesk_settings[webmaster_mail]</a></p>");
+        }
+    }
 
     if (@mysql_select_db($hesk_settings['db_name'], $hesk_db_link))
     {
@@ -56,12 +77,14 @@ function hesk_dbConnect() {
     }
     else
     {
-    	hesk_error(
-		"$hesklang[cant_connect_db]</p>
-		<p>$hesklang[mysql_said]:<br />".mysql_error()."</p>
-		<p>$hesklang[contact_webmsater]
-		<a href=\"mailto:$hesk_settings[webmaster_mail]\">$hesk_settings[webmaster_mail]</a></p>"
-		);
+    	if ($hesk_settings['debug_mode'])
+        {
+			hesk_error("$hesklang[cant_connect_db]</p><p>$hesklang[mysql_said]:<br />".mysql_error()."</p>");
+        }
+        else
+        {
+			hesk_error("$hesklang[cant_connect_db]</p><p>$hesklang[contact_webmsater] <a href=\"mailto:$hesk_settings[webmaster_mail]\">$hesk_settings[webmaster_mail]</a></p>");
+        }
     }
 } // END hesk_dbConnect()
 
@@ -100,20 +123,11 @@ function hesk_dbQuery($query)
     }
     elseif ($hesk_settings['debug_mode'])
     {
-	    hesk_error(
-	    "$hesklang[cant_sql]: $query</p>
-	    <p>$hesklang[mysql_said]:<br />".mysql_error()."</p>
-	    <p>$hesklang[contact_webmsater]
-	    <a href=\"mailto:$hesk_settings[webmaster_mail]\">$hesk_settings[webmaster_mail]</a></p>"
-	    );
+	    hesk_error("$hesklang[cant_sql]: $query</p><p>$hesklang[mysql_said]:<br />".mysql_error()."</p>");
     }
     else
     {
-	    hesk_error(
-        "$hesklang[cant_sql]</p>
-	    <p>$hesklang[contact_webmsater]
-        <a href=\"mailto:$hesk_settings[webmaster_mail]\">$hesk_settings[webmaster_mail]</a></p>"
-	    );
+	    hesk_error("$hesklang[cant_sql]</p><p>$hesklang[contact_webmsater] <a href=\"mailto:$hesk_settings[webmaster_mail]\">$hesk_settings[webmaster_mail]</a></p>");
     }
 
 } // END hesk_dbQuery()

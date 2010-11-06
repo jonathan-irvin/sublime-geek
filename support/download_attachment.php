@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,29 +37,49 @@ define('HESK_PATH','');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
-$att_id=hesk_isNumber($_GET['att_id'],$hesklang['id_not_valid']);
-$tic_id=hesk_input($_GET['track'],$hesklang['no_trackID']);
-
-/* Connect to database */
-hesk_dbConnect();
-
-/* Get attachment info */
-$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."attachments` WHERE `att_id`=$att_id LIMIT 1";
-$result = hesk_dbQuery($sql);
-if (hesk_dbNumRows($result) != 1)
+/* Knowledgebase attachments */
+if (isset($_GET['kb_att']))
 {
-	hesk_error($hesklang['id_not_valid'].' (att_id)');
+	$att_id=hesk_isNumber($_GET['kb_att'],$hesklang['id_not_valid']);
+
+	/* Connect to database */
+	hesk_dbConnect();
+
+	/* Get attachment info */
+	$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."kb_attachments` WHERE `att_id`=".hesk_dbEscape($att_id)." LIMIT 1";
+	$result = hesk_dbQuery($sql);
+	if (hesk_dbNumRows($result) != 1)
+	{
+		hesk_error($hesklang['id_not_valid'].' (att_id)');
+	}
+	$file = hesk_dbFetchAssoc($result);
 }
-$file = hesk_dbFetchAssoc($result);
-
-/* Is ticket ID valid for this attachment? */
-if ($file['ticket_id'] != $tic_id)
+/* Ticket attachments */
+else
 {
-    hesk_error($hesklang['trackID_not_found']);
+	$att_id=hesk_isNumber($_GET['att_id'],$hesklang['id_not_valid']);
+	$tic_id=hesk_input($_GET['track'],$hesklang['no_trackID']);
+
+	/* Connect to database */
+	hesk_dbConnect();
+
+	/* Get attachment info */
+	$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."attachments` WHERE `att_id`=".hesk_dbEscape($att_id)." LIMIT 1";
+	$result = hesk_dbQuery($sql);
+	if (hesk_dbNumRows($result) != 1)
+	{
+		hesk_error($hesklang['id_not_valid'].' (att_id)');
+	}
+	$file = hesk_dbFetchAssoc($result);
+
+	/* Is ticket ID valid for this attachment? */
+	if ($file['ticket_id'] != $tic_id)
+	{
+	    hesk_error($hesklang['trackID_not_found']);
+	}
 }
 
 /* Send the file as an attachment to prevent malicious code from executing */

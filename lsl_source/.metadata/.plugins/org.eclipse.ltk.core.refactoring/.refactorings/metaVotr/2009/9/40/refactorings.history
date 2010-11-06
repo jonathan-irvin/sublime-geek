@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename resource &apos;metaVotr/.vote 1.3.1.lslp&apos; to &apos;.vote 1.4.lslp&apos;" description="Rename resource &apos;.vote 1.3.1.lslp&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input=".vote 1.3.1.lslp" name=".vote 1.4.lslp" stamp="1254085962050" updateReferences="true"/>
-</session>

@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,13 +37,12 @@ define('HESK_PATH','../');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
 hesk_session_start();
-hesk_isLoggedIn();
 hesk_dbConnect();
+hesk_isLoggedIn();
 
 /* Check permissions for this feature */
 hesk_checkPermission('can_view_tickets');
@@ -58,7 +58,7 @@ if (empty($trackingID))
 }
 
 /* Get ticket info */
-$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."tickets` WHERE `trackid`='$trackingID' LIMIT 1";
+$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` WHERE `trackid`='".hesk_dbEscape($trackingID)."' LIMIT 1";
 $result = hesk_dbQuery($sql);
 if (hesk_dbNumRows($result) != 1)
 {
@@ -67,12 +67,12 @@ if (hesk_dbNumRows($result) != 1)
 $ticket = hesk_dbFetchAssoc($result);
 
 /* Get category name and ID */
-$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."categories` WHERE `id`=$ticket[category] LIMIT 1";
+$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE `id`=".hesk_dbEscape($ticket['category'])." LIMIT 1";
 $result = hesk_dbQuery($sql);
 /* If this category has been deleted use the default category with ID 1 */
 if (hesk_dbNumRows($result) != 1)
 {
-	$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."categories` WHERE `id`=1 LIMIT 1";
+	$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE `id`=1 LIMIT 1";
 	$result = hesk_dbQuery($sql);
 }
 $category = hesk_dbFetchAssoc($result);
@@ -86,7 +86,7 @@ if (isset($_GET['delete_post']) && $can_delete)
 	$n = hesk_isNumber($_GET['delete_post']);
     if ($n)
     {
-		$sql = "DELETE FROM `".$hesk_settings['db_pfix']."replies` WHERE `id`=$n LIMIT 1";
+		$sql = "DELETE FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` WHERE `id`=".hesk_dbEscape($n)." LIMIT 1";
 		$res = hesk_dbQuery($sql);
         $_SESSION['HESK_NOTICE']  = $hesklang['repd'];
         $_SESSION['HESK_MESSAGE'] = $hesklang['repl'];
@@ -103,11 +103,11 @@ if (isset($_GET['delnote']))
     {
     	if ($can_del_notes)
         {
-			$sql = "DELETE FROM `".$hesk_settings['db_pfix']."notes` WHERE `id`=$n LIMIT 1";
+			$sql = "DELETE FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."notes` WHERE `id`=".hesk_dbEscape($n)." LIMIT 1";
         }
         else
         {
-        	$sql = "DELETE FROM `".$hesk_settings['db_pfix']."notes` WHERE `id`=$n AND `who`=$_SESSION[id] LIMIT 1";
+        	$sql = "DELETE FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."notes` WHERE `id`=".hesk_dbEscape($n)." AND `who`=".hesk_dbEscape($_SESSION['id'])." LIMIT 1";
         }
 		$res = hesk_dbQuery($sql);
     }
@@ -122,7 +122,11 @@ if (isset($_POST['notemsg']))
     if ($msg)
     {
     	$msg = nl2br(hesk_makeURL($msg));
-		$sql = "INSERT INTO `".$hesk_settings['db_pfix']."notes` (`ticket`,`who`,`dt`,`message`) VALUES ('$ticket[id]','$_SESSION[id]',NOW(),'$msg')";
+		$sql = "INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."notes` (`ticket`,`who`,`dt`,`message`) VALUES (
+        '".hesk_dbEscape($ticket['id'])."',
+        '".hesk_dbEscape($_SESSION['id'])."',
+        NOW(),
+        '".hesk_dbEscape($msg)."')";
 		hesk_dbQuery($sql);
     }
     header('Location: admin_ticket.php?track='.$trackingID.'&Refresh='.mt_rand(10000,99999));
@@ -133,7 +137,7 @@ if (isset($_POST['notemsg']))
 require_once(HESK_PATH . 'inc/header.inc.php');
 
 /* List of categories */
-$sql = "SELECT `id`,`name` FROM `".$hesk_settings['db_pfix']."categories` ORDER BY `cat_order` ASC";
+$sql = "SELECT `id`,`name` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` ORDER BY `cat_order` ASC";
 $result = hesk_dbQuery($sql);
 $categories_options='';
 while ($row=hesk_dbFetchAssoc($result))
@@ -143,7 +147,7 @@ while ($row=hesk_dbFetchAssoc($result))
 }
 
 /* Get replies */
-$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."replies` WHERE `replyto`='$ticket[id]' ORDER BY `id` ASC";
+$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` WHERE `replyto`='".hesk_dbEscape($ticket['id'])."' ORDER BY `id` ASC";
 $result = hesk_dbQuery($sql);
 $replies = hesk_dbNumRows($result);
 
@@ -210,8 +214,6 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 	<td>
     <!-- START TICKET HEAD -->
 
-	<form style="margin-bottom:0;" action="move_category.php" method="post">
-
 	<table border="0" cellspacing="1" cellpadding="1">
 	<?php
 	echo '
@@ -262,9 +264,12 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 	</tr>
 	<tr>
 	<td>'.$hesklang['category'].': </td>
-	<td>'.$category['name'].'&nbsp;&nbsp;&nbsp;<i>'.$hesklang['move_to_catgory'].'</i> <select name="category">
+	<td>
+    	<form style="margin-bottom:0;" action="move_category.php" method="post">
+    	'.$category['name'].'&nbsp;&nbsp;&nbsp;<i>'.$hesklang['move_to_catgory'].'</i> <select name="category">
 	    <option value="" selected="selected">'.$hesklang['select'].'</option>'.$categories_options.'</select>
 	    <input type="submit" value="'.$hesklang['move'].'" class="orangebutton" onmouseover="hesk_btn(this,\'orangebuttonover\');" onmouseout="hesk_btn(this,\'orangebutton\');" /><input type="hidden" name="track" value="'.$trackingID.'" />
+		</form>
 	</td>
 	</tr>
 	<tr>
@@ -273,29 +278,65 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 	</tr>
 	<tr>
 	<td>'.$hesklang['priority'].': </td>
-	<td>';
-	        if ($ticket['priority']==1) {echo '<font class="important">'.$hesklang['high'].'</font>';}
-	        elseif ($ticket['priority']==2) {echo '<font class="medium">'.$hesklang['medium'].'</font>';}
-	        else {echo $hesklang['low'];}
-	echo '</td>
+	<td>
+    	<form style="margin-bottom:0;" action="priority.php" method="post">';
+
+        $options = array(
+        	1 => '<option value="1">'.$hesklang['high'].'</option>',
+            2 => '<option value="2">'.$hesklang['medium'].'</option>',
+            3 => '<option value="3">'.$hesklang['low'].'</option>'
+        );
+
+        switch ($ticket['priority'])
+        {
+        	case 1:
+            	echo '<font class="important">'.$hesklang['high'].'</font>';
+                unset($options[1]);
+                break;
+        	case 2:
+            	echo '<font class="medium">'.$hesklang['medium'].'</font>';
+                unset($options[2]);
+                break;
+        	default:
+            	echo $hesklang['low'];
+                unset($options[3]);
+        }
+		echo '&nbsp;&nbsp;&nbsp;<i>'.$hesklang['change_priority'].'</i> <select name="priority">';
+
+        foreach ($options as $option)
+        {
+        	echo $option;
+        }
+
+        echo '</select>
+        <input type="submit" value="'.$hesklang['chg'].'" class="orangebutton" onmouseover="hesk_btn(this,\'orangebuttonover\');" onmouseout="hesk_btn(this,\'orangebutton\');" /><input type="hidden" name="track" value="'.$trackingID.'" />
+		</form>
+    </td>
 	</tr>
 	<tr>
 	<td>'.$hesklang['archived'].': </td>
 	<td>';
+    	$can_archive = hesk_checkPermission('can_add_archive',0);
 	    if ($ticket['archive'])
 	    {
-	        echo $hesklang['yes'].' [<a href="archive.php?track='.$trackingID.'&amp;archived=0">'.$hesklang['remove_archive'].'</a>]';
+	        echo $hesklang['yes'];
+            if ($can_archive)
+            {
+            	echo ' [<a href="archive.php?track='.$trackingID.'&amp;archived=0">'.$hesklang['remove_archive'].'</a>]';
+            }
 	    }
 	    else
 	    {
-	        echo $hesklang['no'].' [<a href="archive.php?track='.$trackingID.'&amp;archived=1">'.$hesklang['add_archive'].'</a>]';
+	        echo $hesklang['no'];
+            if ($can_archive)
+            {
+            	echo ' [<a href="archive.php?track='.$trackingID.'&amp;archived=1">'.$hesklang['add_archive'].'</a>]';
+            }
 	    }
 	?>
 	</td>
 	</tr>
 	</table>
-
-	</form>
 
     <br />
 
@@ -323,7 +364,7 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 	</tr>
 
 	<?php
-    $sql = 'SELECT t1.*, t2.`name` FROM `'.$hesk_settings['db_pfix'].'notes` AS t1 LEFT JOIN `'.$hesk_settings['db_pfix'].'users` AS t2 ON t1.`who` = t2.`id` WHERE `ticket`='.$ticket['id'];
+    $sql = 'SELECT t1.*, t2.`name` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'notes` AS t1 LEFT JOIN `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` AS t2 ON t1.`who` = t2.`id` WHERE `ticket`='.hesk_dbEscape($ticket['id']).' ORDER BY t1.`id` ASC';
 	$res = hesk_dbQuery($sql);
 	while ($note = hesk_dbFetchAssoc($res))
 	{
@@ -630,39 +671,77 @@ if ($can_reply)
 
 	<?php
 	/* CANNED RESPONSES */
-	$trans = array_flip(get_html_translation_table(HTML_SPECIALCHARS));
 	$options='';
-	$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."std_replies` ORDER BY `reply_order` ASC";
+	$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."std_replies` ORDER BY `reply_order` ASC";
 	$result = hesk_dbQuery($sql);
 	while ($mysaved=hesk_dbFetchRow($result))
 	{
 	    $options .= "<option value=\"$mysaved[0]\">$mysaved[1]</option>\n";
-	    $mysaved[2] = str_replace('&','&amp;',$mysaved[2]);
-	    echo 'myMsgTxt['.$mysaved[0].']=\''.str_replace("\r\n","\\r\\n' + \r\n'", strtr(addslashes($mysaved[2]), $trans))."';\n";
+	    echo 'myMsgTxt['.$mysaved[0].']=\''.str_replace("\r\n","\\r\\n' + \r\n'", addslashes($mysaved[2]))."';\n";
 	    $i++;
 	}
 
 	?>
 
-	function setMessage(msgid) {
-	var myMsg=myMsgTxt[msgid];
-	myMsg = myMsg.replace(/%%HESK_NAME%%/g, '<?php echo hesk_jsString($ticket['name']); ?>');
-	myMsg = myMsg.replace(/%%HESK_EMAIL%%/g, '<?php echo hesk_jsString($ticket['email']); ?>');
-	myMsg = myMsg.replace(/%%HESK_custom1%%/g, '<?php echo hesk_jsString($ticket['custom1']); ?>');
-	myMsg = myMsg.replace(/%%HESK_custom2%%/g, '<?php echo hesk_jsString($ticket['custom2']); ?>');
-	myMsg = myMsg.replace(/%%HESK_custom3%%/g, '<?php echo hesk_jsString($ticket['custom3']); ?>');
-	myMsg = myMsg.replace(/%%HESK_custom4%%/g, '<?php echo hesk_jsString($ticket['custom4']); ?>');
-	myMsg = myMsg.replace(/%%HESK_custom5%%/g, '<?php echo hesk_jsString($ticket['custom5']); ?>');
-	myMsg = myMsg.replace(/%%HESK_custom6%%/g, '<?php echo hesk_jsString($ticket['custom6']); ?>');
-	myMsg = myMsg.replace(/%%HESK_custom7%%/g, '<?php echo hesk_jsString($ticket['custom7']); ?>');
-	myMsg = myMsg.replace(/%%HESK_custom8%%/g, '<?php echo hesk_jsString($ticket['custom8']); ?>');
-	myMsg = myMsg.replace(/%%HESK_custom9%%/g, '<?php echo hesk_jsString($ticket['custom9']); ?>');
-	myMsg = myMsg.replace(/%%HESK_custom10%%/g, '<?php echo hesk_jsString($ticket['custom10']); ?>');
-         
-	    if (document.getElementById) {
-	        document.getElementById('HeskMsg').innerHTML='<textarea name="message" rows="12" cols="60">'+myMsg+'</textarea>';
-	    } else {
-	        document.form1.message.value=myMsg;
+	function setMessage(msgid)
+    {
+		var myMsg=myMsgTxt[msgid];
+
+        if (myMsg == '')
+        {
+        	if (document.form1.mode[0].checked)
+            {
+				document.getElementById('message').value = '';
+            }
+            return true;
+        }
+
+		myMsg = myMsg.replace(/%%HESK_NAME%%/g, '<?php echo hesk_jsString($ticket['name']); ?>');
+		myMsg = myMsg.replace(/%%HESK_EMAIL%%/g, '<?php echo hesk_jsString($ticket['email']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom1%%/g, '<?php echo hesk_jsString($ticket['custom1']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom2%%/g, '<?php echo hesk_jsString($ticket['custom2']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom3%%/g, '<?php echo hesk_jsString($ticket['custom3']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom4%%/g, '<?php echo hesk_jsString($ticket['custom4']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom5%%/g, '<?php echo hesk_jsString($ticket['custom5']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom6%%/g, '<?php echo hesk_jsString($ticket['custom6']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom7%%/g, '<?php echo hesk_jsString($ticket['custom7']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom8%%/g, '<?php echo hesk_jsString($ticket['custom8']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom9%%/g, '<?php echo hesk_jsString($ticket['custom9']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom10%%/g, '<?php echo hesk_jsString($ticket['custom10']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom11%%/g, '<?php echo hesk_jsString($ticket['custom11']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom12%%/g, '<?php echo hesk_jsString($ticket['custom12']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom13%%/g, '<?php echo hesk_jsString($ticket['custom13']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom14%%/g, '<?php echo hesk_jsString($ticket['custom14']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom15%%/g, '<?php echo hesk_jsString($ticket['custom15']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom16%%/g, '<?php echo hesk_jsString($ticket['custom16']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom17%%/g, '<?php echo hesk_jsString($ticket['custom17']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom18%%/g, '<?php echo hesk_jsString($ticket['custom18']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom19%%/g, '<?php echo hesk_jsString($ticket['custom19']); ?>');
+		myMsg = myMsg.replace(/%%HESK_custom20%%/g, '<?php echo hesk_jsString($ticket['custom20']); ?>');
+
+	    if (document.getElementById)
+        {
+			if (document.getElementById('moderep').checked)
+            {
+				document.getElementById('HeskMsg').innerHTML='<textarea name="message" id="message" rows="12" cols="60">'+myMsg+'</textarea>';
+            }
+            else
+            {
+            	var oldMsg = document.getElementById('message').value;
+		        document.getElementById('HeskMsg').innerHTML='<textarea name="message" id="message" rows="12" cols="60">'+oldMsg+myMsg+'</textarea>';
+            }
+	    }
+        else
+        {
+			if (document.form1.mode[0].checked)
+            {
+				document.form1.message.value=myMsg;
+            }
+            else
+            {
+            	var oldMsg = document.form1.message.value;
+		        document.form1.message.value=oldMsg+myMsg;
+            }
 	    }
 
 	}
@@ -671,15 +750,26 @@ if ($can_reply)
 
 	<form method="post" action="admin_reply_ticket.php" enctype="multipart/form-data" name="form1">
 
-	<p align="center"><?php echo $hesklang['select_saved']; ?>:<br />
-	<select name="saved_replies" onchange="setMessage(this.value)">
-	<option value="0"> - <?php echo $hesklang['select_empty']; ?> - </option>
-	<?php echo $options; ?>
-	</select>
-	</p>
+    <br />
+
+    <div align="center">
+    <table border="0">
+    <tr>
+    	<td>
+	    <?php echo $hesklang['select_saved']; ?>:<br />
+	    <select name="saved_replies" onchange="setMessage(this.value)">
+		<option value="0"> - <?php echo $hesklang['select_empty']; ?> - </option>
+		<?php echo $options; ?>
+		</select><br />
+	    <label><input type="radio" name="mode" id="moderep" value="0" checked="checked" /> <?php echo $hesklang['mrep']; ?></label><br />
+	    <label><input type="radio" name="mode" id="modeadd" value="1" /> <?php echo $hesklang['madd']; ?></label>
+        </td>
+    </tr>
+    </table>
+    </div>
 
 	<p align="center"><?php echo $hesklang['message']; ?>: <font class="important">*</font><br />
-	<span id="HeskMsg"><textarea name="message" rows="12" cols="60"></textarea></span></p>
+	<span id="HeskMsg"><textarea name="message" id="message" rows="12" cols="60"></textarea></span></p>
 
 	<?php
 	/* attachments */

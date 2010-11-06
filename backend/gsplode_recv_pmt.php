@@ -7,10 +7,10 @@ connect2slm();
 
 //Key to use for auth
 //Is this one of our grid sploders?
-$auth_config    = "7399F2FB0B4C2DF30E5D2F0CFF59B6516C64BF58";
+$auth_config    = "7399F2FB0B4C2DF30E5D2F0CFF59B6516C64BF587399F2FB0B4C2DF30E5D2F0CFF59B6516C64BF58";
 
 //System Version
-$version        = 1.2;
+$version        = 2.3;
 $DEBUG          = FALSE;
 
 //Default Commission
@@ -410,7 +410,7 @@ if($auth_config == $auth_recv){//This is not an imposter
 	if($sys_status == ("ONLINE" || "DEBUG")){
 	//Only do stuff if we are online or testing
 	print($sys_status.";/me says to $player_name, \"$paymentmsgdsp\"\nThanks for playing!  Remember, the more you enter, the more chances you have at winning!!!");
-		if($filled_num == 1){
+		if($filled_num >= 1){
 			if($filled_ttexp > time()){//We still have some time remaining on a filled session
 				//print("Filled Completed > Now\n");
 				//Lets add their entry in with this session, but allocate the funds to the next open session				
@@ -529,7 +529,7 @@ if($auth_config == $auth_recv){//This is not an imposter
 			}
 		}
 	}
-	elseif($sys_status == "OFFLINE") {print("OFFLINE;The GridSplode system is currently offline.  We will be back up shortly.  Refunding your money now.");}
-	elseif($sys_status == "SHUTDOWN"){print("SHUTDOWN;The GridSplode system has been shut down.  Thank you for playing.  Refunding your money now.");}
-}else{print("AUTH_FAIL;I'm sorry, this unit is unauthorized to be used in the GridSplode network. Please get a new copy. Refunding your money now.");}
+	elseif($sys_status == "OFFLINE") {print("OFFLINE;The GridSplode system is currently offline.  We will be back up shortly.  Refunding your money now. Check our twitter for more information http://twitter.com/sublimegeek or our blog http://sublimegeek.com/blog");}
+	elseif($sys_status == "SHUTDOWN"){print("SHUTDOWN;The GridSplode system has been shut down.  Thank you for playing.  Refunding your money now.  Check our twitter for more information http://twitter.com/sublimegeek or our blog http://sublimegeek.com/blog");}
+}else{print("AUTH_FAIL;I'm sorry, this unit is unauthorized to be used in the GridSplode network. Please get a new copy. Refunding your money now.  Check our twitter for more information http://twitter.com/sublimegeek or our blog http://sublimegeek.com/blog");}
 ?>

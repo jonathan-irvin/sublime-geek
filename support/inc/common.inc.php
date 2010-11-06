@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,14 +26,310 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 /* Check if this is a valid include */
 if (!defined('IN_SCRIPT')) {die($hesklang['attempt']);}
+
+#error_reporting(E_ALL);
+
+/* PHP 6 doesn't support magic_quotes anymore */
+if (version_compare(PHP_VERSION, '6.0.0-dev', '<'))
+{
+	@set_magic_quotes_runtime(0);
+	if (get_magic_quotes_gpc())
+	{
+		define('HESK_SLASH',false);
+	}
+    else
+    {
+    	define('HESK_SLASH',true);
+    }
+}
+else
+{
+	define('HESK_SLASH',true);
+}
+
+hesk_getLanguage();
+
+
+/*** FUNCTIONS ***/
+
+function & ref_new(&$new_statement)
+{
+	return $new_statement;
+} // END ref_new()
+
+
+function hesk_getHTML($in) {
+	global $hesk_settings, $hesklang;
+
+	$replace_from = array("\t","<?","?>","$","<%","%>");
+	$replace_to   = array("","&lt;?","?&gt;","\$","&lt;%","%&gt;");
+
+	$in = trim($in);
+	$in = str_replace($replace_from,$replace_to,$in);
+	$in = preg_replace('/\<script(.*)\>(.*)\<\/script\>/Uis',"<script$1></script>",$in);
+	$in = preg_replace('/\<\!\-\-(.*)\-\-\>/Uis',"<!-- comments have been removed -->",$in);
+
+	if (HESK_SLASH === true)
+	{
+		$in = addslashes($in);
+	}
+    $in = str_replace('\"','"',$in);
+
+	return $in;
+} // END hesk_getHTML()
+
+
+function hesk_getEmailMessage($eml_file) {
+	global $hesk_settings, $hesklang;
+
+    $valid_emails = array('category_moved','forgot_ticket_id','new_reply_by_customer','new_reply_by_staff','new_ticket','new_ticket_staff');
+
+    if (!in_array($eml_file,$valid_emails))
+    {
+    	hesk_error($hesklang['inve']);
+    }
+
+    $eml_file = 'language/' . $hesk_settings['languages'][$hesk_settings['language']]['folder'] . '/emails/' . $eml_file . '.txt';
+
+    if (file_exists(HESK_PATH . $eml_file))
+    {
+		return file_get_contents(HESK_PATH . $eml_file);
+    }
+    else
+    {
+    	hesk_error($hesklang['emfm'].': '.$eml_file);
+    }
+} // END hesk_getEmailMessage
+
+
+function hesk_msgToPlain($msg, $specialchars=0, $strip=1) {
+	$from = array('/\<a href="mailto\:([^"]*)"\>([^\<]*)\<\/a\>/i', '/\<a href="([^"]*)" target="_blank"\>([^\<]*)\<\/a\>/i');
+	$to   = array("$1", "$1");
+	$msg = preg_replace($from,$to,$msg);
+	$msg = preg_replace('/<br \/>\s*/',"\n",$msg);
+    $msg = trim($msg);
+
+    if ($strip)
+    {
+    	$msg = stripslashes($msg);
+    }
+
+    if ($specialchars)
+    {
+    	$msg = html_entity_decode($msg);
+    }
+
+    return $msg;
+} // END hesk_msgToPlain()
+
+
+function hesk_showTopBar($page_title) {
+	global $hesk_settings, $hesklang;
+
+	if ($hesk_settings['can_sel_lang'])
+	{
+
+		$str = '<form method="get" action="" style="margin:0;padding:0;border:0;white-space:nowrap;">';
+		foreach ($_GET as $k => $v)
+		{
+			if ($k == 'language')
+			{
+				continue;
+			}
+			$str .= '<input type="hidden" name="'.htmlentities($k).'" value="'.htmlentities($v).'" />';
+		}
+
+        $str .= '<select name="language" onchange="this.form.submit()">';
+		$str .= hesk_listLanguages(0);
+		$str .= '</select>';
+
+	?>
+		<table border="0" cellspacing="0" cellpadding="0" width="100%">
+		<tr>
+		<td class="headersm" style="padding-left: 0px;"><?php echo $page_title; ?></td>
+		<td class="headersm" style="padding-left: 0px;text-align: right">
+        <script language="javascript" type="text/javascript">
+		document.write('<?php echo str_replace(array('"','<','=','>'),array('\42','\74','\75','\76'),$str . '</form>'); ?>');
+        </script>
+        <noscript>
+        <?php
+        	echo $str . '<input type="submit" value="'.addslashes($hesklang['go']).'" /></form>';
+        ?>
+        </noscript>
+        </td>
+		</tr>
+		</table>
+	<?php
+	}
+	else
+	{
+		echo $page_title;
+	}
+} // END hesk_showTopBar()
+
+
+function hesk_getLanguage() {
+	global $hesk_settings, $hesklang, $_SESSION;
+
+    $language = $hesk_settings['language'];
+
+    /* Can users select language? */
+    if (!$hesk_settings['can_sel_lang'])
+    {
+        return hesk_returnLanguage();
+    }
+
+    /* Is a non-default language selected? If not use default one */
+    if (isset($_GET['language']))
+    {
+    	$language = hesk_input($_GET['language']) or $language = $hesk_settings['language'];
+    }
+    elseif (isset($_COOKIE['hesk_language']))
+    {
+    	$language = hesk_input($_COOKIE['hesk_language']) or $language = $hesk_settings['language'];
+    }
+    else
+    {
+        return hesk_returnLanguage();
+    }
+
+    /* non-default language selected. Check if it's a valid one, if not use default one */
+    if ($language != $hesk_settings['language'] && isset($hesk_settings['languages'][$language]))
+    {
+        $hesk_settings['language'] = $language;
+    }
+
+	setcookie('hesk_language',$hesk_settings['language'],time()+31536000,'/');
+    return hesk_returnLanguage();
+} // END hesk_getLanguage()
+
+
+function hesk_returnLanguage() {
+	global $hesk_settings, $hesklang;
+	require(HESK_PATH . 'language/' . $hesk_settings['languages'][$hesk_settings['language']]['folder'] . '/text.php');
+    return true;
+} // END hesk_returnLanguage()
+
+
+function hesk_listLanguages($doecho = 1) {
+	global $hesk_settings, $hesklang;
+
+	foreach ($hesk_settings['languages'] as $lang => $info)
+	{
+		if ($lang == $hesk_settings['language'])
+		{
+			$tmp .= '<option value="'.$lang.'" selected="selected">'.$lang.'</option>';
+		}
+		else
+		{
+			$tmp .= '<option value="'.$lang.'">'.$lang.'</option>';
+		}
+	}
+
+    if ($doecho)
+    {
+		echo $tmp;
+    }
+    else
+    {
+    	return $tmp;
+    }
+} // END hesk_listLanguages
+
+
+function hesk_autoLogin($noredirect=0) {
+	global $hesk_settings, $hesklang, $hesk_db_link;
+
+	if (!$hesk_settings['autologin'])
+    {
+    	return false;
+    }
+
+    $user = $_COOKIE['hesk_username'] ? htmlspecialchars($_COOKIE['hesk_username']) : '';
+    $hash = $_COOKIE['hesk_p'] ? htmlspecialchars($_COOKIE['hesk_p']) : '';
+    define('HESK_USER', $user);
+
+	if (empty($user) || empty($hash))
+    {
+    	return false;
+    }
+
+	$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'users` WHERE `user` = \''.hesk_dbEscape($user).'\' LIMIT 1';
+	$result = hesk_dbQuery($sql);
+	if (hesk_dbNumRows($result) != 1)
+	{
+        setcookie('hesk_username', '');
+        setcookie('hesk_p', '');
+        header('Location: index.php?a=login&notice=1');
+        exit();
+	}
+
+	$res=hesk_dbFetchAssoc($result);
+	foreach ($res as $k=>$v)
+	{
+	    $_SESSION[$k]=$v;
+	}
+
+	/* Check password */
+	if ($hash != hesk_Pass2Hash($_SESSION['pass'].strtolower($user).$_SESSION['pass']))
+    {
+        setcookie('hesk_username', '');
+        setcookie('hesk_p', '');
+        header('Location: index.php?a=login&notice=1');
+        exit();
+	}
+	unset($_SESSION['pass']);
+
+	/* Regenerate session ID (security) */
+	hesk_session_regenerate_id();
+
+	/* Get allowed categories */
+	if (empty($_SESSION['isadmin']))
+	{
+	    $cat=substr($_SESSION['categories'], 0, -1);
+	    $_SESSION['categories']=explode(',',$cat);
+	}
+
+	session_write_close();
+
+	/* Renew cookies */
+	setcookie('hesk_username', "$user", strtotime('+1 year'));
+	setcookie('hesk_p', "$hash", strtotime('+1 year'));
+
+    /* Close any old tickets here so Cron jobs aren't necessary */
+	if ($hesk_settings['autoclose'])
+    {
+    	$dt  = date('Y-m-d H:i:s',time() - $hesk_settings['autoclose']*86400);
+		$sql = 'UPDATE `'.$hesk_settings['db_pfix'].'tickets` SET `status`=\'3\' WHERE `status` = \'2\' AND `lastchange` <= \''.hesk_dbEscape($dt).'\'';
+		hesk_dbQuery($sql);
+    }
+
+	/* If session expired while a HESK page is open just continue using it, don't redirect */
+    if ($noredirect)
+    {
+    	return true;
+    }
+
+	/* Redirect to the destination page */
+	if ($url = hesk_input($_REQUEST['goto']))
+	{
+	    $url = str_replace('&amp;','&',$url);
+	    header('Location: '.$url);
+	}
+	else
+	{
+	    header('Location: admin_main.php');
+	}
+	exit();
+} // END hesk_autoLogin()
 
 
 function hesk_Pass2Hash($plaintext) {
@@ -114,7 +411,7 @@ function hesk_isNumber($in,$error=0) {
         }
         else
         {
-            return '';
+            return 0;
         }
     }
 
@@ -155,12 +452,18 @@ function hesk_PasswordSyntax($password,$error,$checklength=1,$required=1) {
 
 
 function hesk_validateURL($url,$error) {
+	global $hesklang;
 
     $url = trim($url);
 
+    if (strpos($url,"'") !== false || strpos($url,"\"") !== false)
+    {
+		die($hesklang['attempt']);
+    }
+
     if (preg_match('/^https?:\/\/+(localhost|[\w\-]+\.[\w\-]+)/i',$url))
     {
-        return $url;
+        return hesk_input($url);
     }
 
     hesk_error($error);
@@ -169,6 +472,12 @@ function hesk_validateURL($url,$error) {
 
 
 function hesk_input($in,$error=0) {
+
+	if (is_array($in))
+    {
+    	$in = array_map('hesk_input',$in);
+        return $in;
+    }
 
     $in = trim($in);
 
@@ -182,12 +491,9 @@ function hesk_input($in,$error=0) {
         hesk_error($error);
     }
 
-    if (!ini_get('magic_quotes_gpc'))
+    if (HESK_SLASH)
     {
-        if (!is_array($in))
-            $in = addslashes($in);
-        else
-            $in = hesk_slashArray($in);
+		$in = addslashes($in);
     }
 
     return $in;
@@ -196,12 +502,18 @@ function hesk_input($in,$error=0) {
 
 
 function hesk_validateEmail($address,$error,$required=1) {
+	global $hesklang;
 
     $address = trim($address);
 
+    if (strpos($address,"'") !== false || strpos($address,"\"") !== false)
+    {
+		die($hesklang['attempt']);
+    }
+
     if (preg_match("/([\w\-]+\@[\w\-]+\.[\w\-]+)/",$address))
     {
-        return $address;
+        return hesk_input($address);
     }
 
     if ($required) {
@@ -221,17 +533,17 @@ function hesk_myCategories($what='category') {
     }
     else
     {
-        $mycat_sql='(';
         $i=1;
+        $mycat_sql='(';
         foreach ($_SESSION['categories'] as $mycat)
         {
             if ($i)
             {
-                $mycat_sql.=" `$what`=$mycat ";
+                $mycat_sql.=" `".hesk_dbEscape($what)."`=".hesk_dbEscape($mycat)." ";
             }
             else
             {
-                $mycat_sql.=" OR `$what`=$mycat ";
+                $mycat_sql.=" OR `".hesk_dbEscape($what)."`=".hesk_dbEscape($mycat)." ";
             }
             $i=0;
         }
@@ -327,9 +639,15 @@ function hesk_checkPermission($feature,$showerror=1) {
 
 
 function hesk_isLoggedIn() {
+	global $hesk_settings;
 
     if (empty($_SESSION['id']))
     {
+    	if ($hesk_settings['autologin'] && hesk_autoLogin(1))
+        {
+        	return true;
+        }
+
         $referer = hesk_input($_SERVER['REQUEST_URI']);
         $referer = str_replace('&amp;','&',$referer);
 
@@ -375,14 +693,37 @@ function hesk_session_stop()
 // END hesk_session_stop()
 
 
+function hesk_stripArray($a)
+{
+	foreach ($a as $k => $v)
+    {
+    	if (is_array($v))
+        {
+        	$a[$k] = hesk_stripArray($v);
+        }
+        else
+        {
+        	$a[$k] = stripslashes($v);
+        }
+    }
+
+    reset ($a);
+    return ($a);
+} // END hesk_stripArray()
+
+
 function hesk_slashArray($a)
 {
-    while (list($k,$v) = each($a))
+	foreach ($a as $k => $v)
     {
-        if (!is_array($v))
-            $a[$k] = addslashes($v);
+    	if (is_array($v))
+        {
+        	$a[$k] = hesk_slashArray($v);
+        }
         else
-            $a[$k] = hesk_slashArray($v);
+        {
+        	$a[$k] = addslashes($v);
+        }
     }
 
     reset ($a);
@@ -397,9 +738,9 @@ require_once(HESK_PATH . 'inc/header.inc.php');
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="3"><img src="img/headerleftsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="<?php echo HESK_PATH; ?>img/headerleftsm.jpg" width="3" height="25" alt="" /></td>
 <td class="headersm"><?php echo $hesk_settings['hesk_title']; ?></td>
-<td width="3"><img src="img/headerrightsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="<?php echo HESK_PATH; ?>img/headerrightsm.jpg" width="3" height="25" alt="" /></td>
 </tr>
 </table>
 
@@ -433,7 +774,15 @@ else
 		<td align="left" class="error_header">&nbsp;<img src="<?php echo HESK_PATH; ?>img/error.gif" style="vertical-align:text-bottom" width="16" height="16" alt="" />&nbsp; <?php echo $hesklang['error']; ?></td>
 	</tr>
 	<tr>
-		<td align="left" class="error_body"><?php echo $error; ?></td>
+		<td align="left" class="error_body"><?php
+        	echo $error;
+
+            if ($hesk_settings['debug_mode'])
+            {
+            	echo "<p>&nbsp;</p><p><span style=\"color:red;font-weight:bold\">$hesklang[warn]</span><br />$hesklang[dmod]</p>";
+            }
+
+        ?></td>
 	</tr>
 </table>
 </div>
@@ -547,7 +896,7 @@ function hesk_generate_SPAM_question () {
     }
 
     $spam_questions = array(
-    	$f => 'What is the next number after '.$e.'? (Use oly digits to answer)',
+    	$f => 'What is the next number after '.$e.'? (Use only digits to answer)',
     	'white' => 'What color is snow? (give a 1 word answer to show you are a human)',
     	'green' => 'What color is grass? (give a 1 word answer to show you are a human)',
     	'blue' => 'What color is water? (give a 1 word answer to show you are a human)',
@@ -558,6 +907,8 @@ function hesk_generate_SPAM_question () {
     	$my_not_animals[2] => 'Which of these IS an animal: ' . implode(', ',hesk_randomize_array($my_not_animals)),
     	$h => 'Which number is higher <b>'.$e.'</b> or <b>'.$d.'</b>:',
     	$l => 'Which number is lower <b>'.$e.'</b> or <b>'.$d.'</b>:',
+        'no' => 'Are you a robot? (yes or no)',
+        'yes' => 'Are you a human? (yes or no)'
     );
 
     $r = array_rand($spam_questions);

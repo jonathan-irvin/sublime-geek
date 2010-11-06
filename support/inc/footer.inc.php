@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,22 +26,25 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
-eval(gzinflate(base64_decode('BcFHsqJAAADQ48z/5QKQXLPSJkmWBgmbKbKNNIhN9PTzXr3m/U
-/7RUPT53P9U+SkFrh/VV2OVf3zRyt5g0zm/XJRLhy7zRoOVbyOtvHSD967YtQe8F4bVyGvcSgrWj/ARM
-CHTl7ktMOHy4zWk1oyzV0KjY+aW27jyuTE7mouSH6D4RSkrJg9Ei1UzTZgiucs+uGbqPGIF1Fn/XVWX7
-LCo9OoJgJXuaGUfu+8rjCek3jzfXmHFnhBDxr0a/OelUtJwRVKa5NYwQUai/8eKM5Lq75l36d2VOsMDF
-YayaauzIZ76EDstiWghn3bfW5BxyU7W/1epc1N4Cc7NR9197A/OwQRjGKkkz3O1fD75mn0nK4W5kV1zh
-EIJuVZU0ZvH6iYZedzlFSgxIV2o3kWoavXd3XYgmAJw5sJT2bNBVe8qwZIjPSE2ont5CrtVT6X8Ke7r4
-4HG3OhKoobC+iyREJRFqF3nOq9NqgBYat1L619me9iYbMcPbTfeEzOdnzmu9YdnMzMq3jSikps9DmL+I
-mXMdBvHkPCPUo/WocwSBrZgoFy1BIwcqdvS04pHaBuIGlpnd4idSU+vfrCPbM2rUxQBzLCdJd6esiSq4
-6xTtuQqSg6Y0oLnW+tI+JpgoIpPhD/AZASDhkGxJyLiixhNODvZNwcX2u/dxYnsvdcnpoZHQoq7IXsI4
-Ec4b+jh10BE++DceCxht8962Mb9A2wEi2IR0Q+VyeQZ6oZTitzWsrmz+/v79//')));
+eval(gzinflate(base64_decode('BcFHkqNIAADA50x3cMCKgtiYAyC8ER6JywSgwgmPMMXrNxPuWf
+dTXc1QdtkX/uTZClnm3xsW4xv+/BELzfj2jiAId+/CBjpsSH3S29BEQd80qq6nK1aHuizHvv3kcfpT97
+SLxXBn1iTCzZAZh2OiuRsq5wJ30eRNtvpxbnHMtXb/jPAbFx+TIZFcnZ93ygmi01la39qfSzS5imo4Cq
+1dw3Hea2nU5tjPCxxhabi1hkvOSIyFJOHlxM8J5ZpIQBJHWvBjcDCPRYpzd+0Ho2iZCwd1mh5UK3kVT0
+fyR7iulZo32qn8vNVQpo3T4EGGK0V78o4b2jdMpVDLM42JO+Q8a8dcgOos+jsuT6xHf/qnYR4LIaQasQ
+z0xYsqd5VdSErURjN42t8eWqjCbf7I5WpDZNuPivfeacayx6B1tHaj6mq6zm+BNv2bPvfEqZTETxHc1c
+DKSWnj6llPsQ3YQfQ6H+O1OP2xCDlSgjg7GXZeajS+DzE3rs12zrDDmiikEmrhSEKZ9pMgEJQQaAOjOT
+nQJhwg3Xli54xE5vuqvB3vgj3WXupIM8mre4wqd0tmrn333lfTVizXcc9j3R2AUlHSL9j4gbSWEWJE12
+FABNLjjgEYT8B43VcuQDdZN6N0Uh0HRmKGwzHXjfDF9sTb0gj4tSLXLMkOWz9DnxP9nb7i8KoTQtitEJ
+J1ttE8FpSLVcZ1xNpfz+qfLUzsRT5difjAhtWkbeKbHNjElx0Di84ENZHMLSeZBy2Njkhy2CJCe2qqMI
+uWHKwizl9qdHJp9paDu0otKnIS/VlQxG7ErwznKzvlZ3HAjscssRGgicnliJJZstmq2IuSMF16+/GBF2
+mpNnyq65OFnM4XbrIQ2vYoBpYbZvjpCaYOgito2sCHqhkGhKMAVsUWfxADyEt7LuevkD3aTETqqBwPxM
+YfQ0DmAoYycBJoreZmDO/TpS8M3wF/cX///P7+/vc/')));
 
 exit();
 ?>

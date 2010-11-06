@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,19 +37,18 @@ define('HESK_PATH','../');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
 hesk_session_start();
-hesk_isLoggedIn();
 hesk_dbConnect();
+hesk_isLoggedIn();
 
 /* Check permissions for this feature */
 hesk_checkPermission('can_man_cat');
 
 /* What should we do? */
-$action=hesk_input($_REQUEST['a']);
+$action = isset($_REQUEST['a']) ? hesk_input($_REQUEST['a']) : '';
 if ($action == 'new') {new_cat();}
 elseif ($action == 'rename') {rename_cat();}
 elseif ($action == 'remove') {remove();}
@@ -109,7 +109,7 @@ else {return false;}
 </tr>
 
 <?php
-$sql = 'SELECT COUNT(*) AS `cnt`, `category` FROM `'.$hesk_settings['db_pfix'].'tickets` GROUP BY `category` ORDER BY `cnt` DESC';
+$sql = 'SELECT COUNT(*) AS `cnt`, `category` FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` GROUP BY `category` ORDER BY `cnt` DESC';
 $res = hesk_dbQuery($sql);
 $line_width  = 150;
 $max_tickets = 0;
@@ -122,7 +122,7 @@ while ($tmp = hesk_dbFetchAssoc($res))
 	$number_of_tickets[$tmp['category']] = $tmp['cnt'];
 }
 
-$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."categories` ORDER BY `cat_order` ASC";
+$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` ORDER BY `cat_order` ASC";
 $result = hesk_dbQuery($sql);
 $options='';
 
@@ -154,7 +154,7 @@ while ($mycat=hesk_dbFetchAssoc($result))
 	<td class="'.$color.'">'.$mycat['name'].'</td>
 	';
 
-	$tickets = $number_of_tickets[$mycat['id']] ? $number_of_tickets[$mycat['id']] : 0;
+	$tickets = isset($number_of_tickets[$mycat['id']]) ? $number_of_tickets[$mycat['id']] : 0;
 	if ($max_tickets)
     {
     	$width = ceil($line_width * $tickets / $max_tickets)+1;
@@ -233,18 +233,27 @@ function new_cat() {
 
 	$catname=hesk_Input($_POST['name'],$hesklang['enter_cat_name']);
 
+	$sql = "SELECT `id` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE `name` LIKE '".hesk_dbEscape($catname)."' LIMIT 1";
+	$res = hesk_dbQuery($sql);
+    if (hesk_dbNumRows($res) != 0)
+    {
+    	hesk_error($hesklang['cndupl']);
+    }
+
 	/* Get the latest cat_order */
-	$sql = "SELECT `cat_order` FROM `".$hesk_settings['db_pfix']."categories` ORDER BY `cat_order` DESC LIMIT 1";
-	$result = hesk_dbQuery($sql);
-	$row = hesk_dbFetchRow($result);
+	$sql = "SELECT `cat_order` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` ORDER BY `cat_order` DESC LIMIT 1";
+	$res = hesk_dbQuery($sql);
+	$row = hesk_dbFetchRow($res);
 	$my_order = $row[0]+10;
 
-	$sql = "INSERT INTO `".$hesk_settings['db_pfix']."categories` (`name`,`cat_order`) VALUES ('$catname','$my_order')";
-	$result = hesk_dbQuery($sql);
+	$sql = "INSERT INTO `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` (`name`,`cat_order`) VALUES (
+    '".hesk_dbEscape($catname)."',
+    '".hesk_dbEscape($my_order)."')";
+	$res = hesk_dbQuery($sql);
 
 	$_SESSION['HESK_NOTICE']  = $hesklang['cat_added'];
-	$_SESSION['HESK_MESSAGE'] = sprintf($hesklang['cat_name_added'],'<i>'.$catname.'</i>');
-	Header('Location: manage_categories.php');
+	$_SESSION['HESK_MESSAGE'] = sprintf($hesklang['cat_name_added'],'<i>'.stripslashes($catname).'</i>');
+	header('Location: manage_categories.php');
 	exit();
 } // End new_cat()
 
@@ -255,16 +264,28 @@ function rename_cat() {
 	$catid=hesk_isNumber($_POST['catid'],$hesklang['choose_cat_ren']);
 	$catname=hesk_Input($_POST['name'],$hesklang['cat_ren_name']);
 
-	$sql = "UPDATE `".$hesk_settings['db_pfix']."categories` SET `name`='$catname' WHERE `id`=$catid LIMIT 1";
-	$result = hesk_dbQuery($sql);
-	if (hesk_dbAffectedRows() != 1)
+	$sql = "SELECT `id` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE `name` LIKE '".hesk_dbEscape($catname)."' LIMIT 1";
+	$res = hesk_dbQuery($sql);
+    if (hesk_dbNumRows($res) != 0)
     {
-    	hesk_error("$hesklang[int_error]: $hesklang[cat_not_found].");
+    	$old = hesk_dbFetchAssoc($res);
+        if ($old['id'] == $catid)
+        {
+			header('Location: manage_categories.php');
+			exit();
+        }
+        else
+        {
+    		hesk_error($hesklang['cndupl']);
+        }
     }
 
+	$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` SET `name`='".hesk_dbEscape($catname)."' WHERE `id`=".hesk_dbEscape($catid)." LIMIT 1";
+	$res = hesk_dbQuery($sql);
 	$_SESSION['HESK_NOTICE']  = $hesklang['cat_renamed'];
 	$_SESSION['HESK_MESSAGE'] = $hesklang['cat_renamed_to'].' <i>'.$catname.'</i>';
-	Header('Location: manage_categories.php');
+
+	header('Location: manage_categories.php');
 	exit();
 } // End rename_cat()
 
@@ -275,19 +296,19 @@ function remove() {
 	$mycat=hesk_isNumber($_GET['id'],$hesklang['no_cat_id']);
 	if ($mycat == 1) {hesk_error($hesklang['cant_del_default_cat']);}
 
-	$sql = "DELETE FROM `".$hesk_settings['db_pfix']."categories` WHERE `id`=$mycat LIMIT 1";
+	$sql = "DELETE FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE `id`=".hesk_dbEscape($mycat)." LIMIT 1";
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbAffectedRows() != 1)
     {
     	hesk_error("$hesklang[int_error]: $hesklang[cat_not_found].");
     }
 
-	$sql = "UPDATE `".$hesk_settings['db_pfix']."tickets` SET `category`=1 WHERE `category`=$mycat LIMIT 1";
+	$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET `category`=1 WHERE `category`=".hesk_dbEscape($mycat)." LIMIT 1";
 	$result = hesk_dbQuery($sql);
 
 	$_SESSION['HESK_NOTICE']  = $hesklang['cat_removed'];
 	$_SESSION['HESK_MESSAGE'] = $hesklang['cat_removed_db'];
-	Header('Location: manage_categories.php');
+	header('Location: manage_categories.php');
 	exit();
 } // End remove()
 
@@ -298,23 +319,23 @@ function order_cat() {
 	$catid=hesk_isNumber($_GET['catid'],$hesklang['cat_move_id']);
 	$cat_move=intval($_GET['move']);
 
-	$sql = "UPDATE `".$hesk_settings['db_pfix']."categories` SET `cat_order`=`cat_order`+$cat_move WHERE `id`=$catid LIMIT 1";
+	$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` SET `cat_order`=`cat_order`+".hesk_dbEscape($cat_move)." WHERE `id`=".hesk_dbEscape($catid)." LIMIT 1";
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbAffectedRows() != 1) {hesk_error("$hesklang[int_error]: $hesklang[cat_not_found].");}
 
 	/* Update all category fields with new order */
-	$sql = "SELECT `id` FROM `".$hesk_settings['db_pfix']."categories` ORDER BY `cat_order` ASC";
+	$sql = "SELECT `id` FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` ORDER BY `cat_order` ASC";
 	$result = hesk_dbQuery($sql);
 
 	$i = 10;
 	while ($mycat=hesk_dbFetchAssoc($result))
 	{
-	    $sql = "UPDATE `".$hesk_settings['db_pfix']."categories` SET `cat_order`=$i WHERE `id`=$mycat[id] LIMIT 1";
+	    $sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` SET `cat_order`=".hesk_dbEscape($i)." WHERE `id`=".hesk_dbEscape($mycat['id'])." LIMIT 1";
 	    hesk_dbQuery($sql);
 	    $i += 10;
 	}
 
-	Header('Location: manage_categories.php');
+	header('Location: manage_categories.php');
 	exit();
 } // End order_cat()
 ?>

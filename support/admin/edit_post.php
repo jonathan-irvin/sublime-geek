@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,13 +37,12 @@ define('HESK_PATH','../');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
 hesk_session_start();
-hesk_isLoggedIn();
 hesk_dbConnect();
+hesk_isLoggedIn();
 
 /* Check permissions for this feature */
 hesk_checkPermission('can_view_tickets');
@@ -52,7 +52,7 @@ $trackingID = strtoupper(hesk_input($_REQUEST['track'],$hesklang['no_trackID']))
 $is_reply = 0;
 
 /* Get ticket info */
-$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."tickets` WHERE `trackid`='$trackingID' LIMIT 1";
+$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` WHERE `trackid`='".hesk_dbEscape($trackingID)."' LIMIT 1";
 $result = hesk_dbQuery($sql);
 if (hesk_dbNumRows($result) != 1)
 {
@@ -66,7 +66,7 @@ hesk_okCategory($ticket['category']);
 if (isset($_REQUEST['reply']))
 {
 	$id = hesk_isNumber($_REQUEST['reply'],$hesklang['id_not_valid']);
-	$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."replies` WHERE `id`=$id AND `replyto`='$ticket[id]' LIMIT 1";
+	$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` WHERE `id`=".hesk_dbEscape($id)." AND `replyto`='".hesk_dbEscape($ticket['id'])."' LIMIT 1";
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbNumRows($result) != 1)
     {
@@ -79,28 +79,109 @@ if (isset($_REQUEST['reply']))
 
 if (isset($_POST['save']))
 {
-	$message = hesk_input($_POST['message'],$hesklang['enter_message']);
-	$message = hesk_makeURL($message);
-	$message = nl2br($message);
+	$hesk_error_buffer = array();
+
     if ($is_reply)
     {
-    	$sql = "UPDATE `".$hesk_settings['db_pfix']."replies` SET `message`='$message' WHERE `id`=$id AND `replyto`='$ticket[id]' LIMIT 1";
+		$message  = hesk_input($_POST['message']) or $hesk_error_buffer[]=$hesklang['enter_message'];
+
+	    if (count($hesk_error_buffer))
+	    {
+	    	$myerror = '<ul>';
+		    foreach ($hesk_error_buffer as $error)
+		    {
+		        $myerror .= "<li>$error</li>\n";
+		    }
+	        $myerror .= '</ul>';
+	    	hesk_error($myerror);
+	    }
+
+		$message = hesk_makeURL($message);
+		$message = nl2br($message);
+
+    	$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` SET `message`='".hesk_dbEscape($message)."' WHERE `id`=".hesk_dbEscape($id)." AND `replyto`='".hesk_dbEscape($ticket['id'])."' LIMIT 1";
     }
     else
     {
-    	$sql = "UPDATE `".$hesk_settings['db_pfix']."tickets` SET `message`='$message' WHERE `id`='$ticket[id]' LIMIT 1";
+		$name	  = hesk_input($_POST['name']) or $hesk_error_buffer[]=$hesklang['enter_your_name'];
+		$email	  = hesk_validateEmail($_POST['email'],'ERR',0) or $hesk_error_buffer[]=$hesklang['enter_valid_email'];
+		$subject  = hesk_input($_POST['subject']) or $hesk_error_buffer[]=$hesklang['enter_ticket_subject'];
+		$message  = hesk_input($_POST['message']) or $hesk_error_buffer[]=$hesklang['enter_message'];
+
+	    if (count($hesk_error_buffer))
+	    {
+	    	$myerror = '<ul>';
+		    foreach ($hesk_error_buffer as $error)
+		    {
+		        $myerror .= "<li>$error</li>\n";
+		    }
+	        $myerror .= '</ul>';
+	    	hesk_error($myerror);
+	    }
+
+		$message = hesk_makeURL($message);
+		$message = nl2br($message);
+
+		foreach ($hesk_settings['custom_fields'] as $k=>$v)
+		{
+			if ($v['use'])
+		    {
+	        	if (is_array($_POST[$k]))
+	            {
+					$$k='';
+					foreach ($_POST[$k] as $myCB)
+					{
+						$$k.=hesk_input($myCB).'<br />';
+					}
+					$$k=substr($$k,0,-6);
+	            }
+	            else
+	            {
+		    		$$k=hesk_makeURL(nl2br(hesk_input($_POST[$k])));
+	            }
+			}
+		    else
+		    {
+		    	$$k = '';
+		    }
+		}
+
+
+		$sql = "UPDATE `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` SET
+		`name`='".hesk_dbEscape($name)."',
+		`email`='".hesk_dbEscape($email)."',
+		`subject`='".hesk_dbEscape($subject)."',
+		`message`='".hesk_dbEscape($message)."',
+		`custom1`='".hesk_dbEscape($custom1)."',
+		`custom2`='".hesk_dbEscape($custom2)."',
+		`custom3`='".hesk_dbEscape($custom3)."',
+		`custom4`='".hesk_dbEscape($custom4)."',
+		`custom5`='".hesk_dbEscape($custom5)."',
+		`custom6`='".hesk_dbEscape($custom6)."',
+		`custom7`='".hesk_dbEscape($custom7)."',
+		`custom8`='".hesk_dbEscape($custom8)."',
+		`custom9`='".hesk_dbEscape($custom9)."',
+		`custom10`='".hesk_dbEscape($custom10)."',
+		`custom11`='".hesk_dbEscape($custom11)."',
+		`custom12`='".hesk_dbEscape($custom12)."',
+		`custom13`='".hesk_dbEscape($custom13)."',
+		`custom14`='".hesk_dbEscape($custom14)."',
+		`custom15`='".hesk_dbEscape($custom15)."',
+		`custom16`='".hesk_dbEscape($custom16)."',
+		`custom17`='".hesk_dbEscape($custom17)."',
+		`custom18`='".hesk_dbEscape($custom18)."',
+		`custom19`='".hesk_dbEscape($custom19)."',
+		`custom20`='".hesk_dbEscape($custom20)."'
+		WHERE `id`='".hesk_dbEscape($ticket['id'])."' LIMIT 1";
     }
+
     hesk_dbQuery($sql);
 	$_SESSION['HESK_NOTICE']  = $hesklang['edt1'];
 	$_SESSION['HESK_MESSAGE'] = $hesklang['edt2'];
 	header('Location: admin_ticket.php?track='.$trackingID.'&Refresh='.mt_rand(10000,99999));
 }
 
-$from = array('/\<a href="mailto\:([^"]*)"\>([^\<]*)\<\/a\>/i', '/\<a href="([^"]*)" target="_blank"\>([^\<]*)\<\/a\>/i');
-$to   = array("$1", "$1");
-$ticket['message'] = preg_replace($from,$to,$ticket['message']);
-$ticket['message'] = preg_replace('/<br \/>\s*/',"\n",$ticket['message']);
-$ticket['message'] = trim(stripslashes($ticket['message']));
+$ticket['message'] = hesk_msgToPlain($ticket['message'],0,0);
 
 /* Print header */
 require_once(HESK_PATH . 'inc/header.inc.php');
@@ -132,6 +213,167 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 
 	<form method="post" action="edit_post.php" name="form1">
 
+    <?php
+    /* If it's not a reply edit all the fields */
+    if (!$is_reply)
+    {
+		?>
+        <br />
+
+        <div align="center">
+		<table border="0" cellspacing="1">
+		<tr>
+		<td style="text-align:right"><?php echo $hesklang['subject']; ?>: </td>
+		<td><input type="text" name="subject" size="40" maxlength="40" value="<?php echo $ticket['subject'];?>" /></td>
+		</tr>
+		<tr>
+		<td style="text-align:right"><?php echo $hesklang['name']; ?>: </td>
+		<td><input type="text" name="name" size="40" maxlength="30" value="<?php echo $ticket['name'];?>" /></td>
+		</tr>
+		<tr>
+		<td style="text-align:right"><?php echo $hesklang['email']; ?>: </td>
+		<td><input type="text" name="email" size="40" maxlength="50" value="<?php echo $ticket['email'];?>" /></td>
+		</tr>
+
+        <?php
+		foreach ($hesk_settings['custom_fields'] as $k=>$v)
+		{
+			if ($v['use'])
+		    {
+				$k_value  = $ticket[$k];
+
+				if ($v['type'] == 'checkbox')
+	            {
+	            	$k_value = explode('<br />',$k_value);
+	            }
+
+		        switch ($v['type'])
+		        {
+		        	/* Radio box */
+		        	case 'radio':
+						echo '
+						<tr>
+						<td style="text-align:right" valign="top">'.$v['name'].': </td>
+		                <td>';
+
+		            	$options = explode('#HESK#',$v['value']);
+
+		                foreach ($options as $option)
+		                {
+
+			            	if (strlen($k_value) == 0 || $k_value == $option)
+			                {
+		                    	$k_value = $option;
+								$checked = 'checked="checked"';
+		                    }
+		                    else
+		                    {
+		                    	$checked = '';
+		                    }
+
+		                	echo '<label><input type="radio" name="'.$k.'" value="'.$option.'" '.$checked.' /> '.$option.'</label><br />';
+		                }
+
+		                echo '</td>
+						</tr>
+						';
+		            break;
+
+		            /* Select drop-down box */
+		            case 'select':
+						echo '
+						<tr>
+						<td style="text-align:right">'.$v['name'].': </td>
+		                <td><select name="'.$k.'">';
+
+		            	$options = explode('#HESK#',$v['value']);
+
+		                foreach ($options as $option)
+		                {
+
+			            	if (strlen($k_value) == 0 || $k_value == $option)
+			                {
+		                    	$k_value = $option;
+		                        $selected = 'selected="selected"';
+			                }
+		                    else
+		                    {
+		                    	$selected = '';
+		                    }
+
+		                	echo '<option '.$selected.'>'.$option.'</option>';
+		                }
+
+		                echo '</select></td>
+						</tr>
+						';
+		            break;
+
+		            /* Checkbox */
+		        	case 'checkbox':
+						echo '
+						<tr>
+						<td style="text-align:right" width="150" valign="top">'.$v['name'].': </td>
+		                <td width="80%">';
+
+		            	$options = explode('#HESK#',$v['value']);
+
+		                foreach ($options as $option)
+		                {
+
+			            	if (in_array($option,$k_value))
+			                {
+								$checked = 'checked="checked"';
+		                    }
+		                    else
+		                    {
+		                    	$checked = '';
+		                    }
+
+		                	echo '<label><input type="checkbox" name="'.$k.'[]" value="'.$option.'" '.$checked.' /> '.$option.'</label><br />';
+		                }
+
+		                echo '</td>
+						</tr>
+						';
+		            break;
+
+		            /* Large text box */
+		            case 'textarea':
+		                $size = explode('#',$v['value']);
+                        $k_value = hesk_msgToPlain($k_value,0,0);
+
+						echo '
+						<tr>
+						<td style="text-align:right" valign="top">'.$v['name'].': </td>
+						<td><textarea name="'.$k.'" rows="'.$size[0].'" cols="'.$size[1].'">'.$k_value.'</textarea></td>
+						</tr>
+		                ';
+		            break;
+
+		            /* Default text input */
+		            default:
+	                	if (strlen($k_value) != 0)
+	                    {
+                        	$k_value = hesk_msgToPlain($k_value,0,0);
+	                    	$v['value'] = $k_value;
+	                    }
+						echo '
+						<tr>
+						<td style="text-align:right">'.$v['name'].': </td>
+						<td><input type="text" name="'.$k.'" size="40" maxlength="'.$v['maxlen'].'" value="'.$v['value'].'" /></td>
+						</tr>
+						';
+		        }
+		    }
+		}
+        ?>
+		</table>
+        </div>
+        <?php
+    }
+    ?>
+
 	<p style="text-align:center">&nbsp;<br /><?php echo $hesklang['message']; ?>:<br />
 	<textarea name="message" rows="12" cols="60"><?php echo $ticket['message']; ?></textarea></p>
 
@@ -140,9 +382,9 @@ require_once(HESK_PATH . 'inc/show_admin_nav.inc.php');
 	<?php
 	if ($is_reply)
 	{
-	?>
-	<input type="hidden" name="reply" value="<?php echo $id; ?>" />
-	<?php
+		?>
+		<input type="hidden" name="reply" value="<?php echo $id; ?>" />
+		<?php
 	}
 	?>
 	<input type="submit" value="<?php echo $hesklang['save_changes']; ?>" class="orangebutton" onmouseover="hesk_btn(this,'orangebuttonover');" onmouseout="hesk_btn(this,'orangebutton');" /></p>

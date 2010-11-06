@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,25 +26,37 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
-
 define('IN_SCRIPT',1);
 define('HESK_PATH','../');
 
+/* Make sure the install folder is deleted */
+if (is_dir(HESK_PATH . 'install')) {die('Please delete the <b>install</b> folder from your server for security reasons then refresh this page!');}
+
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
+/* Save the default language for the settings page before choosing user's preferred one */
+	$hesk_settings['language_default'] = $hesk_settings['language'];
 require(HESK_PATH . 'inc/common.inc.php');
+	$hesk_settings['language'] = $hesk_settings['language_default'];
+require(HESK_PATH . 'inc/database.inc.php');
 
 hesk_session_start();
+hesk_dbConnect();
 hesk_isLoggedIn();
 
 /* Check permissions for this feature */
 hesk_checkPermission('can_man_settings');
+
+/* Test languages function */
+if (isset($_GET['test_languages']))
+{
+	hesk_testLanguage(0);
+}
 
 $enable_save_settings   = 0;
 $enable_use_attachments = 0;
@@ -107,7 +120,13 @@ if (d.s_print_font_size.value=='') {alert('<?php echo $hesklang['err_psize']; ?>
 if (d.s_db_host.value=='') {alert('<?php echo $hesklang['err_dbhost']; ?>'); return false;}
 if (d.s_db_name.value=='') {alert('<?php echo $hesklang['err_dbname']; ?>'); return false;}
 if (d.s_db_user.value=='') {alert('<?php echo $hesklang['err_dbuser']; ?>'); return false;}
-if (d.s_db_pass.value=='') {alert('<?php echo $hesklang['err_dbpass']; ?>'); return false;}
+if (d.s_db_pass.value=='')
+{
+	if (!confirm('<?php echo $hesklang['mysql_root']; ?>'))
+    {
+    	return false;
+    }
+}
 
 if (d.s_custom1_use.checked && d.s_custom1_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
 if (d.s_custom2_use.checked && d.s_custom2_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
@@ -119,6 +138,16 @@ if (d.s_custom7_use.checked && d.s_custom7_name.value == '') {alert('<?php echo 
 if (d.s_custom8_use.checked && d.s_custom8_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
 if (d.s_custom9_use.checked && d.s_custom9_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
 if (d.s_custom10_use.checked && d.s_custom10_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
+if (d.s_custom11_use.checked && d.s_custom11_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
+if (d.s_custom12_use.checked && d.s_custom12_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
+if (d.s_custom13_use.checked && d.s_custom13_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
+if (d.s_custom14_use.checked && d.s_custom14_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
+if (d.s_custom15_use.checked && d.s_custom15_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
+if (d.s_custom16_use.checked && d.s_custom16_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
+if (d.s_custom17_use.checked && d.s_custom17_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
+if (d.s_custom18_use.checked && d.s_custom18_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
+if (d.s_custom19_use.checked && d.s_custom19_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
+if (d.s_custom20_use.checked && d.s_custom20_name.value == '') {alert('<?php echo $hesklang['err_custname']; ?>'); return false;}
 
 return true;
 }
@@ -148,6 +177,12 @@ function hesk_toggleLayer(nr,setto) {
                 document.getElementById(nr).style.display = setto;
 }
 
+function hesk_testLanguage()
+{
+    window.open('admin_settings.php?test_languages=1',"Hesk_window","height=400,width=500,menubar=0,location=0,toolbar=0,status=0,resizable=1,scrollbars=1");
+    return false;
+}
+
 //-->
 </script>
 
@@ -169,7 +204,7 @@ function hesk_toggleLayer(nr,setto) {
 	<table border="0">
 	<tr>
 	<td width="200" valign="top"><?php echo $hesklang['v']; ?>:</td>
-	<td><b><?php echo $hesk_settings['hesk_version']; ?></b> (<a href="http://www.phpjunkyard.com/check4updates.php?s=Hesk&amp;v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['check4updates']; ?></a>)</td>
+	<td><b><?php echo $hesk_settings['hesk_version']; ?></b> (<a href="http://www.hesk.com/update.php?v=<?php echo $hesk_settings['hesk_version']; ?>" target="_blank"><?php echo $hesklang['check4updates']; ?></a>)</td>
 	</tr>
 	<tr>
 	<td width="200" valign="top">/hesk_settings.inc.php</td>
@@ -275,6 +310,58 @@ function hesk_toggleLayer(nr,setto) {
 
 <br />
 
+<span class="section">&raquo; <?php echo $hesklang['lgs']; ?></span>
+
+<!-- Language -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="7" height="7"><img src="../img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+		<td class="roundcornerstop"></td>
+		<td><img src="../img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+	</tr>
+	<tr>
+	<td class="roundcornersleft">&nbsp;</td>
+	<td>
+
+	<table border="0">
+	<tr>
+	<td style="text-align:right;vertical-align:top" width="200"><?php echo $hesklang['hesk_lang']; ?>: [<a href="Javascript:void(0)" onclick="Javascript:hesk_window('../help_files/settings.html#9','400','500')"><b>?</b></a>]</td>
+	<td>
+	<select name="s_language">
+	<?php echo hesk_testLanguage(1); ?>
+	</select>
+    &nbsp;
+    <a href="Javascript:void(0)" onclick="Javascript:return hesk_testLanguage()"><?php echo $hesklang['s_inl']; ?></a><br />
+    <label><input type="checkbox" name="make_default_language" value="1" /> <?php echo $hesklang['mmdl']; ?></label>
+	</td>
+	</tr>
+	<tr>
+	<td style="text-align:right;vertical-align:top;" width="200"><?php echo $hesklang['s_mlang']; ?>: [<a href="Javascript:void(0)" onclick="Javascript:hesk_window('../help_files/settings.html#43','400','500')"><b>?</b></a>]</td>
+	<td>
+	<?php
+	    $on = $hesk_settings['can_sel_lang'] ? 'checked="checked"' : '';
+	    $off = $hesk_settings['can_sel_lang'] ? '' : 'checked="checked"';
+	    echo '
+	    <label><input type="radio" name="s_can_sel_lang" value="0" '.$off.' /> '.$hesklang['no'].'</label> |
+	    <label><input type="radio" name="s_can_sel_lang" value="1" '.$on.' /> '.$hesklang['yes'].'</label>';
+	?><br />
+    <?php echo $hesklang['s_mlange']; ?>
+	</td>
+	</tr>
+	</table>
+
+	</td>
+	<td class="roundcornersright">&nbsp;</td>
+	</tr>
+	<tr>
+	<td><img src="../img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+	<td class="roundcornersbottom"></td>
+	<td width="7" height="7"><img src="../img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+	</tr>
+</table>
+
+<br />
+
 <!-- Helpdesk settings -->
 <span class="section">&raquo; <?php echo $hesklang['hd']; ?></span>
 
@@ -309,47 +396,8 @@ function hesk_toggleLayer(nr,setto) {
 	</td>
 	</tr>
 	<tr>
-	<td style="text-align:right" width="200"><?php echo $hesklang['hesk_lang']; ?>: [<a href="Javascript:void(0)" onclick="Javascript:hesk_window('../help_files/settings.html#9','400','500')"><b>?</b></a>]</td>
-	<td>
-	<select name="s_language">
-	<?php
-	$dir = HESK_PATH . '/language';
-	$path = opendir($dir);
-	$files = array();
-
-	while (false !== ($file = readdir($path)))
-	{
-	    if(is_file($dir.'/'.$file) && substr($file, -8) == '.inc.php')
-	    {
-	        $files[]=$file;
-	    }
-	}
-
-	if(!empty($files))
-	{
-	    natcasesort($files);
-	    foreach ($files as $file)
-	    {
-	        $file=substr($file, 0, -8);
-	        if ($file == $hesk_settings['language'])
-	        {
-	            echo '<option value="'.$file.'" selected="selected">'.ucfirst($file).'</option>';
-	        }
-	        else
-	        {
-	            echo '<option value="'.$file.'">'.ucfirst($file).'</option>';
-	        }
-	    }
-	}
-
-	closedir($path);
-	?>
-	</select>
-	</td>
-	</tr>
-	<tr>
 	<td style="text-align:right" width="200"><?php echo $hesklang['max_listings']; ?>: [<a href="Javascript:void(0)" onclick="Javascript:hesk_window('../help_files/settings.html#10','400','500')"><b>?</b></a>]</td>
-	<td><input type="text" name="s_max_listings" size="5" maxlength="3" value="<?php echo $hesk_settings['max_listings']; ?>" /></td>
+	<td><input type="text" name="s_max_listings" size="5" maxlength="30" value="<?php echo $hesk_settings['max_listings']; ?>" /></td>
 	</tr>
 	<tr>
 	<td style="text-align:right" width="200"><?php echo $hesklang['print_size']; ?>: [<a href="Javascript:void(0)" onclick="Javascript:hesk_window('../help_files/settings.html#11','400','500')"><b>?</b></a>]</td>
@@ -433,6 +481,22 @@ function hesk_toggleLayer(nr,setto) {
 	?>
 	</td>
 	</tr>
+
+
+	<tr>
+	<td style="text-align:right" width="200"><?php echo $hesklang['alo']; ?>: [<a href="Javascript:void(0)" onclick="Javascript:hesk_window('../help_files/settings.html#44','400','500')"><b>?</b></a>]</td>
+	<td>
+	<?php
+	    $on = $hesk_settings['autologin'] ? 'checked="checked"' : '';
+	    $off = $hesk_settings['autologin'] ? '' : 'checked="checked"';
+	    echo '
+	    <label><input type="radio" name="s_autologin" value="0" '.$off.' /> '.$hesklang['no'].'</label> |
+	    <label><input type="radio" name="s_autologin" value="1" '.$on.' /> '.$hesklang['yes'].'</label>';
+	?>
+	</td>
+	</tr>
+
+
 	<tr>
 	<td style="text-align:right" width="200"><?php echo $hesklang['aclose']; ?>: [<a href="Javascript:void(0)" onclick="Javascript:hesk_window('../help_files/settings.html#15','400','500')"><b>?</b></a>]</td>
 	<td><input type="text" name="s_autoclose" size="5" maxlength="3" value="<?php echo $hesk_settings['autoclose']; ?>" />
@@ -721,8 +785,6 @@ function hesk_toggleLayer(nr,setto) {
 <!-- Custom fields -->
 <span class="section">&raquo; <?php echo $hesklang['custom_use']; ?></span> [<a href="Javascript:void(0)" onclick="Javascript:hesk_window('../help_files/settings.html#41','400','500')"><b>?</b></a>]
 
-
-
 	<table border="0" cellspacing="1" cellpadding="3" width="100%" class="white">
 	<tr>
 	<th><b><i><?php echo $hesklang['enable']; ?></i></b></th>
@@ -734,7 +796,7 @@ function hesk_toggleLayer(nr,setto) {
 	</tr>
 
 	<?php
-	for ($i=1;$i<=10;$i++)
+	for ($i=1;$i<=20;$i++)
 	{
 	    //$this_field='custom' . $i;
 	    $this_field = $hesk_settings['custom_fields']['custom'.$i];
@@ -766,6 +828,7 @@ function hesk_toggleLayer(nr,setto) {
 	        	<option value="textarea" '.($this_field['type'] == 'textarea' ? 'selected="selected"' : '').'>'.$hesklang['stb'].'</option>
 	        	<option value="radio"    '.($this_field['type'] == 'radio' ? 'selected="selected"' : '').   '>'.$hesklang['srb'].'</option>
 	        	<option value="select"   '.($this_field['type'] == 'select' ? 'selected="selected"' : '').  '>'.$hesklang['ssb'].'</option>
+	        	<option value="checkbox" '.($this_field['type'] == 'checkbox' ? 'selected="selected"' : '').'>'.$hesklang['scb'].'</option>
 	        </select>
 	    </td>
 	    <td'.$color.'><label><input type="checkbox" name="s_custom'.$i.'_req" value="1" id="s_custom'.$i.'_req" '; if ($this_field['req']) {echo 'checked="checked"';} echo $onload_locally.' /> '.$hesklang['yes'].'</label></td>
@@ -805,4 +868,187 @@ else
 <?php
 require_once(HESK_PATH . 'inc/footer.inc.php');
 exit();
+
+
+function hesk_testLanguage($return_options = 0) {
+	global $hesk_settings, $hesklang;
+
+	$dir = HESK_PATH . 'language/';
+	$path = opendir($dir);
+	$valid_emails = array('category_moved','forgot_ticket_id','new_reply_by_customer','new_reply_by_staff','new_ticket','new_ticket_staff');
+
+    $text = '';
+    $html = '';
+
+	$text .= "/language\n";
+
+    /* Test all folders inside the language folder */
+	while (false !== ($subdir = readdir($path)))
+	{
+		if ($subdir == "." || $subdir == "..")
+	    {
+	    	continue;
+	    }
+
+		if (filetype($dir . $subdir) == 'dir')
+		{
+        	$add   = 1;
+	    	$langu = $dir . $subdir . '/text.php';
+	        $email = $dir . $subdir . '/emails';
+
+			/* Check the text.php */
+			$text .= "   |-> /$subdir\n";
+	        $text .= "        |-> text.php: ";
+	        if (file_exists($langu))
+	        {
+	        	$tmp = file_get_contents($langu);
+	            $err = '';
+	        	if (!preg_match('/\$hesklang\[\'LANGUAGE\'\]\=\'(.*)\'\;/',$tmp,$l))
+	            {
+	                $err .= "              |---->  MISSING: \$hesklang['LANGUAGE']\n";
+	            }
+	            if (!preg_match('/\$hesklang\[\'ENCODING\'\]\=\'(.*)\'\;/',$tmp))
+	            {
+	            	$err .= "              |---->  MISSING: \$hesklang['ENCODING']\n";
+	            }
+
+	            if ($err)
+	            {
+	            	$text .= "ERROR\n" . $err;
+                    $add   = 0;
+	            }
+	            else
+	            {
+                	$l[1]  = hesk_input($l[1]);
+                    $l[1]  = str_replace('|',' ',$l[1]);
+	        		$text .= "OK ($l[1])\n";
+	            }
+	        }
+	        else
+	        {
+	        	$text .= "ERROR\n";
+	            $text .= "              |---->  MISSING: text.php\n";
+                $add   = 0;
+	        }
+
+            /* Check emails folder */
+	        $text .= "        |-> /emails:  ";
+	        if (file_exists($email) && filetype($email) == 'dir')
+	        {
+	        	$err = '';
+	            foreach ($valid_emails as $eml)
+	            {
+	            	if (!file_exists($email.'/'.$eml.'.txt'))
+	                {
+	                	$err .= "              |---->  MISSING: $eml.txt\n";
+	                }
+	            }
+
+	            if ($err)
+	            {
+	            	$text .= "ERROR\n" . $err;
+                    $add   = 0;
+	            }
+	            else
+	            {
+	        		$text .= "OK\n";
+	            }
+	        }
+	        else
+	        {
+	        	$text .= "ERROR\n";
+	            $text .= "              |---->  MISSING: /emails folder\n";
+                $add   = 0;
+	        }
+
+	        $text .= "\n";
+
+            /* Add an option for the <select> if needed */
+            if ($add)
+            {
+				if ($l[1] == $hesk_settings['language'])
+				{
+					$html .= '<option value="'.$subdir.'|'.$l[1].'" selected="selected">'.$l[1].'</option>';
+				}
+				else
+				{
+					$html .= '<option value="'.$subdir.'|'.$l[1].'">'.$l[1].'</option>';
+				}
+            }
+		}
+	}
+
+	closedir($path);
+
+    /* Output select options or the test log for debugging */
+    if ($return_options)
+    {
+		return $html;
+    }
+    else
+    {
+		?>
+		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML; 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+		<head>
+		<title><?php echo $hesklang['s_inl']; ?></title>
+		<meta http-equiv="Content-Type" content="text/html;charset=<?php echo $hesklang['ENCODING']; ?>" />
+		<style type="text/css">
+		body
+		{
+		        margin:5px 5px;
+		        padding:0;
+		        background:#fff;
+		        color: black;
+		        font : 68.8%/1.5 Verdana, Geneva, Arial, Helvetica, sans-serif;
+		        text-align:left;
+		}
+
+		p
+		{
+		        color : black;
+		        font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+		        font-size: 1.0em;
+		}
+		h3
+		{
+		        color : #AF0000;
+		        font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+		        font-weight: bold;
+		        font-size: 1.0em;
+		        text-align:center;
+		}
+		.title
+		{
+		        color : black;
+		        font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+		        font-weight: bold;
+		        font-size: 1.0em;
+		}
+		.wrong   {color : red;}
+		.correct {color : green;}
+        pre {font-size:1.2em;}
+		</style>
+		</head>
+		<body>
+
+		<h3><?php echo $hesklang['s_inl']; ?></h3>
+
+		<p><i><?php echo $hesklang['s_inle']; ?></i></p>
+
+		<pre><?php echo $text; ?></pre>
+
+		<p>&nbsp;</p>
+
+		<p align="center"><a href="admin_settings.php?test_languages=1&amp;<?php echo rand(10000,99999); ?>"><?php echo $hesklang['ta']; ?></a> | <a href="#" onclick="Javascript:window.close()"><?php echo $hesklang['cwin']; ?></a></p>
+
+		<p>&nbsp;</p>
+
+		</body>
+
+		</html>
+		<?php
+		exit();
+    }
+} // END hesk_testLanguage()
 ?>

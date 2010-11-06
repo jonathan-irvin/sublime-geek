@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -37,15 +38,21 @@ define('HESK_NO_ROBOTS',1);
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
 /* Print header */
 require_once(HESK_PATH . 'inc/header.inc.php');
 
-$trackingID = strtoupper(hesk_input($_GET['track']));
-if (empty($trackingID))
+if (isset($_GET['track']))
+{
+	$trackingID = strtoupper(hesk_input($_GET['track']));
+	if (empty($trackingID))
+	{
+		print_form();
+	}
+}
+else
 {
 	print_form();
 }
@@ -54,7 +61,7 @@ if (empty($trackingID))
 hesk_dbConnect();
 
 /* Get ticket info */
-$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."tickets` WHERE `trackid`='$trackingID' LIMIT 1";
+$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."tickets` WHERE `trackid`='".hesk_dbEscape($trackingID)."' LIMIT 1";
 $result = hesk_dbQuery($sql);
 if (hesk_dbNumRows($result) != 1)
 {
@@ -63,29 +70,29 @@ if (hesk_dbNumRows($result) != 1)
 $ticket = hesk_dbFetchAssoc($result);
 
 /* Get category name and ID */
-$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."categories` WHERE `id`=$ticket[category] LIMIT 1";
+$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE `id`=".hesk_dbEscape($ticket['category'])." LIMIT 1";
 $result = hesk_dbQuery($sql);
 
 /* If this category has been deleted use the default category with ID 1 */
 if (hesk_dbNumRows($result) != 1)
 {
-	$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."categories` WHERE `id`=1 LIMIT 1";
+	$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."categories` WHERE `id`=1 LIMIT 1";
 	$result = hesk_dbQuery($sql);
 }
 
 $category = hesk_dbFetchAssoc($result);
 
 /* Get replies */
-$sql = "SELECT * FROM `".$hesk_settings['db_pfix']."replies` WHERE `replyto`='$ticket[id]' ORDER BY `id` ASC";
+$sql = "SELECT * FROM `".hesk_dbEscape($hesk_settings['db_pfix'])."replies` WHERE `replyto`='".hesk_dbEscape($ticket['id'])."' ORDER BY `id` ASC";
 $result = hesk_dbQuery($sql);
 $replies = hesk_dbNumRows($result);
 ?>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="3"><img src="img/headerleftsm.jpg" width="3" height="25" alt="" /></td>
-<td class="headersm"><?php echo $hesklang['cid'].': '.$trackingID; ?></td>
-<td width="3"><img src="img/headerrightsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerleftsm.jpg" width="3" height="25" alt="" /></td>
+<td class="headersm"><?php hesk_showTopBar($hesklang['cid'].': '.$trackingID); ?></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerrightsm.jpg" width="3" height="25" alt="" /></td>
 </tr>
 </table>
 
@@ -106,9 +113,9 @@ $replies = hesk_dbNumRows($result);
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornerstop"></td>
-	<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 </tr>
 <tr>
 	<td class="roundcornersleft">&nbsp;</td>
@@ -190,9 +197,9 @@ $replies = hesk_dbNumRows($result);
 	<td class="roundcornersright">&nbsp;</td>
 </tr>
 <tr>
-	<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornersbottom"></td>
-	<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 </tr>
 </table>
 
@@ -200,9 +207,9 @@ $replies = hesk_dbNumRows($result);
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornerstop"></td>
-	<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 </tr>
 <tr>
 	<td class="roundcornersleft">&nbsp;</td>
@@ -223,11 +230,7 @@ $replies = hesk_dbNumRows($result);
 		    </tr>
 		    <tr>
 		    <td class="tickettd"><?php echo $hesklang['email']; ?>:</td>
-		    <td class="tickettd"><a href="mailto:<?php echo $ticket['email']; ?>"><?php echo $ticket['email']; ?></a></td>
-		    </tr>
-		    <tr>
-		    <td class="tickettd"><?php echo $hesklang['ip']; ?>:</td>
-		    <td class="tickettd"><?php echo $ticket['ip']; ?></td>
+		    <td class="tickettd"><?php echo str_replace(array('@','.'),array(' (at) ',' (dot) '),$ticket['email']); ?></td>
 		    </tr>
 		    </table>
 
@@ -298,7 +301,7 @@ $replies = hesk_dbNumRows($result);
 		    $att=explode(',',substr($ticket['attachments'], 0, -1));
 		    foreach ($att as $myatt) {
 		        list($att_id, $att_name) = explode('#', $myatt);
-		        echo '<img src="img/clip.png" width="16" height="16" alt="'.$att_name.'" style="align:text-bottom" /><a href="download_attachment.php?att_id='.$att_id.'&amp;track='.$trackingID.'">'.$att_name.'</a><br />';
+		        echo '<img src="https://s3.amazonaws.com/sg-support-static/clip.png" width="16" height="16" alt="'.$att_name.'" style="align:text-bottom" /><a href="download_attachment.php?att_id='.$att_id.'&amp;track='.$trackingID.'">'.$att_name.'</a><br />';
 		    }
 		    echo '</p>';
 		}
@@ -339,7 +342,7 @@ EOC;
 	    foreach ($att as $myatt)
 	    {
 	        list($att_id, $att_name) = explode('#', $myatt);
-	        echo '<img src="img/clip.png" width="16" height="16" alt="'.$att_name.'" style="align:text-bottom" /><a href="download_attachment.php?att_id='.$att_id.'&amp;track='.$trackingID.'">'.$att_name.'</a><br />';
+	        echo '<img src="https://s3.amazonaws.com/sg-support-static/clip.png" width="16" height="16" alt="'.$att_name.'" style="align:text-bottom" /><a href="download_attachment.php?att_id='.$att_id.'&amp;track='.$trackingID.'">'.$att_name.'</a><br />';
 	    }
 	    echo '</p>';
 	}
@@ -376,9 +379,9 @@ EOC;
 	<td class="roundcornersright">&nbsp;</td>
 </tr>
 <tr>
-	<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornersbottom"></td>
-	<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 </tr>
 </table>
 
@@ -391,9 +394,9 @@ if ($ticket['status'] != 3 || $hesk_settings['custopen']==1)
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornerstop"></td>
-	<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 </tr>
 <tr>
 	<td class="roundcornersleft">&nbsp;</td>
@@ -442,9 +445,9 @@ if ($ticket['status'] != 3 || $hesk_settings['custopen']==1)
 	<td class="roundcornersright">&nbsp;</td>
 </tr>
 <tr>
-	<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornersbottom"></td>
-	<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 </tr>
 </table>
 
@@ -460,9 +463,9 @@ global $hesk_settings, $hesklang;
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="3"><img src="img/headerleftsm.jpg" width="3" height="25" alt="" /></td>
-<td class="headersm"><?php echo $hesklang['view_ticket']; ?></td>
-<td width="3"><img src="img/headerrightsm.jpg" width="3" height="25" alt="" /></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerleftsm.jpg" width="3" height="25" alt="" /></td>
+<td class="headersm"><?php hesk_showTopBar($hesklang['view_ticket']); ?></td>
+<td width="3"><img src="https://s3.amazonaws.com/sg-support-static/headerrightsm.jpg" width="3" height="25" alt="" /></td>
 </tr>
 </table>
 
@@ -484,9 +487,9 @@ global $hesk_settings, $hesklang;
 <div align="center">
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="7" height="7"><img src="img/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslt.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornerstop"></td>
-	<td><img src="img/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrt.jpg" width="7" height="7" alt="" /></td>
 </tr>
 <tr>
 	<td class="roundcornersleft">&nbsp;</td>
@@ -517,15 +520,16 @@ global $hesk_settings, $hesklang;
 	<form action="index.php" method="post" name="form1" onsubmit="return hesk_checkEmail()">
 	<p><?php echo $hesklang['tid_mail']; ?>:<br />
 	<input type="text" name="email" size="30" maxlength="50" /><input type="hidden" name="a" value="forgot_tid" /><br /><input type="submit" value="<?php echo $hesklang['tid_send']; ?>" class="orangebutton" onmouseover="hesk_btn(this,'orangebuttonover');" onmouseout="hesk_btn(this,'orangebutton');" /></p>
+    </form>
 	</div>
 
 	</td>
 	<td class="roundcornersright">&nbsp;</td>
 </tr>
 <tr>
-	<td><img src="img/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
+	<td><img src="https://s3.amazonaws.com/sg-support-static/roundcornerslb.jpg" width="7" height="7" alt="" /></td>
 	<td class="roundcornersbottom"></td>
-	<td width="7" height="7"><img src="img/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
+	<td width="7" height="7"><img src="https://s3.amazonaws.com/sg-support-static/roundcornersrb.jpg" width="7" height="7" alt="" /></td>
 </tr>
 </table>
 </div>

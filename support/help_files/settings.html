@@ -62,6 +62,22 @@ h3 {
 
 <p>&nbsp;</p>
 
+<span class="section">&raquo; Language settings</span>
+
+<a name="9"></a><p class="title">Default Language</p>
+<p>If you have several languages installed for Hesk this will be the default language. All properly installed languages are displayed in the drop-down box. Please refer to the readme.html file for instructions on how to install more languages. The &quot;Test language folder&quot; link will help you troubleshoot non-working language installations.</p>
+
+<p>By checking the &quot;Make this my preferred Language&quot; box the selected language will be set as your preferred personal language (this is only in effect if multiple languages are enabled). If multiple languages are enabled you can always set your preferred language on the &quot;Profile&quot; page.</p>
+
+<a name="43"></a><p class="title">Multiple languages</p>
+<p>Enabling this setting will allow your users and staff to choose their preferred language from the list of installed languages. Do not enable this feature unless you provide support in all of the installed languages!</p>
+
+<p>&nbsp;</p>
+
+<p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
+
+<p>&nbsp;</p>
+
 <a name="3"></a><p class="title">Support e-mail</p>
 <p>Default support e-mail address. Make sure you enter a valid e-mail address.</p>
 
@@ -96,9 +112,6 @@ h3 {
 
 <p>&nbsp;</p>
 
-<a name="9"></a><p class="title">Language file</p>
-<p>Language of your Hesk interface. You can select from language files located in your &quot;language&quot; folder! For more information on translating Hesk to your language see the README file.</p>
-
 <a name="10"></a><p class="title">Listings per page</p>
 <p>The default number of tickets listed per page in admin panel. Use digits only.</p>
 
@@ -116,7 +129,7 @@ h3 {
 
 <a name="13"></a><p class="title">Use anti-SPAM image</p>
 <p>Toggles use of the anti-SPAM security image. If ON customers are required to enter a valid security number to be able to create a ticket.
-This feature requires GD library for PHP installed and enabled on your server, refer to the readme.htm file for details.</p>
+This feature requires GD library for PHP installed and enabled on your server, refer to the readme.html file for details.</p>
 
 <p>&nbsp;</p>
 
@@ -165,6 +178,10 @@ use HTML code in the question. Answers are not CaSe SeNSiTiVe. Some examples:</p
 <a name="14"></a><p class="title">List usernames</p>
 <p>If set to ON staff usernames be listed in a select box on the admin login page and they will only need to type their password in. Recommended setting: OFF (staff will have to type
 both their username and password to login)</p>
+
+<a name="44"></a><p class="title">Allow automatic login</p>
+<p>If set to YES staff will have an option to automatically login to their account every time they open HESK administration panel from their computer.
+If disabled HESK will only be able to remember usernames, not passwords.</p>
 
 <a name="15"></a><p class="title">Autoclose tickets</p>
 <p>If a ticket has no activity <i>from the customer</i> for X days it automatically closes. Set to 0 to disable autoclose.</p>
@@ -314,7 +331,7 @@ This is useful if you want to run multiple installs of Hesk using one MySQL data
 
 <a name="37"></a><p class="title">Use attachments</p>
 <p>Select YES to enable file attachments. If enabled customers and support staff will have the option to attach files to support tickets.</p>
-<p><b>NOTE:</b> If and how file attachments will work depends on your server settings, please refer to readme.htm for considerations and possible limitations of file attachments on your server.</p>
+<p><b>NOTE:</b> If and how file attachments will work depends on your server settings, please refer to readme.html for considerations and possible limitations of file attachments on your server.</p>
 
 <a name="38"></a><p class="title">Number per post</p>
 <p>Number of file attachments allowed per post. Optimal range is around 1 to 4. This setting is only available if &quot;Use attachments&quot; is set to YES.</p>
@@ -326,7 +343,7 @@ This is useful if you want to run multiple installs of Hesk using one MySQL data
 <p>&nbsp;</p>
 
 <a name="39"></a><p class="title">File size limit (Kb)</p>
-<p>File size limit per attachment measured in Kb (kilobytes). Enter only digits without &quot;Kb&quot;. Note that the maximum upload file size is limited by your server settings, please refer to readme.htm for more information on file attachment limits.This setting is only available if &quot;Use attachments&quot; is set to YES.</p>
+<p>File size limit per attachment measured in Kb (kilobytes). Enter only digits without &quot;Kb&quot;. Note that the maximum upload file size is limited by your server settings, please refer to readme.html for more information on file attachment limits. This setting is only available if &quot;Use attachments&quot; is set to YES.</p>
 <p>A few size transformations for reference:<br />
 1 Mb = 1024 Kb<br />
 0.5Mb = 512 Kb<br />
@@ -353,6 +370,7 @@ Choose field type. It can be one of the following options:</p>
 <li><b>Large text box</b> - text area, a larger text field with multiple lines (&lt;textarea&gt;&lt;/textarea&gt;)</li>
 <li><b>Radio button</b> - a radio button with at least two options (&lt;input type=&quot;radio&quot;&gt;)</li>
 <li><b>Select box</b> - a drop-down select box with at least two options (&lt;select&gt;&lt;/select&gt;)</li>
+<li><b>Checkbox</b> - checkbox with at least two options (&lt;input type=&quot;checkbox&quot;&gt;). Multiple options can be chosen (ticked).</li>
 </ul>
 
 <p><b>&raquo; Required</b><br />
@@ -362,7 +380,7 @@ Check to make the custom field a required, otherwise it is an optional one.</p>
 Give the custom field a unique name that what will be displayed next to the field, for example &quot;Postal address&quot;.</p>
 
 <p><b>&raquo; Location</b><br />
-Choose wether the custom field should be displayed before or after the &quot;Message&quot; field when submitting a new support ticket.</p>
+Choose whether the custom field should be displayed before or after the &quot;Message&quot; field when submitting a new support ticket.</p>
 
 <p><b>&raquo; Options</b><br />
 Options you can set for each field depending on the selected Type:</p>
@@ -379,7 +397,10 @@ Options you can set for each field depending on the selected Type:</p>
 <p align="center"><a href="#" onclick="Javascript:window.close()">Close window</a></p>
 
 <p>&nbsp;</p>
-
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 <p>&nbsp;</p>
 
 </body>

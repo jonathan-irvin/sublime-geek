@@ -1,14 +1,15 @@
 <?php
 /*******************************************************************************
-*  Title: Helpdesk software Hesk
-*  Version: 2.0 from 24th January 2009
+*  Title: Help Desk Software HESK
+*  Version: 2.1 from 7th August 2009
 *  Author: Klemen Stirn
-*  Website: http://www.phpjunkyard.com
+*  Website: http://www.hesk.com
 ********************************************************************************
-*  COPYRIGHT NOTICE
+*  COPYRIGHT AND TRADEMARK NOTICE
 *  Copyright 2005-2009 Klemen Stirn. All Rights Reserved.
+*  HESK is a trademark of Klemen Stirn.
 
-*  The Hesk may be used and modified free of charge by anyone
+*  The HESK may be used and modified free of charge by anyone
 *  AS LONG AS COPYRIGHT NOTICES AND ALL THE COMMENTS REMAIN INTACT.
 *  By using this code you agree to indemnify Klemen Stirn from any
 *  liability that might arise from it's use.
@@ -25,10 +26,10 @@
 *  with the European Union.
 
 *  Removing any of the copyright notices without purchasing a license
-*  is illegal! To remove PHPJunkyard copyright notice you must purchase
+*  is expressly forbidden. To remove HESK copyright notice you must purchase
 *  a license for this script. For more information on how to obtain
-*  a license please visit the site below:
-*  http://www.phpjunkyard.com/copyright-removal.php
+*  a license please visit the page below:
+*  https://www.hesk.com/buy.php
 *******************************************************************************/
 
 define('IN_SCRIPT',1);
@@ -36,7 +37,6 @@ define('HESK_PATH','../');
 
 /* Get all the required files and functions */
 require(HESK_PATH . 'hesk_settings.inc.php');
-require(HESK_PATH . 'language/'.$hesk_settings['language'].'.inc.php');
 require(HESK_PATH . 'inc/common.inc.php');
 require(HESK_PATH . 'inc/database.inc.php');
 
@@ -49,10 +49,14 @@ switch ($_REQUEST['a'])
     case 'do_login':
     	do_login();
         break;
+    case 'login':
+    	print_login();
+        break;
     case 'logout':
     	logout();
         break;
     default:
+    	hesk_autoLogin();
     	print_login();
 }
 
@@ -61,7 +65,6 @@ require_once(HESK_PATH . 'inc/footer.inc.php');
 exit();
 
 /*** START FUNCTIONS ***/
-
 function do_login() {
 	global $hesk_settings, $hesklang;
 
@@ -85,7 +88,7 @@ function do_login() {
         exit();
 	}
 
-	$sql = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'users` WHERE `user` = \''.$user.'\' LIMIT 1';
+	$sql = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` WHERE `user` = \''.hesk_dbEscape($user).'\' LIMIT 1';
 	$result = hesk_dbQuery($sql);
 	if (hesk_dbNumRows($result) != 1)
 	{
@@ -110,6 +113,7 @@ function do_login() {
         print_login();
         exit();
 	}
+    $pass_enc = hesk_Pass2Hash($_SESSION['pass'].strtolower($user).$_SESSION['pass']);
 	unset($_SESSION['pass']);
 
 	/* Regenerate session ID (security) */
@@ -125,33 +129,54 @@ function do_login() {
 	session_write_close();
 
 	/* Remember username? */
-	if (isset($_POST['remember_user']) && $_POST['remember_user']=='Y')
+	if ($hesk_settings['autologin'] && $_POST['remember_user']=='AUTOLOGIN')
 	{
-	    setcookie('hesk_username', "$user", strtotime('+1 month'));
+		setcookie('hesk_username', "$user", strtotime('+1 year'));
+		setcookie('hesk_p', "$pass_enc", strtotime('+1 year'));
 	}
-	elseif (isset($_COOKIE['hesk_username']))
+	elseif ($_POST['remember_user']=='JUSTUSER')
 	{
-	    // Expire cookie if set otherwise
-	    setcookie('hesk_username', '');
+		setcookie('hesk_username', "$user", strtotime('+1 year'));
+		setcookie('hesk_p', '');
+	}
+	else
+	{
+		// Expire cookie if set otherwise
+		setcookie('hesk_username', '');
+		setcookie('hesk_p', '');
 	}
 
     /* Close any old tickets here so Cron jobs aren't necessary */
 	if ($hesk_settings['autoclose'])
     {
     	$dt  = date('Y-m-d H:i:s',time() - $hesk_settings['autoclose']*86400);
-		$sql = 'UPDATE `'.$hesk_settings['db_pfix'].'tickets` SET `status`=\'3\' WHERE `status` = \'2\' AND `lastchange` <= \''.$dt.'\'';
+		$sql = 'UPDATE `'.hesk_dbEscape($hesk_settings['db_pfix']).'tickets` SET `status`=\'3\' WHERE `status` = \'2\' AND `lastchange` <= \''.hesk_dbEscape($dt).'\'';
 		hesk_dbQuery($sql);
     }
 
 	/* Redirect to the destination page */
-	if ($url = hesk_input($_REQUEST['goto']))
+	if (isset($_REQUEST['goto']))
 	{
+    	$url = hesk_input($_REQUEST['goto']);
 	    $url = str_replace('&amp;','&',$url);
-	    Header('Location: '.$url);
+
+        /* goto parameter can be set to the local domain only */
+        $myurl = parse_url($hesk_settings['hesk_url']);
+        $goto  = parse_url($url);
+
+        if (isset($myurl['host']) && isset($goto['host']))
+        {
+        	if ( str_replace('www.','',strtolower($myurl['host'])) != str_replace('www.','',strtolower($goto['host'])) )
+            {
+            	$url = 'admin_main.php';
+            }
+        }
+
+	    header('Location: '.$url);
 	}
 	else
 	{
-	    Header('Location: admin_main.php');
+	    header('Location: admin_main.php');
 	}
 	exit();
 } // End do_login()
@@ -257,15 +282,30 @@ function print_login() {
 		}
 		else
 		{
-			$savedUser = $_COOKIE['hesk_username'] ? htmlspecialchars($_COOKIE['hesk_username']) : '';
+			$savedUser = isset($_COOKIE['hesk_username']) ? htmlspecialchars($_COOKIE['hesk_username']) : '';
 		}
 
-        $is_checked = $_COOKIE['hesk_username'] ? 'checked="checked"' : '';
+        $is_1 = '';
+        $is_2 = '';
+        $is_3 = '';
+
+		if ($hesk_settings['autologin'] && (isset($_COOKIE['hesk_p']) || (isset($_POST['remember_user']) && $_POST['remember_user'] == 'AUTOLOGIN') ) )
+        {
+        	$is_1 = 'checked="checked"';
+        }
+        elseif (isset($_COOKIE['hesk_username']) || (isset($_POST['remember_user']) && $_POST['remember_user'] == 'JUSTUSER') )
+        {
+        	$is_2 = 'checked="checked"';
+        }
+        else
+        {
+        	$is_3 = 'checked="checked"';
+        }
 
 		if ($hesk_settings['list_users'])
 		{
 		    echo '<select name="user">';
-		    $sql    = 'SELECT * FROM `'.$hesk_settings['db_pfix'].'users` ORDER BY `id` ASC';
+		    $sql    = 'SELECT * FROM `'.hesk_dbEscape($hesk_settings['db_pfix']).'users` ORDER BY `id` ASC';
 		    $result = hesk_dbQuery($sql);
 		    while ($row=hesk_dbFetchAssoc($result))
 		    {
@@ -288,11 +328,36 @@ function print_login() {
 		</tr>
 		</table>
 
-		<p style="text-align:center"><label><input type="checkbox" name="remember_user" value="Y" <?php echo $is_checked; ?> /> <?php echo $hesklang['remember_user']; ?></label></p>
+        <p>&nbsp;</p>
+
+		<?php
+		if ($hesk_settings['autologin'])
+		{
+		?>
+        <div align="center">
+        <table border="0">
+	        <tr>
+	        <td style="text-align:left">
+				<label><input type="radio" name="remember_user" value="AUTOLOGIN" <?php echo $is_1; ?> /> <?php echo $hesklang['autologin']; ?></label><br />
+                <label><input type="radio" name="remember_user" value="JUSTUSER" <?php echo $is_2; ?> /> <?php echo $hesklang['just_user']; ?></label><br />
+                <label><input type="radio" name="remember_user" value="NOTHANKS" <?php echo $is_3; ?> /> <?php echo $hesklang['nothx']; ?></label>
+	        </td>
+	        </tr>
+        </table>
+        </div>
+		<?php
+		}
+		else
+		{
+		?>
+			<p style="text-align:center"><label><input type="checkbox" name="remember_user" value="JUSTUSER" <?php echo $is_2; ?> /> <?php echo $hesklang['remember_user']; ?></label></p>
+		<?php
+		}
+		?>
 
 		<p style="text-align:center"><input type="hidden" name="a" value="do_login" />
 		<?php
-		if ($url=hesk_input($_REQUEST['goto']))
+		if (isset($_REQUEST['goto']) && $url=hesk_input($_REQUEST['goto']))
 		{
 		    echo '<input type="hidden" name="goto" value="'.$url.'" />';
 		}
@@ -324,6 +389,7 @@ function logout() {
 	hesk_session_stop();
 	$_SESSION['HESK_NOTICE']  = $hesklang['logout'];
 	$_SESSION['HESK_MESSAGE'] = $hesklang['logout_success'];
+    setcookie('hesk_p', '');
 	print_login();
 	exit();
 } // End logout()
