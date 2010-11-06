@@ -1,0 +1,20 @@
+div.stepsboxactive { background: #A4C96E; width: 150px; font-size: 12px; text-align: center; color: #ffffff; margin-bottom: 5px; }
+b.stepsboxactivertop, b.stepsboxactiverbottom { display:block; background: #FFF }
+b.stepsboxactivertop b, b.stepsboxactiverbottom b {display:block;height: 1px; overflow: hidden; background: #A4C96E; }
+
+div.stepsboxinactive { background: #efefef; width: 150px; font-size: 12px; text-align: center; margin-bottom: 5px; }
+b.stepsboxinactivertop, b.stepsboxinactiverbottom { display:block; background: #FFF }
+b.stepsboxinactivertop b, b.stepsboxinactiverbottom b {display:block;height: 1px; overflow: hidden; background: #efefef; }
+
+div.orderbox { background: #E6ECF8; margin-bottom: 5px; }
+b.orderboxrtop, b.orderboxrbottom { display:block; background: #FFF }
+b.orderboxrtop b, b.orderboxrbottom b {display:block;height: 1px; overflow: hidden; background: #E6ECF8; }
+div.orderboxpadding { padding: 5px; }
+
+b.r1 {margin: 0 5px}
+b.r2 {margin: 0 3px}
+b.r3 {margin: 0 2px}
+b.r4 {margin: 0 1px;height: 2px}
+
+.cartedit { color:#009900; }
+.cartremove { color:#cc0000; }

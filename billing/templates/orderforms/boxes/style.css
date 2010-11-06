@@ -1,0 +1,64 @@
+tr.orderheadingrow {
+	background-color: #5AB9F1;
+	color: #ffffff;
+}
+
+tr.orderrow1 {
+	background-color: #E8F0F9;
+	color: #000000;
+}
+
+tr.orderrow2 {
+	background-color: #D6E4F6;
+	color: #000000;
+}
+
+.cartedit { color:#009900; }
+.cartremove { color:#cc0000; }
+
+.carttable {
+	background-color: #fff;
+	width: 95%;
+}
+
+.carttableheading td {
+	background-color: #5AB9F1;
+	color: #ffffff;
+	height: 20px;
+	font-weight: bold;
+	font-size: 12px;
+	text-align: center;
+}
+
+.carttablesummary td {
+	background-color: #E8F0F9;
+	color: #222222;
+	height: 20px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.carttableproduct td {
+	background-color: #ffffff;
+	color: #555555;
+	padding: 4px;
+}
+
+.carttableaddon td {
+	background-color: #ffffff;
+	color: #555555;
+	padding: 2px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.carttableconfig td {
+	background-color: #efefef;
+	font-size: 9px;
+	padding: 2px;
+}
+
+.carttabledivider td {
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+}
