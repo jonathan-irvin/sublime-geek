@@ -1,1 +1,0 @@
-<div align="center"><img src="images/loading.gif"><br />{$LANG.loading}</div>
