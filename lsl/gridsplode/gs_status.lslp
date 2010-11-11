@@ -1,12 +1,16 @@
+//nfo_preprocessor_version 0
+//program_version Emerald Viewer
+//mono
+
+string version = "2.2";
 list tierid = [1,2,3,4];
 key requestid_dsp;
-string version = "2.1";
 integer pointer = 0;
-
-integer pay_cfg_1;
-integer pay_cfg_2;
-integer pay_cfg_3;
 integer pay_cfg_4;
+integer pay_cfg_3;
+integer pay_cfg_2;
+integer pay_cfg_1;
+
 
 default {
 
@@ -16,26 +20,25 @@ default {
 
     state_entry() {
         llSetTimerEvent(15);
-        requestid_dsp = llHTTPRequest("http://www.sublimegeek.com/backend/gsplode_status.php",
-        [0,"POST",1,"application/x-www-form-urlencoded"],
-        "tierid=" + llList2String(tierid,0));
+        requestid_dsp = llHTTPRequest("http://www.sublimegeek.com/sg_admin/gridsplode/status/"+llList2String(tierid,0),
+        [0,"POST",1,"application/x-www-form-urlencoded"],"");
     }
 
     
     http_response(key request_id,integer status,list metadata,string body) {
-        //llOwnerSay("Status:"+body);
+        
         if ((request_id == requestid_dsp)) {
             llSetTimerEvent(15);
             list tiers = llParseString2List(body,[":::"],[]);
                   
-            //Sys Configs      
+            
             (pay_cfg_1 = llList2Integer(tiers,7));
             (pay_cfg_2 = llList2Integer(tiers,8));
             (pay_cfg_3 = llList2Integer(tiers,9));
             (pay_cfg_4 = llList2Integer(tiers,10));
             string sys_status = llList2String(tiers,6);            
             
-            //Tier Configs
+            
             string tname = llList2String(tiers,0);
             string _p10 = llList2String(tiers,1);
             string _p21 = llList2String(tiers,2);
@@ -84,7 +87,8 @@ default {
 
     
     timer() {
-        (requestid_dsp = llHTTPRequest("http://www.sublimegeek.com/backend/gsplode_status.php",[0,"POST",1,"application/x-www-form-urlencoded"],("tierid=" + llList2String(tierid,pointer))));
+        requestid_dsp = llHTTPRequest("http://www.sublimegeek.com/sg_admin/gridsplode/status/"+llList2String(tierid,0),
+        [0,"POST",1,"application/x-www-form-urlencoded"],"");
         if ((pointer <= 2)) {
             (pointer++);
         }
@@ -111,3 +115,4 @@ default {
         llSetTimerEvent(5);
     }
 }
+

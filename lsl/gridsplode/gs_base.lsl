@@ -1,31 +1,23 @@
-// LSL script generated: gs_base.lslp Thu Nov 11 09:28:06 CST 2010
-// LSL script generated: .gs_base_v1.4.lslp Sun Oct 25 01:12:46 Central Daylight Time 2009
-//GridSplode Base
-//By Jon Desmoulins
-//Original Concept by Monkey Canning
+// LSL script generated: gs_base.lslp Thu Nov 11 09:30:00 CST 2010
+//nfo_preprocessor_version 0
+//program_version Emerald Viewer
+//mono
 
-//OPERATIONAL CONFIG
+
+string version = "2.2";
+integer sleeptimer = 43200;
 string shape = "Dollar";
-string version = "2.1";
-string auth = "7399F2FB0B4C2DF30E5D2F0CFF59B6516C64BF58";
 key requestid_pay;
-vector Where;
-string Name;
-integer X;
-integer Y;
-integer Z;
-
 integer paid_in;
 key paid_id;
-
-//CREATOR SETTINGS
 key gCreator = "6aab7af0-8ce8-4361-860b-7139054ed44f";
 key gBank = "633ccfe5-9eae-4e3a-8abb-48773dee0edf";
-
-//Sleep Config
-integer sleeptimer = 43200;
-
-//FUNCTIONS
+string auth = "7399F2FB0B4C2DF30E5D2F0CFF59B6516C64BF58";
+integer Z;
+integer Y;
+integer X;
+vector Where;
+string Name;
 string slurl(){
     (Name = llGetRegionName());
     (Where = llGetPos());
@@ -35,9 +27,14 @@ string slurl(){
     string _SLURL0 = ((((((((("http://slurl.com/secondlife/" + Name) + "/") + ((string)X)) + "/") + ((string)Y)) + "/") + ((string)Z)) + "/?title=") + Name);
     return _SLURL0;
 }
+
+
+
+
 logpmt(key player_key,integer pmt_amt){
-    (requestid_pay = llHTTPRequest("http://www.sublimegeek.com/backend/gsplode_recv_pmt.php",[0,"POST",1,"application/x-www-form-urlencoded"],((((((((((("player_name=" + llEscapeURL(llKey2Name(player_key))) + "&player_key=") + llEscapeURL(((string)player_key))) + "&pmt_amt=") + llEscapeURL(((string)pmt_amt))) + "&slurl=") + llEscapeURL(slurl())) + "&auth=") + llEscapeURL(auth)) + "&version=") + llEscapeURL(version))));
+    (requestid_pay = llHTTPRequest("http://www.sublimegeek.com/sg_admin/gridsplode/recvpmt/0",[0,"POST",1,"application/x-www-form-urlencoded"],((((((((((("player_name=" + llEscapeURL(llKey2Name(player_key))) + "&player_key=") + llEscapeURL(((string)player_key))) + "&pmt_amt=") + llEscapeURL(((string)pmt_amt))) + "&slurl=") + llEscapeURL(slurl())) + "&auth=") + llEscapeURL(auth)) + "&version=") + llEscapeURL(version))));
 }
+
 getperms(integer _perms0){
     if ((_perms0 && 2)) {
         llOwnerSay("Thank you!...Proceeding.");
@@ -50,6 +47,7 @@ getperms(integer _perms0){
     }
 }
 
+
 dmca(){
     if ((llGetCreator() != gCreator)) {
         llOwnerSay("I'm sorry, this script is locked from being put in your own objects.");
@@ -58,6 +56,7 @@ dmca(){
         llDie();
     }
 }
+
 
 default {
 
@@ -71,7 +70,7 @@ default {
     }
 
 
-    //changed(integer change) { if (change && CHANGED_OWNER) {llResetScript();} }   
+    
     state_entry() {
         dmca();
         llOwnerSay(">>>[NOTICE]<<< \n \n GridSplode transfers a portion of the payments to an avatar named \"Financial Resistance\" in order to work.  \nBy default, you will automatically keep 20% of all incoming payments!  \nPlease click \"Grant\" now to allow GridSplode to function, otherwise the GridSplode will delete itself.");
@@ -117,7 +116,7 @@ default {
                 llDie();
             }
             else  {
-                llInstantMessage(paid_id,"The system must be offline.  Refunding your money now.");
+                llInstantMessage(paid_id,((("The GridSplode system is currently offline.  " + "We will be back up shortly.  Refunding your money now. ") + "Check our twitter for more information http://twitter.com/sublimegeek ") + "or our blog http://sublimegeek.com/blog"));
                 llGiveMoney(paid_id,paid_in);
             }
             (paid_id = "");

@@ -1,8 +1,13 @@
-// LSL script generated: gs_check.lslp Thu Nov 11 09:28:12 CST 2010
-key requestid_chk;
-list winners;
+// LSL script generated: gs_check.lslp Thu Nov 11 09:30:21 CST 2010
+//nfo_preprocessor_version 0
+//program_version Emerald Viewer
+//mono
 
+
+list winners;
+key requestid_chk;
 key kaboom = "26f06136-8ef4-ae64-55d5-3f9f02b1f84b";
+
 
 default {
 
@@ -18,7 +23,7 @@ default {
 
 
     timer() {
-        (requestid_chk = llHTTPRequest("http://www.sublimegeek.com/backend/gsplode_chkexpired.php",[0,"POST",1,"application/x-www-form-urlencoded"],""));
+        (requestid_chk = llHTTPRequest("http://www.sublimegeek.com/sg_admin/gridsplode/chkexp",[0,"POST",1,"application/x-www-form-urlencoded"],""));
     }
 
 
