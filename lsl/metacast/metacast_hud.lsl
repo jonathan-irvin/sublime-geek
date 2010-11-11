@@ -1,4 +1,4 @@
-// LSL script generated: metacast_hud.lslp Thu Nov 11 15:42:36 CST 2010
+// LSL script generated: metacast_hud.lslp Thu Nov 11 16:01:11 CST 2010
 //MetaCast Controller
 
 string version = "1.4";
