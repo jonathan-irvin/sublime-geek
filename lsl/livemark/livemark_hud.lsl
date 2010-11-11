@@ -1,9 +1,9 @@
-// LSL script generated: livemark_hud.lslp Thu Nov 11 10:31:04 CST 2010
+// LSL script generated: livemark_hud.lslp Thu Nov 11 10:34:50 CST 2010
 //LiveMark HUD
 //Dynamic Landmark System
 
 //BASE CONFIG
-string version = "1.1";
+string version = "1.2";
 integer allowdrop = FALSE;
 integer DEBUG = FALSE;
 key requestid;

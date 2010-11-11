@@ -1,9 +1,9 @@
-// LSL script generated: livemark_marker.lslp Thu Nov 11 10:30:36 CST 2010
+// LSL script generated: livemark_marker.lslp Thu Nov 11 10:34:50 CST 2010
 //LiveMark Client
 //Dynamic Landmark System
 
 //BASE CONFIG
-string version = "1.1";
+string version = "1.2";
 integer allowdrop = FALSE;
 integer DEBUG = FALSE;
 string baseurl = "http://lmrk.in/";

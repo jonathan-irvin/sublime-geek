@@ -2,7 +2,7 @@
 //Dynamic Landmark System
 
 //BASE CONFIG
-string  version     = "1.1";
+string  version     = "1.2";
 integer allowdrop   = FALSE;
 integer DEBUG       = FALSE;
 string  baseurl     = "http://lmrk.in/";

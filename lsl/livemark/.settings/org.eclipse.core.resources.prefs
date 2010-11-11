@@ -1,4 +1,4 @@
-#Thu Nov 11 10:31:04 CST 2010
+#Thu Nov 11 10:35:07 CST 2010
 eclipse.preferences.version=1
 encoding/<project>=UTF-8
 encoding/livemark_hud.lsl=UTF-8
@@ -6,3 +6,5 @@ encoding/livemark_hud.lslp=UTF-8
 encoding/livemark_marker.lsl=UTF-8
 encoding/livemark_marker.lslp=UTF-8
 encoding/livemark_pad.lslp=UTF-8
+encoding/update.lsl=UTF-8
+encoding/update.lslp=UTF-8
