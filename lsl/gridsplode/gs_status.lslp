@@ -1,6 +1,6 @@
 list tierid = [1,2,3,4];
 key requestid_dsp;
-string version = "2.0";
+string version = "2.1";
 integer pointer = 0;
 
 integer pay_cfg_1;

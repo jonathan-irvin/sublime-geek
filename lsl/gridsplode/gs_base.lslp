@@ -5,7 +5,7 @@
 
 //OPERATIONAL CONFIG
 string shape = "Dollar";
-string version = "2.0";
+string version = "2.1";
 string auth = "7399F2FB0B4C2DF30E5D2F0CFF59B6516C64BF58";
 key requestid_pay;
 vector Where;
@@ -20,6 +20,9 @@ key paid_id;
 //CREATOR SETTINGS
 key gCreator = "6aab7af0-8ce8-4361-860b-7139054ed44f";
 key gBank = "633ccfe5-9eae-4e3a-8abb-48773dee0edf";
+
+//Sleep Config
+integer sleeptimer = 43200;
 
 //FUNCTIONS
 string slurl(){
@@ -85,7 +88,7 @@ default {
     
     run_time_permissions(integer _perms0) {
         getperms(_perms0);
-        llSetTimerEvent(300);
+        llSetTimerEvent(sleeptimer);
     }
 
     
@@ -127,7 +130,7 @@ default {
 
     money(key id,integer amt) {
         //Refresh the clock
-        llSetTimerEvent(300);
+        llSetTimerEvent(sleeptimer);
         
         float commission = (amt * 0.2);
         float payout = (amt - commission);
@@ -167,6 +170,6 @@ default {
         llSetClickAction(CLICK_ACTION_PAY);
         
         //Reset the clock
-        llSetTimerEvent(300);      
+        llSetTimerEvent(sleeptimer);      
     }
 }

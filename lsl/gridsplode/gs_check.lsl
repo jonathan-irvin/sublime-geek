@@ -1,4 +1,4 @@
-// LSL script generated: gs_check.lslp Thu Nov 11 09:25:22 CST 2010
+// LSL script generated: gs_check.lslp Thu Nov 11 09:28:12 CST 2010
 key requestid_chk;
 list winners;
 

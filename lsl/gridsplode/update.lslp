@@ -18,7 +18,7 @@ string product = "GridSplode";
 
 // insert the current version number between the quotemarks below
 // don't use numbers like 1.2.4 ... stick to integers (1, 4, 9 etc.) or decimals (1.2, 4.12 etc.)
-string version = "2.0";
+string version = "2.1";
 
 // insert your avatar key below (use the server's "My Key" command to get it)
 string my_key = "6aab7af0-8ce8-4361-860b-7139054ed44f";
