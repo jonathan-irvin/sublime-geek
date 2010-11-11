@@ -1,4 +1,4 @@
-// LSL script generated: update.lslp Thu Nov 11 10:35:07 CST 2010
+// LSL script generated: update.lslp Thu Nov 11 10:37:51 CST 2010
 // ********************************************************
 // IMPORTANT! IMPORTANT! IMPORTANT! IMPORTANT! IMPORTANT!
 // SET THE PERMISSIONS ON THIS SCRIPT TO NO TRANSFER
@@ -19,7 +19,7 @@ string product = "LiveMark";
 
 // insert the current version number between the quotemarks below
 // don't use numbers like 1.2.4 ... stick to integers (1, 4, 9 etc.) or decimals (1.2, 4.12 etc.)
-string version = "1.2";
+string version = "1.3";
 
 // insert your avatar key below (use the server's "My Key" command to get it)
 string my_key = "6aab7af0-8ce8-4361-860b-7139054ed44f";

@@ -1,9 +1,9 @@
-// LSL script generated: livemark_marker.lslp Thu Nov 11 10:34:50 CST 2010
+// LSL script generated: livemark_marker.lslp Thu Nov 11 10:37:01 CST 2010
 //LiveMark Client
 //Dynamic Landmark System
 
 //BASE CONFIG
-string version = "1.2";
+string version = "1.3";
 integer allowdrop = FALSE;
 integer DEBUG = FALSE;
 string baseurl = "http://lmrk.in/";
@@ -124,11 +124,11 @@ default {
         if ((locURLid != "@")) {
             llSetText((((("LiveMark v" + version) + "\nLiveMark for ") + locName) + "\nPlease wait...Downloading settings..."),<1,1,1>,1);
             llSetLinkAlpha(LINK_THIS,0.7,ALL_SIDES);
-            llSetObjectName((((("[sig] LiveMark Marker Mini v" + version) + " (") + locName) + ")"));
+            llSetObjectName((((("[sig] LiveMark Marker v" + version) + " (") + locName) + ")"));
             (requestid = llHTTPRequest(((baseurl + "sl/") + locURLid),[0,"POST",1,"application/x-www-form-urlencoded"],""));
         }
         else  {
-            llSetObjectName(("[sig] LiveMark Marker Mini v" + version));
+            llSetObjectName(("[sig] LiveMark Marker v" + version));
             llSetLinkAlpha(LINK_THIS,0.7,ALL_SIDES);
             llSetText((("LiveMark v" + version) + "\nReady for Setup!"),<1,1,1>,1);
             (owner = llGetOwner());
@@ -245,6 +245,9 @@ default {
                 (owner = llList2Key(response,6));
                 (updated = (((((((((((((string)DateYear()) + "/") + ((string)DateMonth())) + "/") + ((string)DateDay())) + " @ ") + ((string)TimeHour())) + ":") + ((string)TimeMinute())) + ":") + ((string)TimeSecond())) + " GMT"));
                 return;
+            }
+            if ((cmd == "error")) {
+                llOwnerSay(atr);
             }
         }
     }

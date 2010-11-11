@@ -2,7 +2,7 @@
 //Dynamic Landmark System
 
 //BASE CONFIG
-string version    = "1.2";
+string version    = "1.3";
 integer allowdrop = FALSE;
 integer DEBUG     = FALSE;
 string baseurl    = "http://lmrk.in/";
@@ -298,8 +298,8 @@ state config
         if(retries <=2){
             llOwnerSay("Say all responses on channel 5");
             llOwnerSay("Say the profile name and id like this:");
-            llOwnerSay("Type /5 {profile name},{id}");
-            llOwnerSay("Note: You won't need the brackets");
+            llOwnerSay("Type /5 profile name;id");
+            llOwnerSay("Note: You won't need the brackets & don't forget the semicolon! \";\"");
             llOwnerSay("If your id is abc and your name is \"Sublime Geek\", type /5 Sublime Geek;abc");
         }else{
             llOwnerSay("Are you having trouble?  If so, just say \"/5 return\" and I will return back to my normal state.  Otherwise, keep trying.");
