@@ -347,10 +347,10 @@ state config
     {
         if(id == llGetOwner()){
             list settings = llParseString2List(msg,[";"],[]);
-            string name = llList2String(settings,0);
+            string recv_name = llList2String(settings,0);
             string profile = llList2String(settings,1);
             
-            if((name != "")||(profile != "")){
+            if((recv_name != "")||(profile != "")){
                 llSetObjectDesc(
                     llStringTrim(name,STRING_TRIM)+"::"+llStringTrim(profile,STRING_TRIM)
                     );
