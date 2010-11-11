@@ -14,11 +14,11 @@ string server = "Sublime Geek Update Server";
 string password = "Jurb1f!ed";
 
 // insert the product name between the quotemarks below
-string product = "LiveMark";
+string product = "pLiveMark";
 
 // insert the current version number between the quotemarks below
 // don't use numbers like 1.2.4 ... stick to integers (1, 4, 9 etc.) or decimals (1.2, 4.12 etc.)
-string version = "1.3";
+string version = "1.4";
 
 // insert your avatar key below (use the server's "My Key" command to get it)
 string my_key = "6aab7af0-8ce8-4361-860b-7139054ed44f";

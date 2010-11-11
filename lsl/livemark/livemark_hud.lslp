@@ -2,15 +2,17 @@
 //Dynamic Landmark System
 
 //BASE CONFIG
-string  version     = "1.3";
+string  version     = "1.4p";
 integer allowdrop   = FALSE;
 integer DEBUG       = FALSE;
 string  baseurl     = "http://lmrk.in/";
 key     requestid;
 key     owner;
+key landid;
+string landpic;
 
 string  salt        = "2x4DVGxGMFQ3ULHxf61b";
-list    menu        = ["Done","slURL It!","LiveMark It!","New","Edit","Delete","Instructions","Feedback","Support"];
+list    menu        = ["List","slURL It!","LiveMark It!","New","Edit","Delete","Instructions","Feedback","Support"];
 list    shorturl    = ["bit.ly","is.gd","hex.io","digg","tr.im","tinyurl"];
 
 //LOCATION VARS
@@ -26,6 +28,7 @@ string PDesc;
 key POwner;
 key PGroup;
 integer PArea;
+key PUuid;
 //-------------
 list GetDesc;
 string locName;
@@ -79,7 +82,7 @@ setchans(){
 }
 string internalurl(){
     (Name = llGetRegionName());
-    (Where = llGetPos());
+    (Where = llGetPos() + <0,0,2>);
     (X = ((integer)Where.x));
     (Y = ((integer)Where.y));
     (Z = ((integer)Where.z));
@@ -88,7 +91,7 @@ string internalurl(){
 }
 string externalurl(){
     (Name = llGetRegionName());
-    (Where = llGetPos());
+    (Where = llGetPos() + <0,0,2>);
     (X = ((integer)Where.x));
     (Y = ((integer)Where.y));
     (Z = ((integer)Where.z));
@@ -104,29 +107,19 @@ string externalurl(){
     return _SLURL0;
 }
 locinfo(){
-    lstPDetails = llGetParcelDetails(llGetPos(),[0,1,2,3,4]);
+    lstPDetails = llGetParcelDetails(llGetPos(),[0,1,2,3,4,5]);
     PName = llList2String(lstPDetails,0);
     PDesc = llList2String(lstPDetails,1);
     POwner = llList2Key(lstPDetails,2);
     PGroup = llList2Key(lstPDetails,3);
-    PArea = llList2Integer(lstPDetails,4);    
+    PArea = llList2Integer(lstPDetails,4);
+    PUuid = llList2Key(lstPDetails,5);
 }
 grabConfig(){
     if(llGetObjectDesc() == "(No Description)"){llSetObjectDesc("LiveMark::@");}
     GetDesc  = llParseString2List(llGetObjectDesc(),["::"],[]);
     locName  = llList2String(GetDesc,0);
     locURLid = llList2String(GetDesc,1);
-}
-setloc(){    
-    locinfo();
-    requestid = llHTTPRequest("http://www.sublimegeek.com/backend/lm_addloc.php",
-    [0,"POST",1,"application/x-www-form-urlencoded"],
-    "slurl="       +llEscapeURL(internalurl())+
-    "&exurl="      +llEscapeURL(externalurl())+
-    "&pdesc="      +llEscapeURL(PDesc)+
-    "&parea="      +llEscapeURL((string)PArea)+
-    "&locname="    +llEscapeURL(PName)+
-    "&profname="   +llEscapeURL(locName));
 }
 //----------------------------------------------------------------------------//
 
@@ -154,6 +147,10 @@ default
         llSetObjectName("[sig] LiveMark HUD v"+version);
         llSetObjectDesc("Touch me to begin");
         llSetText("LiveMark HUD v"+version+"\nTouch Me To Begin!",<1,1,1>,1);
+        
+        integer freemem = llGetFreeMemory() / 1000;
+        llOwnerSay("Ready.");
+        llOwnerSay((string)freemem+"KB of free memory.");
     }
 
     touch_start(integer total_number)
@@ -180,24 +177,36 @@ default
             }
             if(msg == "LiveMark It!"){
                 locinfo();
+                landid    = llHTTPRequest("http://world.secondlife.com/place/"+(string)PUuid,[],"");
+                llSleep(1);    
                 requestid = llHTTPRequest("http://lmrk.in/backend/newrdm/",
                 [0,"POST",1,"application/x-www-form-urlencoded"],
                 "slurl="       +llEscapeURL(internalurl())+
                 "&exurl="      +llEscapeURL(externalurl())+
                 "&pdesc="      +llEscapeURL(PDesc)+
                 "&parea="      +llEscapeURL((string)PArea)+
-                "&locname="    +llEscapeURL(PName));
+                "&locname="    +llEscapeURL(PName)+
+                "&puuid="      +llEscapeURL(PUuid)+
+                "&landpic="    +llEscapeURL(landpic));
                 llListenRemove(admchanhandle);
             }
             if(msg == "New"){
                 locinfo();
+                landid    = llHTTPRequest("http://world.secondlife.com/place/"+(string)PUuid,[],"");  
+                llSleep(1);  
                 requestid = llHTTPRequest("http://lmrk.in/backend/newloc/",
                 [0,"POST",1,"application/x-www-form-urlencoded"],
                 "slurl="       +llEscapeURL(internalurl())+
                 "&exurl="      +llEscapeURL(externalurl())+
                 "&pdesc="      +llEscapeURL(PDesc)+
                 "&parea="      +llEscapeURL((string)PArea)+
-                "&locname="    +llEscapeURL(PName));
+                "&locname="    +llEscapeURL(PName)+
+                "&puuid="      +llEscapeURL(PUuid)+
+                "&landpic="    +llEscapeURL(landpic));
+                llListenRemove(admchanhandle);
+            }
+            if(msg == "List"){                
+                requestid = llHTTPRequest("http://lmrk.in/backend/list/",[0,"POST",1,"application/x-www-form-urlencoded"],"");
                 llListenRemove(admchanhandle);
             }
             if(msg == "Edit"){
@@ -244,6 +253,8 @@ default
                     requestid = llHTTPRequest("http://lmrk.in/backend/delprofile/"+act,
                     [0,"POST",1,"application/x-www-form-urlencoded"],"");
                 }else if(cmd == "edit"){
+                    landid    = llHTTPRequest("http://world.secondlife.com/place/"+(string)PUuid,[],"");  
+                    llSleep(1);
                     requestid = llHTTPRequest("http://lmrk.in/backend/update/",
                     [0,"POST",1,"application/x-www-form-urlencoded"],
                     "slurl="       +llEscapeURL(internalurl())+
@@ -252,6 +263,8 @@ default
                     "&parea="      +llEscapeURL((string)PArea)+
                     "&locname="    +llEscapeURL(PName)+
                     "&profname="   +llEscapeURL(locName)+
+                    "&puuid="      +llEscapeURL(PUuid)+
+                    "&landpic="    +llEscapeURL(landpic)+
                     "&profid="     +llEscapeURL(act));
                 }
             }            
@@ -275,10 +288,16 @@ default
                 "\nYour LiveMark profile id is \""+atr+"\"\nNote: Use the profile id when setting up your pads & markers.");
                 return;
             }
-            if(cmd == "delprofile"){
-                llOwnerSay("Delete profile successful for id \""+atr+"\"");
+            if(cmd == "list"){
+                llOwnerSay("Here are your current active profiles:");
+                integer x;
+                list profiles = llParseString2List(atr,[";"],[]);
+                integer numprofs = llGetListLength(profiles);
+                for(x = 0;x < numprofs;x++){
+                    llOwnerSay(llList2String(profiles,x));
+                }                
                 return;
-            }
+            }            
             if(cmd == "updateloc"){
                 if((integer)atr){
                     llOwnerSay("Location update for "+PName+" succeeded.  \nAll markers will be updated automatically shortly.  \nGoing forward, you may use a pad for automatic location updates");
@@ -290,6 +309,26 @@ default
             if(cmd == "error"){
                 llOwnerSay(atr);
                 return;
+            }
+        }
+         if(request_id == landid){
+             if (llSubStringIndex(body, "blank.jpg") == -1){
+                    // Find starting point of the land picture UUID
+                    integer start_of_UUID = 
+                        llSubStringIndex(body,"<meta name=\"imageid\" content=\"") 
+                            + llStringLength("<meta name=\"imageid\" content=\"");
+                    // Find ending point of land picture UUID
+                    integer end_of_UUID = llSubStringIndex(body,"/");
+                    // Parse out land UUID from the body
+                    string profile_pic = llGetSubString(body, start_of_UUID, end_of_UUID);
+                    // Set the sides of the prim to the picture
+         
+                    //Parse some more, we need to dig deeper to get the key.
+                    integer start = 
+                        llSubStringIndex(profile_pic,"<!DOCTYPE html PUBLIC \"-/") 
+                            + llStringLength("<!DOCTYPE html PUBLIC \"-/");
+                    integer end = llSubStringIndex(profile_pic,"\" />");            
+                    landpic = llGetSubString(profile_pic, start,end - 1);
             }
         }
     }    

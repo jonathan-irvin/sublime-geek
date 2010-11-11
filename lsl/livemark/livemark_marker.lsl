@@ -1,9 +1,9 @@
-// LSL script generated: livemark_marker.lslp Thu Nov 11 10:37:01 CST 2010
+// LSL script generated: livemark_marker.lslp Thu Nov 11 10:41:04 CST 2010
 //LiveMark Client
 //Dynamic Landmark System
 
 //BASE CONFIG
-string version = "1.3";
+string version = "1.4p";
 integer allowdrop = FALSE;
 integer DEBUG = FALSE;
 string baseurl = "http://lmrk.in/";
@@ -154,25 +154,20 @@ default {
 
 
     touch_start(integer total_number) {
-        if ((llDetectedKey(0) != llGetOwner())) {
-            llInstantMessage(llDetectedKey(0),"Sorry, you are not the owner");
+        if ((owner != llGetOwner())) {
+            llMapDestination(simdest,clocal,clocal);
         }
-        else  {
-            if ((owner != llGetOwner())) {
-                llMapDestination(simdest,clocal,clocal);
+        else  if ((owner == llGetOwner())) {
+            (admchan = ((((integer)llFrand(3)) - 1) * ((integer)llFrand(2147483646))));
+            if ((admchan == 0)) {
+                (admchan = ((-5287954) + ((integer)llFrand(100))));
             }
-            else  if ((owner == llGetOwner())) {
-                (admchan = ((((integer)llFrand(3)) - 1) * ((integer)llFrand(2147483646))));
-                if ((admchan == 0)) {
-                    (admchan = ((-5287954) + ((integer)llFrand(100))));
-                }
-                (admchanhandle = llListen(admchan,"",llGetOwner(),""));
-                (menu = ["Setup","Test"]);
-                llDialog(owner,"Admin Menu",menu,admchan);
-            }
-            else  if (((simdest != "") && (clocal != <0.0,0.0,0.0>))) {
-                (requestid = llHTTPRequest(((baseurl + "sl/") + locURLid),[0,"POST",1,"application/x-www-form-urlencoded"],""));
-            }
+            (admchanhandle = llListen(admchan,"",llGetOwner(),""));
+            (menu = ["Setup","Test"]);
+            llDialog(owner,"Admin Menu",menu,admchan);
+        }
+        else  if (((simdest != "") && (clocal != <0.0,0.0,0.0>))) {
+            (requestid = llHTTPRequest(((baseurl + "sl/") + locURLid),[0,"POST",1,"application/x-www-form-urlencoded"],""));
         }
     }
 
@@ -206,7 +201,7 @@ default {
                 llSetObjectDesc(((llStringTrim(cmd,STRING_TRIM) + "::") + llStringTrim(obj,STRING_TRIM)));
                 llListenRemove(usrchanhandle);
                 llOwnerSay("Updated!");
-                state default;
+                llResetScript();
             }
             else  {
                 llOwnerSay("Huh?  I didn't understand you, please try again");
@@ -217,14 +212,16 @@ default {
 
     timer() {
         (requestid = llHTTPRequest(((baseurl + "sl/") + locURLid),[0,"POST",1,"application/x-www-form-urlencoded"],""));
-        llSetLinkPrimitiveParams(5,[PRIM_FULLBRIGHT,ALL_SIDES,TRUE,PRIM_GLOW,ALL_SIDES,0.15,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),1.0]);
-        llSetLinkPrimitiveParams(4,[PRIM_FULLBRIGHT,ALL_SIDES,TRUE,PRIM_GLOW,ALL_SIDES,0.3,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),1.0]);
-        llSetLinkPrimitiveParams(3,[PRIM_FULLBRIGHT,ALL_SIDES,TRUE,PRIM_GLOW,ALL_SIDES,0.15,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),1.0]);
-        llSetLinkPrimitiveParams(2,[PRIM_FULLBRIGHT,ALL_SIDES,TRUE,PRIM_GLOW,ALL_SIDES,0.3,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),1.0]);
-        llSetLinkPrimitiveParams(5,[PRIM_FULLBRIGHT,ALL_SIDES,FALSE,PRIM_GLOW,ALL_SIDES,0.0,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),0.5]);
-        llSetLinkPrimitiveParams(4,[PRIM_FULLBRIGHT,ALL_SIDES,FALSE,PRIM_GLOW,ALL_SIDES,0.0,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),0.5]);
-        llSetLinkPrimitiveParams(3,[PRIM_FULLBRIGHT,ALL_SIDES,FALSE,PRIM_GLOW,ALL_SIDES,0.0,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),0.5]);
-        llSetLinkPrimitiveParams(2,[PRIM_FULLBRIGHT,ALL_SIDES,FALSE,PRIM_GLOW,ALL_SIDES,0.0,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),0.5]);
+        if (((!allowdrop) && (gCreator == llGetCreator()))) {
+            llSetLinkPrimitiveParams(5,[PRIM_FULLBRIGHT,ALL_SIDES,TRUE,PRIM_GLOW,ALL_SIDES,0.15,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),1.0]);
+            llSetLinkPrimitiveParams(4,[PRIM_FULLBRIGHT,ALL_SIDES,TRUE,PRIM_GLOW,ALL_SIDES,0.3,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),1.0]);
+            llSetLinkPrimitiveParams(3,[PRIM_FULLBRIGHT,ALL_SIDES,TRUE,PRIM_GLOW,ALL_SIDES,0.15,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),1.0]);
+            llSetLinkPrimitiveParams(2,[PRIM_FULLBRIGHT,ALL_SIDES,TRUE,PRIM_GLOW,ALL_SIDES,0.3,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),1.0]);
+            llSetLinkPrimitiveParams(5,[PRIM_FULLBRIGHT,ALL_SIDES,FALSE,PRIM_GLOW,ALL_SIDES,0.0,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),0.5]);
+            llSetLinkPrimitiveParams(4,[PRIM_FULLBRIGHT,ALL_SIDES,FALSE,PRIM_GLOW,ALL_SIDES,0.0,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),0.5]);
+            llSetLinkPrimitiveParams(3,[PRIM_FULLBRIGHT,ALL_SIDES,FALSE,PRIM_GLOW,ALL_SIDES,0.0,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),0.5]);
+            llSetLinkPrimitiveParams(2,[PRIM_FULLBRIGHT,ALL_SIDES,FALSE,PRIM_GLOW,ALL_SIDES,0.0,PRIM_COLOR,ALL_SIDES,llGetColor(ALL_SIDES),0.5]);
+        }
     }
 
     http_response(key request_id,integer status,list metadata,string body) {

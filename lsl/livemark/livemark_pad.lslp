@@ -2,7 +2,7 @@
 //Dynamic Landmark System
 
 //BASE CONFIG
-string version    = "1.3";
+string version    = "1.4p";
 integer allowdrop = FALSE;
 integer DEBUG     = FALSE;
 string baseurl    = "http://lmrk.in/";
@@ -10,9 +10,10 @@ integer show      = TRUE;
 integer retries;
 string  hidemenu;
 key requestid;
+key landid;
 key owner;
 integer confighandle;
-
+string landpic;
 string salt = "2x4DVGxGMFQ3ULHxf61b";
 list menu;
 
@@ -29,6 +30,7 @@ string PDesc;
 key POwner;
 key PGroup;
 integer PArea;
+key PUuid;
 //-------------
 list GetDesc;
 string locName;
@@ -81,7 +83,7 @@ setchans(){
 }
 string internalurl(){
     (Name = llGetRegionName());
-    (Where = llGetPos());
+    (Where = llGetPos() + <0,0,2>);
     (X = ((integer)Where.x));
     (Y = ((integer)Where.y));
     (Z = ((integer)Where.z));
@@ -93,7 +95,7 @@ string internalurl(){
 }
 string externalurl(){
     (Name = llGetRegionName());
-    (Where = llGetPos());
+    (Where = llGetPos() + <0,0,2>);
     (X = ((integer)Where.x));
     (Y = ((integer)Where.y));
     (Z = ((integer)Where.z));
@@ -107,12 +109,13 @@ string externalurl(){
     return _SLURL0;
 }
 locinfo(){
-    lstPDetails = llGetParcelDetails(llGetPos(),[0,1,2,3,4]);
+    lstPDetails = llGetParcelDetails(llGetPos(),[0,1,2,3,4,5]);
     PName = llList2String(lstPDetails,0);
     PDesc = llList2String(lstPDetails,1);
     POwner = llList2Key(lstPDetails,2);
     PGroup = llList2Key(lstPDetails,3);
-    PArea = llList2Integer(lstPDetails,4);    
+    PArea = llList2Integer(lstPDetails,4);
+    PUuid = llList2Key(lstPDetails,5);
 }
 grabConfig(){
     if(llGetObjectDesc() == "(No Description)"){llSetObjectDesc("LiveMark::@");}
@@ -124,13 +127,20 @@ updateloc(){
     locinfo();
     
     if(DEBUG){//What are we sending to the web
-        llOwnerSay("slurl="       +llEscapeURL(internalurl())+
-        "&exurl="      +llEscapeURL(externalurl())+
-        "&pdesc="      +llEscapeURL(PDesc)+
-        "&parea="      +llEscapeURL((string)PArea)+
-        "&locname="    +llEscapeURL(PName)+
-        "&profname="   +llEscapeURL(locName));
+        llOwnerSay(
+            "slurl="       +llEscapeURL(internalurl())+
+            "&exurl="      +llEscapeURL(externalurl())+
+            "&pdesc="      +llEscapeURL(PDesc)+
+            "&parea="      +llEscapeURL((string)PArea)+
+            "&locname="    +llEscapeURL(PName)+
+            "&profname="   +llEscapeURL(locName)+
+            "&profid="     +llEscapeURL(locURLid)+
+            "&puuid="      +llEscapeURL(PUuid)+
+            "&landpic="    +llEscapeURL(landpic)
+        );
     }
+    
+    landid    =  llHTTPRequest("http://world.secondlife.com/place/"+(string)PUuid,[],"");
     
     requestid = llHTTPRequest("http://lmrk.in/backend/update/",
     [0,"POST",1,"application/x-www-form-urlencoded"],
@@ -140,7 +150,9 @@ updateloc(){
     "&parea="      +llEscapeURL((string)PArea)+
     "&locname="    +llEscapeURL(PName)+
     "&profname="   +llEscapeURL(locName)+
-    "&profid="     +llEscapeURL(locURLid));    
+    "&profid="     +llEscapeURL(locURLid)+
+    "&puuid="      +llEscapeURL(PUuid)+
+    "&landpic="    +llEscapeURL(landpic));    
 }
 //----------------------------------------------------------------------------//
 
@@ -181,6 +193,9 @@ default
             llSetObjectName("[sig] LiveMark Update Pad v"+version);
             llSetText("LiveMark Update Pad v"+version+"\nReady for Setup!\nTouch me to begin!\n \n ",<1,1,1>,1);
         }
+        integer freemem = llGetFreeMemory() / 1000;
+        llOwnerSay("Ready.");
+        llOwnerSay((string)freemem+"KB of free memory.");
     }
 
     touch_start(integer total_number)
@@ -279,11 +294,31 @@ default
             
             if(cmd == "updateloc"){                
                 if(atr=="1"){
-                    llOwnerSay("My new location has been updated!");
+                    if(show){llOwnerSay("My new location has been updated!");}
                     return;
                 }else if(atr=="0"){return;}
             }else if(cmd == "error"){                
                 llOwnerSay("Error: "+atr);
+            }
+        }
+        if(request_id == landid){
+             if (llSubStringIndex(body, "blank.jpg") == -1){
+                    // Find starting point of the land picture UUID
+                    integer start_of_UUID = 
+                        llSubStringIndex(body,"<meta name=\"imageid\" content=\"") 
+                            + llStringLength("<meta name=\"imageid\" content=\"");
+                    // Find ending point of land picture UUID
+                    integer end_of_UUID = llSubStringIndex(body,"/");
+                    // Parse out land UUID from the body
+                    string profile_pic = llGetSubString(body, start_of_UUID, end_of_UUID);
+                    // Set the sides of the prim to the picture
+         
+                    //Parse some more, we need to dig deeper to get the key.
+                    integer start = 
+                        llSubStringIndex(profile_pic,"<!DOCTYPE html PUBLIC \"-/") 
+                            + llStringLength("<!DOCTYPE html PUBLIC \"-/");
+                    integer end = llSubStringIndex(profile_pic,"\" />");            
+                    landpic = llGetSubString(profile_pic, start,end - 1);
             }
         }
     }        
