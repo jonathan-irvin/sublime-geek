@@ -1,4 +1,4 @@
-// LSL script generated: vote.lslp Thu Nov 11 15:54:42 CST 2010
+// LSL script generated: vote.lslp Thu Nov 11 16:01:12 CST 2010
 //metaVotr
 //Paid Edition
 

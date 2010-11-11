@@ -1,4 +1,4 @@
-// LSL script generated: update.lslp Thu Nov 11 15:42:51 CST 2010
+// LSL script generated: update.lslp Thu Nov 11 16:01:11 CST 2010
 // ********************************************************
 // IMPORTANT! IMPORTANT! IMPORTANT! IMPORTANT! IMPORTANT!
 // SET THE PERMISSIONS ON THIS SCRIPT TO NO TRANSFER
