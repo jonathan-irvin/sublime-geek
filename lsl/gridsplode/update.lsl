@@ -1,4 +1,4 @@
-// LSL script generated: update.lslp Mon Nov  8 19:26:28 CST 2010
+// LSL script generated: update.lslp Thu Nov 11 09:26:00 CST 2010
 // ********************************************************
 // IMPORTANT! IMPORTANT! IMPORTANT! IMPORTANT! IMPORTANT!
 // SET THE PERMISSIONS ON THIS SCRIPT TO NO TRANSFER
@@ -9,7 +9,7 @@
 // WORK WITH YOUR PRODUCT
 
 // insert your server name between the quotemarks below
-string server = "SublimeGeek Update Server";
+string server = "Sublime Geek Update Server";
 
 // insert your server's password between the quotemarks below
 string password = "Jurb1f!ed";
@@ -19,7 +19,7 @@ string product = "GridSplode";
 
 // insert the current version number between the quotemarks below
 // don't use numbers like 1.2.4 ... stick to integers (1, 4, 9 etc.) or decimals (1.2, 4.12 etc.)
-string version = "1.0";
+string version = "2.0";
 
 // insert your avatar key below (use the server's "My Key" command to get it)
 string my_key = "6aab7af0-8ce8-4361-860b-7139054ed44f";
@@ -31,6 +31,11 @@ string my_key = "6aab7af0-8ce8-4361-860b-7139054ed44f";
 // this script in it. The default is a 12 hour gap.
 
 integer elapsed = 43200;
+
+// set the number of seconds between update checks below
+integer check_how_often_in_seconds = 3600;
+// tip: hourly = 3600; daily = 86400;
+// personally I use nothing less than the daily amount, to reduce lag
 
 
 
@@ -57,7 +62,6 @@ check_for_update(){
         (hash *= (-1));
     }
     load_html(((((((((((((((((((("http://www.hippo-tech-sl.com/hippoupdate/update-give.php?N=" + llEscapeURL(server)) + "&O=") + my_key) + "&PS=") + llMD5String(password,45736)) + "&PR=") + llEscapeURL(product)) + "&V=") + llEscapeURL(version)) + "&TO=") + ((string)llGetOwner())) + "&TONAME=") + llEscapeURL(ownerName)) + "&H=") + ((string)hash)) + "&R=") + myRPC) + "&T=") + ((string)elapsed)));
-    llSetTimerEvent(60);
 }
 
 load_html(string url){
@@ -69,12 +73,10 @@ process_command(string message){
     list data = llParseStringKeepNulls(message,["^"],[]);
     if ((llList2String(data,0) == "SUCCESS")) {
         llMessageLinked(LINK_SET,(-2948813),"SUCCESS","");
-        llSetTimerEvent(0);
         return;
     }
     if ((llList2String(data,0) == "FAIL")) {
         llMessageLinked(LINK_SET,(-2948813),llList2String(data,1),"");
-        llSetTimerEvent(0);
         return;
     }
     if ((llList2String(data,0) == "DOUPDATE")) {
@@ -100,20 +102,18 @@ default {
             llWhisper(0,(("Warning! Modify permissions are set on " + llGetScriptName()) + "!"));
         }
         llOpenRemoteDataChannel();
+        llSetTimerEvent(check_how_often_in_seconds);
     }
 
         
     timer() {
-        llSetTimerEvent(0);
-        llMessageLinked(LINK_SET,(-2948813),"TIMEOUT","");
-        return;
+        check_for_update();
     }
 
     
     remote_data(integer type,key channel,key message_id,string sender,integer idata,string sdata) {
         if ((type == REMOTE_DATA_CHANNEL)) {
             (myRPC = channel);
-            check_for_update();
             return;
         }
         if ((type == REMOTE_DATA_REQUEST)) {
@@ -129,7 +129,6 @@ default {
                 (retries = 0);
                 (last_url = "");
                 llMessageLinked(LINK_SET,(-2948813),"HTTP PROBLEM","");
-                llSetTimerEvent(0);
             }
             if ((last_url != "")) {
                 load_html(last_url);

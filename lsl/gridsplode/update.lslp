@@ -8,7 +8,7 @@
 // WORK WITH YOUR PRODUCT
 
 // insert your server name between the quotemarks below
-string server = "SublimeGeek Update Server";
+string server = "Sublime Geek Update Server";
 
 // insert your server's password between the quotemarks below
 string password = "Jurb1f!ed";
@@ -18,7 +18,7 @@ string product = "GridSplode";
 
 // insert the current version number between the quotemarks below
 // don't use numbers like 1.2.4 ... stick to integers (1, 4, 9 etc.) or decimals (1.2, 4.12 etc.)
-string version = "1.0";
+string version = "2.0";
 
 // insert your avatar key below (use the server's "My Key" command to get it)
 string my_key = "6aab7af0-8ce8-4361-860b-7139054ed44f";
@@ -30,6 +30,11 @@ string my_key = "6aab7af0-8ce8-4361-860b-7139054ed44f";
 // this script in it. The default is a 12 hour gap.
 
 integer elapsed = 43200;
+
+// set the number of seconds between update checks below
+integer check_how_often_in_seconds = 3600;
+// tip: hourly = 3600; daily = 86400;
+// personally I use nothing less than the daily amount, to reduce lag
 
 
 
@@ -60,8 +65,6 @@ check_for_update()
    // perform a database lookup
    
    load_html("http://www.hippo-tech-sl.com/hippoupdate/update-give.php?N=" + llEscapeURL(server) + "&O=" + my_key + "&PS=" + llMD5String(password, 45736) + "&PR=" + llEscapeURL(product) + "&V=" + llEscapeURL(version) + "&TO=" + (string) llGetOwner() + "&TONAME=" + llEscapeURL(ownerName) + "&H=" + (string) hash + "&R=" + myRPC + "&T=" + (string) elapsed);
-   
-    llSetTimerEvent(60);
 }
 
 load_html(string url)
@@ -79,7 +82,6 @@ process_command(string message)
     if (llList2String(data, 0) == "SUCCESS")
     {
         llMessageLinked(LINK_SET, -2948813, "SUCCESS", "");
-        llSetTimerEvent(0);
         return;
     }
     
@@ -88,7 +90,6 @@ process_command(string message)
     if (llList2String(data, 0) == "FAIL")
     {
         llMessageLinked(LINK_SET, -2948813, llList2String(data, 1), "");
-        llSetTimerEvent(0);
         return;
     }
     
@@ -119,16 +120,18 @@ default
         if (llGetInventoryPermMask(llGetScriptName(), MASK_NEXT) & PERM_MODIFY) {llWhisper(0, "Warning! Modify permissions are set on " + llGetScriptName() + "!");}
         
         // open XML-RPC channel --- when one is assigned, an update is checked for
+        
         llOpenRemoteDataChannel();
+        
+        // set the timer which will fire to do the check
+        
+        llSetTimerEvent(check_how_often_in_seconds);
         
     }
         
     timer()
     {
-        // request for item has timed out, so transmit that error code in case somebody want its
-        llSetTimerEvent(0);
-        llMessageLinked(LINK_SET, -2948813, "TIMEOUT", ""); return;
-        
+        check_for_update();        
     }
     
     remote_data(integer type, key channel, key message_id, string sender, integer idata, string sdata)
@@ -138,11 +141,7 @@ default
             // channel created 
             
             myRPC = channel; 
-                
-            // check for update
-                
-            check_for_update();
-            
+                      
             return;
         }
         
@@ -157,7 +156,7 @@ default
         if (err == 404 || err == 500)
         {
             retries++;
-            if (retries > 4) {retries = 0; last_url = ""; llMessageLinked(LINK_SET, -2948813, "HTTP PROBLEM", ""); llSetTimerEvent(0);}
+            if (retries > 4) {retries = 0; last_url = ""; llMessageLinked(LINK_SET, -2948813, "HTTP PROBLEM", "");}
             if (last_url !="") {load_html(last_url);}
         }
         else

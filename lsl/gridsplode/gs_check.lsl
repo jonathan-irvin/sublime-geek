@@ -1,4 +1,4 @@
-// LSL script generated: gs_check.lslp Mon Nov  8 19:25:17 CST 2010
+// LSL script generated: gs_check.lslp Thu Nov 11 09:25:22 CST 2010
 key requestid_chk;
 list winners;
 
@@ -6,17 +6,21 @@ key kaboom = "26f06136-8ef4-ae64-55d5-3f9f02b1f84b";
 
 default {
 
+
     on_rez(integer sp) {
         llResetScript();
     }
+
 
     state_entry() {
         llSetTimerEvent(30);
     }
 
+
     timer() {
-        (requestid_chk = llHTTPRequest("http://www.sublimegeek.com/backend/gsplode_chkexpired.php",[HTTP_METHOD,"POST",HTTP_MIMETYPE,"application/x-www-form-urlencoded"],""));
+        (requestid_chk = llHTTPRequest("http://www.sublimegeek.com/backend/gsplode_chkexpired.php",[0,"POST",1,"application/x-www-form-urlencoded"],""));
     }
+
 
     http_response(key request_id,integer status,list metadata,string body) {
         if ((request_id == requestid_chk)) {
