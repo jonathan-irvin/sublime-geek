@@ -172,7 +172,7 @@
 								</ul>
 							</li>
 							<li><a href="http://blog.sublimegeek.com/">Blog</a></li>
-							<li><a href="http://codaset.com/sublimegeek/sublimegeek/tickets/new">Support</a></li>
+							<li><a href="http://codaset.com/sublimegeek/sublime-geek/tickets/new">Support</a></li>
 							<li><?=safe_mailto('support@sublimegeek.com', 'Contact'); ?></li>
 								
 						</ul>
