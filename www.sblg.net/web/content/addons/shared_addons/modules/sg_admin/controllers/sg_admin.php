@@ -1,6 +1,6 @@
 <?php
 
-class Sg_admin extends Controller {
+class Sg_admin extends  Public_Controller {
 	
 	//SL Headers Info
 	var $headers        ;
