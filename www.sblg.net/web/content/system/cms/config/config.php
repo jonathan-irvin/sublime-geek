@@ -12,7 +12,7 @@
 |
 */
 
-$config['base_url'] = '';
+$config['base_url'] = 'http://sblg.net/';
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +24,7 @@ $config['base_url'] = '';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = '';
+$config['index_page'] = 'index.php';
 
 /*
 |--------------------------------------------------------------------------
