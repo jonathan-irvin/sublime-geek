@@ -34,13 +34,13 @@
 | the active record class
 */
 
-$active_group = "staging";
+$active_group = "default";
 $active_record = TRUE;
 
-$db['default']['hostname'] = "mysql50-64.wc2.dfw1.stabletransit.com";
-$db['default']['username'] = "528093_main";
+$db['default']['hostname'] = "localhost";
+$db['default']['username'] = "djfoxyslpr";
 $db['default']['password'] = "Jurb1f!ed";
-$db['default']['database'] = "528093_main";
+$db['default']['database'] = "admin_mb";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
 $db['default']['pconnect'] = TRUE;
@@ -49,20 +49,6 @@ $db['default']['cache_on'] = TRUE;
 $db['default']['cachedir'] = "/home/geekfox/system/cache";
 $db['default']['char_set'] = "utf8";
 $db['default']['dbcollat'] = "utf8_general_ci";
-
-$db['staging']['hostname'] = "mysql50-70.wc2.dfw1.stabletransit.com";
-$db['staging']['username'] = "528093_staging";
-$db['staging']['password'] = "Jurb1f!ed";
-$db['staging']['database'] = "528093_staging";
-$db['staging']['dbdriver'] = "mysql";
-$db['staging']['dbprefix'] = "";
-$db['staging']['pconnect'] = TRUE;
-$db['staging']['db_debug'] = TRUE;
-$db['staging']['cache_on'] = TRUE;
-$db['staging']['cachedir'] = "/home/geekfox/system/cache";
-$db['staging']['char_set'] = "utf8";
-$db['staging']['dbcollat'] = "utf8_general_ci";
-
 
 /* End of file database.php */
 /* Location: ./system/application/config/database.php */
