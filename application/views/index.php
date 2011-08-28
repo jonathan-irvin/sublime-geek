@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="author" content="Sublime Geek" />
+	<meta name="author" content="Jonathan Irvin" />
 	<meta name="description" content="Home of Sublime Geek Products and Services" />
 	<meta name="keywords" content="keywords, or phrases, associated, with each page, are best" />
 	<title>{title}</title>
 	
 	<!-- Favorites icon -->
-	<link rel="shortcut icon" href="http://sublimegeek.com/favicon.ico" />
+	<link rel="shortcut icon" href="http://sblg.net/favicon.ico" />
 	
 	<!-- Style sheets -->
 	<link rel="stylesheet" type="text/css" href="css/reset.min.css" />
@@ -170,9 +170,9 @@
 									{/metavotr}									
 								</ul>
 							</li>
-							<li><a href="http://blog.sublimegeek.com/">Blog</a></li>
+							<li><a href="http://blog.sblg.net/">Blog</a></li>
 							<li><a href="http://codaset.com/sublimegeek/sublime-geek/tickets/new">Support</a></li>
-							<li><?=safe_mailto('support@sublimegeek.com', 'Contact'); ?></li>
+							<li><?=safe_mailto('support@sblg.net', 'Contact'); ?></li>
 								
 						</ul>
 						
@@ -183,12 +183,12 @@
 							<li>
 								<a href="#"><span class="mmFeeds">Feeds</span></a>
 								<ul>
-									<li><a href="http://blog.sublimegeek.com/?feed=rss2"><span class="mmRSS">RSS</span></a></li>
+									<li><a href="http://blog.sblg.net/?feed=rss2"><span class="mmRSS">RSS</span></a></li>
 									<li><a href="http://www.facebook.com/pages/Sublime-Geek/185566386860"><span class="mmFacebook">Facebook</span></a></li>
 									<li><a href="http://twitter.com/sublimegeek"><span class="mmTwitter">Twitter</span></a></li>
 								</ul>
 							</li>
-							<li><a href="http://sublimegeek.com/blog/wp-login.php" class="login">Login</a></li>
+							<li><a href="http://sblg.net/blog/wp-login.php" class="login">Login</a></li>
 						</ul>
 						
 					</div>
@@ -408,8 +408,8 @@
 							-->
 							<li><a href="http://www.facebook.com/pages/Sublime-Geek/185566386860">	<img src="images/icons/social2/facebook.png" 	alt="Facebook" />	</a></li>
 							<li><a href="http://twitter.com/sublimegeek">							<img src="images/icons/social2/twitter.png"  	alt="Twitter" />	</a></li>
-							<li><a href="http://blog.sublimegeek.com/">								<img src="images/icons/social2/wordpress.png"  	alt="Blog" />		</a></li>
-							<li><a href="mailto:support@sublimegeek.com">							<img src="images/icons/social2/email.png"  		alt="Email" />		</a></li>
+							<li><a href="http://blog.sblg.net/">								<img src="images/icons/social2/wordpress.png"  	alt="Blog" />		</a></li>
+							<li><a href="mailto:support@sblg.net">							<img src="images/icons/social2/email.png"  		alt="Email" />		</a></li>
 							<li><a href="http://youtube.com/djfoxyslpr">							<img src="images/icons/social2/youtube.png"  	alt="YouTube" />	</a></li>
 						</ul>
 						<p>Keep track of Sublime Geek on all your favorite social networks.</p>
@@ -446,7 +446,7 @@
 		<!-- Copyright/legal text -->
 		<div id="Copyright">
 			<p>
-				Copyright &copy; 2010 - <a href="http://sublimegeek.com" onclick="window.open(this.href); return false;">Sublime Geek</a> - All rights reserved. 
+				Copyright &copy; 2010 - <a href="http://sblg.net" onclick="window.open(this.href); return false;">Sublime Geek</a> - All rights reserved. 
 				Conforms to W3C Standard 
 				<a href="http://validator.w3.org/check?uri=referer" onclick="window.open(this.href); return false;">XHTML</a> &amp; 
 				<a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3" onclick="window.open(this.href); return false;">CSS</a>

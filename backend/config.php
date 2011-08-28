@@ -2,9 +2,9 @@
 
 function connect2slm()
 {
-mysql_connect('mysql50-64.wc2.dfw1.stabletransit.com', '528093_main', 'Jurb1f!ed') 
+mysql_connect('localhost', 'admin', 'Jurb1f!ed') 
 or die(mysql_error());
-mysql_select_db("geekfox_ms") or die(mysql_error()); 
+mysql_select_db("admin_mb") or die(mysql_error()); 
 }
 
 function genPass()        

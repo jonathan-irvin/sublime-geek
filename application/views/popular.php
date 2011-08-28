@@ -1,49 +1,48 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="author" content="Sublime Geek" />
+	<meta name="author" content="Jonathan Irvin" />
 	<meta name="description" content="A live list of popular SL Locations" />
 	<meta name="keywords" content="keywords, or phrases, associated, with each page, are best" />
 	<title>{title}</title>
 	
 	<!-- Favorites icon -->
-	<link rel="shortcut icon" href="http://sublimegeek.com/favicon.ico" />
+	<link rel="shortcut icon" href="http://sblg.net/favicon.ico" />
 	
 	<!-- Style sheets -->
-	<link rel="stylesheet" type="text/css" href="http://sublimegeek.com/css/reset.min.css" />
-	<link rel="stylesheet" type="text/css" href="http://sublimegeek.com/css/menu.min.css" />
-	<link rel="stylesheet" type="text/css" href="http://sublimegeek.com/css/fancybox.css" />
-	<link rel="stylesheet" type="text/css" href="http://sublimegeek.com/css/tooltip.min.css" />
-	<link rel="stylesheet" type="text/css" href="http://sublimegeek.com/css/default.css" />
-	<link rel="stylesheet" type="text/css" href="http://sublimegeek.com/css/skins/skin-1.css" />
-	<link rel="stylesheet" type="text/css" href="http://sublimegeek.com/css/css_buttons.css" />
+	<link rel="stylesheet" type="text/css" href="http://sblg.net/css/reset.min.css" />
+	<link rel="stylesheet" type="text/css" href="http://sblg.net/css/menu.min.css" />
+	<link rel="stylesheet" type="text/css" href="http://sblg.net/css/fancybox.css" />
+	<link rel="stylesheet" type="text/css" href="http://sblg.net/css/tooltip.min.css" />
+	<link rel="stylesheet" type="text/css" href="http://sblg.net/css/default.css" />
+	<link rel="stylesheet" type="text/css" href="http://sblg.net/css/skins/skin-1.css" />
+	<link rel="stylesheet" type="text/css" href="http://sblg.net/css/css_buttons.css" />
 	
 	<!-- jQuery framework and utilities -->
-	<script type="text/javascript" src="http://sublimegeek.com/js/jquery-1.4.min.js"></script>
-	<script type="text/javascript" src="http://sublimegeek.com/js/jquery-ui-1.7.2.min.js"></script>
-	<script type="text/javascript" src="http://sublimegeek.com/js/jquery.easing.1.3.min.js"></script>
-	<script type="text/javascript" src="http://sublimegeek.com/js/hoverIntent.min.js"></script>
-	<script type="text/javascript" src="http://sublimegeek.com/js/jquery.bgiframe.min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/jquery-1.4.min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/jquery-ui-1.7.2.min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/jquery.easing.1.3.min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/hoverIntent.min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/jquery.bgiframe.min.js"></script>
 	<!-- Drop down menus -->
-	<script type="text/javascript" src="http://sublimegeek.com/js/superfish.min.js"></script>
-	<script type="text/javascript" src="http://sublimegeek.com/js/supersubs.min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/superfish.min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/supersubs.min.js"></script>
 	<!-- Tooltips -->
-	<script type="text/javascript" src="http://sublimegeek.com/js/jquery.cluetip.min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/jquery.cluetip.min.js"></script>
 	<!-- Input labels -->
-	<script type="text/javascript" src="http://sublimegeek.com/js/jquery.overlabel.min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/jquery.overlabel.min.js"></script>
 	<!-- Anchor tag scrolling effects -->
-	<script type="text/javascript" src="http://sublimegeek.com/js/jquery.scrollTo-min.js"></script>
-	<script type="text/javascript" src="http://sublimegeek.com/js/jquery.localscroll-min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/jquery.scrollTo-min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/jquery.localscroll-min.js"></script>
 	<!-- Inline popups/modal windows -->
-	<script type="text/javascript" src="http://sublimegeek.com/js/jquery.fancybox-1.2.6.pack.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/jquery.fancybox-1.2.6.pack.js"></script>
 	
 	<!-- Slide shows -->
 		<!-- Cycle 	(default, used by demo skin changer) -->
-			<script type="text/javascript" src="http://sublimegeek.com/js/jquery.cycle.all.min.js"></script>
+			<script type="text/javascript" src="http://sblg.net/js/jquery.cycle.all.min.js"></script>
 				<!-- Cu3er -->
-				<script type="text/javascript" src="http://sublimegeek.com/js/swfobject.js"></script>
+				<script type="text/javascript" src="http://sblg.net/js/swfobject.js"></script>
 				<script type="text/javascript">
 					var flashvars = {};
 					flashvars.xml = "xml/config.xml";
@@ -51,12 +50,12 @@
 					var attributes = {};
 					attributes.wmode = "transparent";
 					attributes.id = "slider";
-					swfobject.embedSWF("flash/cu3er.swf", "TheCu3er", "938", "340", "9", "http://sublimegeek.com/flash/expressInstall.swf", flashvars, attributes);
+					swfobject.embedSWF("flash/cu3er.swf", "TheCu3er", "938", "340", "9", "http://sblg.net/flash/expressInstall.swf", flashvars, attributes);
 				</script>
 		
 	<!-- Font replacement (cufón) -->
-	<script src="http://sublimegeek.com/js/cufon-yui.js" type="text/javascript"></script>
-	<script src="http://sublimegeek.com/js/LiberationSans.font.js" type="text/javascript"></script>
+	<script src="http://sblg.net/js/cufon-yui.js" type="text/javascript"></script>
+	<script src="http://sblg.net/js/LiberationSans.font.js" type="text/javascript"></script>
 
 	<!-- IE only includes (PNG Fix and other things for sucky browsers -->
 	
@@ -80,13 +79,13 @@
 		any of the funcionality.		
 		-->
 		
-		<script type="text/javascript" src="http://sublimegeek.com/js/demo.js"></script>	
-		<link rel="stylesheet" type="text/css" href="http://sublimegeek.com/css/demo.css" />		
+		<script type="text/javascript" src="http://sblg.net/js/demo.js"></script>	
+		<link rel="stylesheet" type="text/css" href="http://sblg.net/css/demo.css" />		
 	<!-- END: For Demo Only -->
 	
 
 	<!-- Functions to initialize after page load -->
-	<script type="text/javascript" src="http://sublimegeek.com/js/onLoad.min.js"></script>
+	<script type="text/javascript" src="http://sblg.net/js/onLoad.min.js"></script>
 
 	
 </head>
@@ -171,9 +170,9 @@
 									{/metavotr}									
 								</ul>
 							</li>
-							<li><a href="http://blog.sublimegeek.com/">Blog</a></li>
+							<li><a href="http://blog.sblg.net/">Blog</a></li>
 							<li><a href="http://codaset.com/sublimegeek/sublime-geek/tickets/new">Support</a></li>
-							<li><?=safe_mailto('support@sublimegeek.com', 'Contact'); ?></li>
+							<li><?=safe_mailto('support@sblg.net', 'Contact'); ?></li>
 								
 						</ul>
 						
@@ -184,12 +183,12 @@
 							<li>
 								<a href="#"><span class="mmFeeds">Feeds</span></a>
 								<ul>
-									<li><a href="http://blog.sublimegeek.com/?feed=rss2"><span class="mmRSS">RSS</span></a></li>
+									<li><a href="http://blog.sblg.net/?feed=rss2"><span class="mmRSS">RSS</span></a></li>
 									<li><a href="http://www.facebook.com/pages/Sublime-Geek/185566386860"><span class="mmFacebook">Facebook</span></a></li>
 									<li><a href="http://twitter.com/sublimegeek"><span class="mmTwitter">Twitter</span></a></li>
 								</ul>
 							</li>
-							<li><a href="http://blog.sublimegeek.com/wp-login.php" class="login">Login</a></li>
+							<li><a href="http://blog.sblg.net/wp-login.php" class="login">Login</a></li>
 						</ul>
 						
 					</div>
@@ -416,8 +415,8 @@
 							<!-- <li><a href="#"><img src="images/icons/social/yahoo.png" width="40" height="40" alt="Yahoo!" /></a></li> -->
 							<li><a href="http://www.facebook.com/pages/Sublime-Geek/185566386860">	<img src="../images/icons/social2/facebook.png" 	alt="Facebook" />	</a></li>
 							<li><a href="http://twitter.com/sublimegeek">							<img src="../images/icons/social2/twitter.png"  	alt="Twitter" />	</a></li>
-							<li><a href="http://blog.sublimegeek.com/">								<img src="../images/icons/social2/wordpress.png"  	alt="Blog" />		</a></li>
-							<li><a href="mailto:support@sublimegeek.com">							<img src="../images/icons/social2/email.png"  		alt="Email" />		</a></li>
+							<li><a href="http://blog.sblg.net/">								<img src="../images/icons/social2/wordpress.png"  	alt="Blog" />		</a></li>
+							<li><a href="mailto:support@sblg.net">							<img src="../images/icons/social2/email.png"  		alt="Email" />		</a></li>
 							<li><a href="http://youtube.com/djfoxyslpr">							<img src="../images/icons/social2/youtube.png"  	alt="YouTube" />	</a></li>
 						</ul>
 						<p>Keep track of Sublime Geek on all your favorite social networks.</p>
@@ -454,7 +453,7 @@
 		<!-- Copyright/legal text -->
 		<div id="Copyright">
 			<p>
-				Copyright &copy; 2010 - <a href="http://sublimegeek.com" onclick="window.open(this.href); return false;">Sublime Geek</a> - All rights reserved. 
+				Copyright &copy; 2010 - <a href="http://sblg.net" onclick="window.open(this.href); return false;">Sublime Geek</a> - All rights reserved. 
 				Conforms to W3C Standard 
 				<a href="http://validator.w3.org/check?uri=referer" onclick="window.open(this.href); return false;">XHTML</a> &amp; 
 				<a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3" onclick="window.open(this.href); return false;">CSS</a>
