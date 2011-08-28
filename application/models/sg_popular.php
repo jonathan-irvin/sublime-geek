@@ -1,11 +1,11 @@
 
 <?php
 
-class SG_Popular extends Model {
+class SG_Popular extends CI_Model {
 
-    function SG_Popular()
+    function __construct()
     {
-        parent::Model();		
+        parent::__construct();		
     }
     
     function grab_ratings($interval, $limit){

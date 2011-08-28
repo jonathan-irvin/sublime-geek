@@ -23,7 +23,7 @@ define('CCAPI_NO_OVERLOAD',true);
  *
  * Base class for all CentovaCast API classes
  */
-class CCBaseAPIClient extends Model{
+class CCBaseAPIClient extends CI_Model{
 	
 	var $debug = false;
 	var $encoding = 'UTF-8';

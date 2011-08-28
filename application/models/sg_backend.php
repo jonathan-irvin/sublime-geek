@@ -1,6 +1,6 @@
 <?php
 
-class SG_Backend extends Model {
+class SG_Backend extends CI_Model {
 
     //SL Headers Info
 	var $headers        ;
@@ -10,9 +10,9 @@ class SG_Backend extends Model {
 	var $ownerName      ;
 	var $region         ;
     
-    function SG_Backend()
+    function __construct()
     {
-        parent::Model();
+        parent::__construct();
 		$this->load->helper('date');
         
         //Set Headers

@@ -1,6 +1,6 @@
 <?php
 
-class SG_Metavotr extends Model {
+class SG_Metavotr extends CI_Model {
 
     //MetaVotr Constants
 	const mv_version 	= 2.5;
@@ -32,9 +32,9 @@ class SG_Metavotr extends Model {
 	var $ownerName      ;
 	var $region         ;
 	
-    function SG_Metavotr()
+    function __construct()
     {
-        parent::Model();
+        parent::__construct();
         
         //Set Headers
 		$this->headers		    = $this->sg_backend->emu_getallheaders();

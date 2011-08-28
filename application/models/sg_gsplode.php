@@ -1,6 +1,6 @@
 <?php
 
-class SG_Gsplode extends Model {
+class SG_Gsplode extends CI_Model {
 	
 	//SL Headers Info
 	var $headers        ;
@@ -29,9 +29,9 @@ class SG_Gsplode extends Model {
 	 * $v_recv         = $_POST['version'];
 	 */
 	
-    function SG_Gsplode()
+    function __construct()
     {
-        parent::Model();
+        parent::__construct();
         
 		$this->load->helper('date');
 		

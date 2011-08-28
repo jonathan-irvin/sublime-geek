@@ -1,6 +1,6 @@
 <?php
 
-class SG_metatrinity extends Model {
+class SG_metatrinity extends CI_Model {
 
     
 	//SL Headers Info
@@ -11,9 +11,9 @@ class SG_metatrinity extends Model {
 	var $ownerName      ;
 	var $region         ;
 	
-    function SG_Metatrinity()
+    function __construct()
     {
-        parent::Model();
+        parent::__construct();
         
         //Set Headers
 		$this->headers			= $this->sg_backend->emu_getallheaders();

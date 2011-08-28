@@ -1,6 +1,6 @@
 <?php
 
-class Sg_admin extends Controller {
+class Sg_admin extends CI_Controller {
 	
 	//SL Headers Info
 	var $headers        ;
@@ -43,9 +43,9 @@ class Sg_admin extends Controller {
 	var $email			;
 	var $template		;
 	
-	function Sg_admin()
+	function __construct()
 	{
-		parent::Controller();	
+		parent::__construct();	
 		
 		//Backend Specific
 		$this->load->model('sg_backend');

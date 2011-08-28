@@ -1,6 +1,6 @@
 <?php
 
-class SG_metacast extends Model {
+class SG_metacast extends CI_Model {
     
 	//SL Headers Info
 	var $headers        ;
@@ -22,8 +22,8 @@ class SG_metacast extends Model {
 	var $email			;
 	var $template		;
 	
-    function SG_Metacast()    {
-        parent::Model();
+    function __construct()    {
+        parent::__construct();
 		$this->load->helper('date');
 		
         

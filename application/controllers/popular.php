@@ -1,19 +1,31 @@
 <?php
 
-class Welcome extends Controller {
+class Popular extends CI_Controller {
 	
 	var $data;
 	
-	function Welcome()
+	function __construct()
 	{
-		parent::Controller();
-		$this->output->cache(60);
-		$this->load->library('parser');
-		$this->load->helper('url');		
+		parent::__construct();
+		
+		//Backend Specific		
 		$this->load->helper('date');
 		
+		//Application Specific		
+		$this->load->model('sg_popular');
+		
+		//Requires
+		$this->load->library('parser');
+		$this->load->helper('url');		
+		//$this->output->cache(15);		
+		
+		$this->output->enable_profiler(FALSE);
+		
+		$DB 		= $this->load->database();
+		$source 	= $this->uri->segment_array();
+						
 		$this->data = array(
-			'title'		=> 	'Sublime Geek',
+			'title'		=> 	'Sublime Geek SL Popular Locations',
 			'products' 	=>  array(
 				array('product_name' => 'LiveMark - Dynamic LandMark System','product_url' 					=> 'http://blog.sublimegeek.com/products/livemark-dynamic-landmark-system/'),
 				array('product_name' => 'metaCast Cloud - Streaming Media Service','product_url' 			=> 'http://metacast.sublimegeek.com/'),
@@ -38,12 +50,49 @@ class Welcome extends Controller {
 	}
 	
 	function index()
-	{		
-		$DB 		= $this->load->database();
-		$source 	= $this->uri->segment_array();		
+	{
+		$locations = $this->sg_popular->grab_ratings("1 HOUR",25);		
+		$popular_title = array('popular_scope' => 'Hot Now! Top 25 Locations','location'	=> $locations);		
+		$this->data = array_merge($this->data,$popular_title);
 		
-		$this->parser->parse('index.php',$this->data);
+		$str = $this->db->last_query();
+		
+		//echo "<!-- ".$str." -->";
+		
+		$this->parser->parse('popular.php',$this->data);
 	}
+	
+	function daily()
+	{			
+		$locations = $this->sg_popular->grab_ratings("1 DAY",25);		
+		$popular_title = array('popular_scope' => 'Daily Top 25 Locations','location'	=> $locations);		
+		$this->data = array_merge($this->data,$popular_title);
+		$this->parser->parse('popular.php',$this->data);		
+	}
+	
+	function weekly()
+	{			
+		$locations = $this->sg_popular->grab_ratings("168 HOUR",25);		
+		$popular_title = array('popular_scope' => 'Weekly Top 25 Locations','location'	=> $locations);		
+		$this->data = array_merge($this->data,$popular_title);
+		$this->parser->parse('popular.php',$this->data);
+	}
+	
+	function monthly()
+	{			
+		$locations = $this->sg_popular->grab_ratings("1 MONTH",25);		
+		$popular_title = array('popular_scope' => 'Monthly Top 25 Locations','location'	=> $locations);		
+		$this->data = array_merge($this->data,$popular_title);
+		$this->parser->parse('popular.php',$this->data);
+	}
+	
+	function alltime()
+	{			
+		$locations = $this->sg_popular->grab_ratings("10 YEAR",25);		
+		$popular_title = array('popular_scope' => 'All-Time Top 25 Locations','location'	=> $locations);		
+		$this->data = array_merge($this->data,$popular_title);
+		$this->parser->parse('popular.php',$this->data);
+	}	
 }
 
 /* End of file welcome.php */
