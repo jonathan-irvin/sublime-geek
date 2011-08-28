@@ -50,7 +50,7 @@ $active_record = TRUE;
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'admin';
 $db['default']['password'] = 'Jurb1f!ed615';
-$db['default']['database'] = 'sblg_mb';
+$db['default']['database'] = 'admin_mb';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
@@ -68,6 +68,9 @@ $db['default']['port']     = "3306";
 /* End of file database.php */
 /* Location: ./application/config/database.php */
 
+/* Reserved only for troubleshooting */
+
+/*
 echo '<pre>';
      print_r($db['default']);
   echo '</pre>';
@@ -83,3 +86,4 @@ echo '<pre>';
 
     echo '<br />   Connected OK:'  ;
     die( 'file: ' .__FILE__ . '--> Line: ' .__LINE__); 
+*/
