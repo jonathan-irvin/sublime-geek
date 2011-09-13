@@ -3,45 +3,54 @@
 class Sg_admin extends CI_Controller {
 	
 	//SL Headers Info
-	var $headers        ;
-	var $objectName     ;
-	var $objectKey      ;
-	var $ownerKey       ;
-	var $ownerName      ;
-	var $region         ;
+	var $headers;
+	var $objectName;
+	var $objectKey;
+	var $ownerKey;
+	var $ownerName;
+	var $region;
 	
 	//MetaVotr Vars
-	var $simname   		;
-	var $locname   		;
-	var $slurl     		;
-	var $voterkey  		;
-	var $votername 		;
-	var $rating    		;
-	var $authhash  		;
-	var $unitver   		;
-	var $land_uuid   	;
-	var $land_pic_uuid	;
-	var $land_area 		;
-	var $push_vote 		;
+	var $simname;
+	var $locname;
+	var $slurl;
+	var $voterkey;
+	var $votername;
+	var $rating;
+	var $authhash;
+	var $unitver;
+	var $land_uuid;
+	var $land_pic_uuid;
+	var $land_area;
+	var $push_vote;
 	
 	//MetaVotr ThreadMap Vars
-	var $grid_x 		;
-	var $grid_y 		;	
+	var $grid_x;
+	var $grid_y;
 	
 	//GSplode Vars
-	var $svr_auth_recv	;
-	var $player_name    ;
-	var $player_key     ;
-	var $pmt_amt        ;	
-	var $auth_recv      ;
-	var $v_recv         ;
+	var $svr_auth_recv;
+	var $player_name;
+	var $player_key;
+	var $pmt_amt;	
+	var $auth_recv;
+	var $v_recv;
 	
 	//MetaCast Vars
-	var $afftuser		;
-	var $afftpass		;
-	var $state			;
-	var $email			;
-	var $template		;
+        var $afftuser;
+        var $afftpass;
+        var $state;
+        var $email;
+        var $template;
+        
+        //MetaTip Vars
+	var $from_uuid;
+        var $from_name;
+        var $to_uuid;
+        var $to_name;
+        var $tip_amount;
+        var $trans_type;
+        var $user_api;
 	
 	function __construct()
 	{
@@ -55,14 +64,15 @@ class Sg_admin extends CI_Controller {
 		$this->load->model('sg_metavotr');		
 		$this->load->model('sg_gsplode');
 		$this->load->model('sg_metacast');
+                // $this->load->model('sg_metatip'); //Only when ready
 		
 		//Requires
 		$this->load->library('parser');
 		$this->load->library('xmlrpc');
 		$this->load->helper('url');
 		
-		$DB 		= $this->load->database();		
-		$source 	= $this->uri->segment_array();		
+		$DB 	= $this->load->database();		
+		$source = $this->uri->segment_array();		
 		
 		//Set Headers
 		$this->headers 		  = $this->sg_backend->emu_getallheaders();
@@ -75,40 +85,51 @@ class Sg_admin extends CI_Controller {
 		}
 		
 		//Set MetaVotr Vars
-		$this->simname   		= addslashes(	$this->input->post('simname')  			);
-		$this->locname   		= addslashes(	$this->input->post('locname')  			);
-		$this->slurl     		= 				$this->input->post('slurl'     			);
-		$this->voterkey  		= 				$this->input->post('voter_key' 			);
-		$this->votername 		= 				$this->input->post('voter_name'			);
-		$this->rating    		= 				$this->input->post('rating'    			);
-		$this->authhash  		= 				$this->input->post('authhash'  			);
-		$this->unitver   		= 				$this->input->post('version'   			);
-		$this->land_uuid   		= 				$this->input->post('land_uuid'   		);
-		$this->land_pic_uuid    = 				$this->input->post('land_pic_uuid'   	);
-		$this->land_area   		= 				$this->input->post('land_area'   		);
-		$this->push_vote   		= 				$this->input->post('push_vote'   		);
+		$this->simname   		= addslashes(	$this->input->post('simname'));
+		$this->locname   		= addslashes(	$this->input->post('locname'));
+		$this->slurl     		= $this->input->post('slurl');
+		$this->voterkey  		= $this->input->post('voter_key');
+		$this->votername 		= $this->input->post('voter_name');
+		$this->rating    		= $this->input->post('rating');
+		$this->authhash  		= $this->input->post('authhash');
+		$this->unitver   		= $this->input->post('version');
+		$this->land_uuid   		= $this->input->post('land_uuid');
+		$this->land_pic_uuid            = $this->input->post('land_pic_uuid');
+		$this->land_area   		= $this->input->post('land_area');
+		$this->push_vote   		= $this->input->post('push_vote');
 		
 		//MetaVotr ThreadMap
-		$this->grid_x   		= 				$this->input->post('grid_x'   			);
-		$this->grid_y   		= 				$this->input->post('grid_y'   			);				
+		$this->grid_x   		= $this->input->post('grid_x');
+		$this->grid_y   		= $this->input->post('grid_y');				
 		
 		//Set GSplode Vars
-		$this->svr_auth_recv	= 				$this->input->post('auth' 		  		);
-		$this->player_name		=				$this->input->post('player_name'		);
-		$this->player_key		=				$this->input->post('player_key'			);
-		$this->pmt_amt			=				$this->input->post('pmt_amt'			);
-		$this->slurl			=				$this->input->post('slurl'				);
-		$this->client_auth_recv	=				$this->input->post('auth'				);
-		$this->v_recv			=				$this->input->post('version'			);
+		$this->svr_auth_recv            = $this->input->post('auth');
+		$this->player_name		= $this->input->post('player_name');
+		$this->player_key		= $this->input->post('player_key');
+		$this->pmt_amt			= $this->input->post('pmt_amt');
+		$this->slurl			= $this->input->post('slurl');
+		$this->client_auth_recv         = $this->input->post('auth');
+		$this->v_recv			= $this->input->post('version');
 		
 		//MetaCast Vars
-		$this->afftuser 		= 				$this->input->post('mccuser'			);
-		$this->afftpass 		= 				$this->input->post('mccpass'			);
-		$this->state	 		= 				$this->input->post('state'				);
-		$this->attr		 		= 				$this->input->post('attr'				);
-		$this->email		 	= 				$this->input->post('email'				);
-		$this->template		 	= 				$this->input->post('template'			);
-		$this->duration		 	= 				$this->input->post('duration'			);
+		$this->afftuser 		= $this->input->post('mccuser');
+		$this->afftpass 		= $this->input->post('mccpass');
+		$this->state	 		= $this->input->post('state');
+		$this->attr		 	= $this->input->post('attr');
+		$this->email		 	= $this->input->post('email');
+		$this->template		 	= $this->input->post('template');
+		$this->duration		 	= $this->input->post('duration');
+                
+		//MetaTip Vars
+		$this->from_uuid                = $this->input->post('frm');
+		$this->from_name                = $this->input->post('frm_name');
+		$this->to_uuid                  = $this->input->post('to');
+		$this->to_name                  = $this->input->post('to_name');
+		
+		//Convert to float 000.00L$
+		$this->tip_amount               = number_format($this->input->post('amt'),2); 
+		$this->trans_type               = $this->input->post('type');
+		$this->user_api                 = $this->input->post('owner_api');
 		
 		//Check for an existing account, if not create one
 		/*
@@ -152,8 +173,7 @@ class Sg_admin extends CI_Controller {
 			$this->sg_metacast->mc_admacctcheck();
 		}else if($action == "getlogs"){
 			$this->sg_backend->acct_history();
-		}
-		
+		}		
 		
 		/*else if($action == "gridsplode_refundall"){
 			$db_res = $this->db->query("SELECT
@@ -187,6 +207,12 @@ class Sg_admin extends CI_Controller {
 			$this->db->update('gsplode_sessions',array('status'=>'CLOSED'));
 			$this->db->update('gsplode_config',array('status'=>'SHUTDOWN'));
 		}*/
+	}
+	
+	function api($request){
+		if($request == "check"){
+			$this->sg_backend->check_account_new($this->OwnerName,$this->OwnerKey,TRUE);
+		}
 	}
 	
 	function gridsplode($action,$attr)
@@ -279,6 +305,21 @@ class Sg_admin extends CI_Controller {
 			$this->grid_y
 		);
 	}	
+	
+        function metatip($action){
+            
+            if($action=="tip"){
+                $this->sg_metatip->tip(
+                        $this->from_uuid,
+                        $this->from_name,
+                        $this->to_uuid,
+                        $this->to_name,
+                        $this->tip_amount,
+                        $this->trans_type,
+                        $this->user_api
+                );
+            }
+        }
 }
 
 /* End of file welcome.php */
