@@ -118,17 +118,19 @@ class Sg_admin extends CI_Controller {
 		$this->attr		 	= $this->input->post('attr');
 		$this->email		 	= $this->input->post('email');
 		$this->template		 	= $this->input->post('template');
-		$this->duration		 	= $this->input->post('duration');
-                
-                //MetaTip Vars
-                $this->from_uuid                = $this->input-post('frm');
-                $this->from_name                = $this->input-post('frm_name');
-                $this->to_uuid                  = $this->input-post('to');
-                $this->to_name                  = $this->input-post('to_name');
-                //Convert to float 000.00L$
-                $this->tip_amount               = number_format($this->input-post('amt'),2); 
-                $this->trans_type               = $this->input-post('type');
-                $this->user_api                 = $this->input-post('owner_api');
+		$this->duration		 	= $this->input->post('duration');                
+
+		//MetaTip Vars
+		$this->from_uuid                = $this->input->post('frm');
+		$this->from_name                = $this->input->post('frm_name');
+		$this->to_uuid                  = $this->input->post('to');
+		$this->to_name                  = $this->input->post('to_name');
+		
+		//Convert to float 000.00L$
+		$this->tip_amount               = number_format($this->input->post('amt'),2); 
+		$this->trans_type               = $this->input->post('type');
+		$this->user_api                 = $this->input->post('owner_api');
+
 		
 		//Check for an existing account, if not create one
 		/*
@@ -172,8 +174,7 @@ class Sg_admin extends CI_Controller {
 			$this->sg_metacast->mc_admacctcheck();
 		}else if($action == "getlogs"){
 			$this->sg_backend->acct_history();
-		}
-		
+		}		
 		
 		/*else if($action == "gridsplode_refundall"){
 			$db_res = $this->db->query("SELECT
@@ -207,6 +208,12 @@ class Sg_admin extends CI_Controller {
 			$this->db->update('gsplode_sessions',array('status'=>'CLOSED'));
 			$this->db->update('gsplode_config',array('status'=>'SHUTDOWN'));
 		}*/
+	}
+	
+	function api($request){
+		if($request == "check"){
+			$this->sg_backend->check_account_new($this->OwnerName,$this->OwnerKey,TRUE);
+		}
 	}
 	
 	function gridsplode($action,$attr)
