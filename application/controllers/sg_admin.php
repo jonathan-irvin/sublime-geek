@@ -212,7 +212,7 @@ class Sg_admin extends CI_Controller {
 	
 	function api($request){
 		if($request == "check"){
-			$this->sg_backend->check_account_new($this->OwnerName,$this->OwnerKey,TRUE);
+			$this->sg_backend->check_account_new($this->ownerName,$this->ownerKey,TRUE);
 		}
 	}
 	
