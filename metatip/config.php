@@ -35,7 +35,7 @@ $trans_res  = mysql_query($trans_sql);
 $trans_res2 = mysql_query($trans_sql);
 
 //Begin Active License Check
-$l_sql          = "SELECT * FROM istream_demo WHERE `key` = '$ok' ";
+$l_sql          = "SELECT * FROM sg_accounts WHERE `key` = '$ok' ";
 $l_result       = mysql_query($l_sql);
 $l_row          = mysql_fetch_array($l_result);
 $l_num          = mysql_num_rows($l_result);
