@@ -1,6 +1,13 @@
         
 	<div id="main">
 		<div id="rightside">
+			<h2>Security Information</h2>		
+			<!-- GeoTrust QuickSSL [tm] Smart  Icon tag. Do not edit. -->
+			<SCRIPT LANGUAGE="JavaScript"  TYPE="text/javascript"  
+			SRC="//smarticon.geotrust.com/si.js"></SCRIPT>
+			<!-- end  GeoTrust Smart Icon tag -->
+							
+
 			<h2>Top 10 Tippers:</h2>
 			<div class="box">
                         <ol>
