@@ -77,7 +77,7 @@ class SG_Metatip extends CI_Model {
            }
            
            
-           //If we have groups with members our arrays should be built, now lets feed the database...
+           //If we have groups with members our arrays should be built, let's feed the database...
            
            //Find the total amount of commission we are paying
            $total_commission_percent = array_sum($this->payout_groups);
@@ -118,8 +118,8 @@ class SG_Metatip extends CI_Model {
                 
                 if($payout_total > 0){
                     $balance_update = array('pmt_amt' => $users_change);
-                $this->db->where('pid',$key);
-		$this->db->update('mtip_pending_trans', $balance_update);
+                    $this->db->where('pid',$key);
+		    $this->db->update('mtip_pending_trans', $balance_update);
                 }
                 
                 
