@@ -44,9 +44,9 @@ $l_auth           = $l_row['auth_key'];
 $l_api            = $l_row['api_key'] ;
 
 $gApi = "9354f9133ecc061fc604d2963e05f0d841d55704";
-$selection = "`owner_api` =  '$l_api'";
+$selection = "`api_key` =  '$l_api'";
 
-if($gApi == $l_api){$selection = "`owner_api` =  '$l_api' OR `owner_api` != '$l_api'";}
+if($gApi == $l_api){$selection = "`api_key` =  '$l_api' OR `api_key` != '$l_api'";}
 
 if(!isset($api,$auth,$ok)){die('Error: You must access this page from your metaTip Control Panel');}
 
@@ -67,7 +67,7 @@ $scStartDate = week_start_date($date, date('Y',time() ) );
 $scEndDate   = date('n/d', strtotime('+6 days', strtotime($sStartDate)));
 
 //TRANSACTION LOG QUERY
-$log_sql  = "SELECT * FROM `mtipcomm_translog` WHERE `owner_api` = '$l_api' ORDER BY `timestamp` DESC LIMIT 0,100";
+$log_sql  = "SELECT * FROM `mtipcomm_translog` WHERE `api_key` = '$l_api' ORDER BY `timestamp` DESC LIMIT 0,100";
 $log_res  = mysql_query($log_sql) or die (mysql_error());
 $log_num  = mysql_num_rows($log_res);
 
@@ -260,7 +260,7 @@ sum(`pmt_amt`) as 'tot',
 avg(`pmt_amt`) as 'avg'
 FROM  `mtipcomm_translog` 
 WHERE  $selection
-GROUP BY  `owner_api`";
+GROUP BY  `api_key`";
 $ustatres = mysql_query($ustatsql);
 $ustatnum = mysql_num_rows($ustatres);
 if($ustatnum > 0){
@@ -271,12 +271,12 @@ $uavg     = number_format($usrow['avg'],2,".",",");
 }
 
 //Owner Groups
-$g_sql     = "SELECT * FROM `mtip_groups` WHERE `owner_api` = '$l_api'";
+$g_sql     = "SELECT * FROM `mtip_groups` WHERE `api_key` = '$l_api'";
 $g_res     = mysql_query($g_sql) or die(mysql_error());
 $g_num     = mysql_num_rows($g_res);
 
 
-$gn_sql    = "SELECT * FROM `mtip_groups` WHERE `owner_api` = '$l_api' AND `gid` = '$gid'";
+$gn_sql    = "SELECT * FROM `mtip_groups` WHERE `api_key` = '$l_api' AND `gid` = '$gid'";
 $gn_res    = mysql_query($gn_sql) or die(mysql_error());
 $gn_num    = mysql_num_rows($gn_res);
 if($gn_num >= 1){$groupname = mysql_result($gn_res,0,'gname');}else{$groupname = "No Selected Group";}
@@ -315,7 +315,7 @@ else if($act == 'addgrp'){
   
   if($grptot < 0.95){
   $sql = "INSERT INTO `mtip_groups` 
-  (`gid`,`gname`,`owner_api`,`payout`,`timestamp`)
+  (`gid`,`gname`,`api_key`,`payout`,`timestamp`)
   VALUES (NULL,'$gname','$l_api','$paycvt',NOW())";
   mysql_query($sql) or die("Error Adding Total: $sql");
   }else{$message = "<div class=error>Error! Your total group % cannot exceed 100%!<br>

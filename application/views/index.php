@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="author" content="Jonathan Irvin" />
+	<meta name="author" content="Jonathan Irvin"/>
 	<meta name="description" content="Home of Sublime Geek Products and Services" />
 	<meta name="keywords" content="keywords, or phrases, associated, with each page, are best" />
 	<title>{title}</title>
@@ -197,7 +197,13 @@
 			</div>
 			
 			<!-- Search -->
-			<div id="Search">				
+			<div id="Search">
+			
+			<!-- GeoTrust QuickSSL [tm] Smart  Icon tag. Do not edit. -->
+			<SCRIPT LANGUAGE="JavaScript"  TYPE="text/javascript"  
+			SRC="//smarticon.geotrust.com/si.js"></SCRIPT>
+			<!-- end  GeoTrust Smart Icon tag -->
+							
 				<form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
 				  <div>
 				    <input type="hidden" name="cx" value="partner-pub-6116332704082648:bg9z3d94m8a" />
