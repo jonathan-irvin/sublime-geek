@@ -110,12 +110,14 @@ class SG_Backend extends CI_Model {
 		}
 	}
 	
-	/*
-		'INFO','WARNING','ERROR','MAINTENANCE',
-		'PROVISION','UPGRADE','DOWNGRADE','RENEWAL',
-		'START','SHUTDOWN','RESTART','RELOAD',
-		'GETSONGS','GETACCT','GETDISKSPACE','GETBANDWIDTH',		
-		'STARTAUTODJ','STOPAUTODJ'
+	/*	
+         * 'INFO','WARNING','ERROR',
+         * 'MAINTENANCE','PROVISION','UPGRADE',
+         * 'DOWNGRADE','RENEWAL','START','SHUTDOWN',
+         * 'RESTART','RELOAD','GETSONGS','GETACCT',
+         * 'GETDISKSPACE','GETBANDWIDTH','STARTAUTODJ',
+         * 'GRIDSPLODE','PUSHVOTE','VOTE','STOPAUTODJ',
+         * 'MTIP_COMMISSION','MTIP_USAGE','MTIP_INFO'
 	*/
 	
 	function account_log($name,$key,$type,$description)
