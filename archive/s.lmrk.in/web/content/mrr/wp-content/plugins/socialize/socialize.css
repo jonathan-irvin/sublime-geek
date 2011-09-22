@@ -1,0 +1,76 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*Bottom box with buttons */
+.socialize-containter{
+	width:auto;
+	padding:10px;
+	vertical-align:top;
+	border: 3px solid #ddd;
+	display:table-cell;
+}
+.socialize-buttons{
+	float:left;
+	vertical-align:top;
+	padding:0 10px 10px 0;
+}
+.socialize-button{
+	padding:0 3px;
+	float:left;
+	text-align:center;
+}
+/*Buttons In Content */
+.socialize-in-content{
+	line-height:1;
+	text-align:center;
+}
+.socialize-in-button-left{
+	min-height:25px;
+	padding: 0 10px 5px 0;
+	margin:0;
+}
+.socialize-in-button-right{
+	min-height:25px;
+	padding: 0 0 5px 10px;
+	margin:0;
+}
+
+/*Delicious Code*/
+.delicious-button{
+	margin: 0;
+	padding: 0;
+	height:60px;
+	width: 50px;
+	color:#000000;
+	line-height: 10px;
+	background: url(images/delicous.png) center top no-repeat;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.del-top{
+	height:44px;
+	font-size: 10px;
+	text-align:center;
+	line-height: 10px;
+}
+.delicious-button span{
+	padding: 4px 0 0 0;
+	display: block;
+	height: 20px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align:center;
+	line-height: 20px;
+}
+.del-bot a{
+	padding: 0 0 0 17px;
+	height:16px;
+	color: #2B2BFF;
+	font-weight: bold;
+	font-size: 12px;
+	text-align: left;
+	text-decoration:none;
+	line-height: 12px;
+}
+.del-bot a:hover {
+	color:#000000;
+}
