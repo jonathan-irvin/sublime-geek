@@ -301,7 +301,7 @@ class SG_Gsplode extends CI_Model {
 		
 		$sys  	 = $this->db->get('gsplode_config');
 		$sys_row = $sys->result_array();		
-		//$sys_row[0]['status'] = "SHUTDOWN";
+		$sys_row[0]['status'] = "ONLINE";
 		
 		$tier 	 = $this->db->get_where('gsplode_splode_config',array('id'=>$tier_id));
 		$tierall = $this->db->get('gsplode_splode_config');		
