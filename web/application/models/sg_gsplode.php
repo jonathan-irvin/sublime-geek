@@ -11,7 +11,7 @@ class SG_Gsplode extends CI_Model {
 	var $region         ;
 	
 			//System Version
-	var	$version        = 2.0;
+	var	$version        = 3.0;
 	var	$DEBUG          = FALSE;
 
 		//Default Commission
@@ -105,7 +105,7 @@ class SG_Gsplode extends CI_Model {
 				 * Monkey Canning - '9373569d-db5f-45f3-9f51-4e4498e34adb'
 				*/
 				
-				$admin			 = array('6aab7af0-8ce8-4361-860b-7139054ed44f','9373569d-db5f-45f3-9f51-4e4498e34adb');
+				$admin			 = array("6aab7af0-8ce8-4361-860b-7139054ed44f");
 				$players		 = array();				
 				
 				$w1 = $this->db->where_not_in('player_key',$admin);
@@ -301,7 +301,7 @@ class SG_Gsplode extends CI_Model {
 		
 		$sys  	 = $this->db->get('gsplode_config');
 		$sys_row = $sys->result_array();		
-		$sys_row[0]['status'] = "SHUTDOWN";
+		$sys_row[0]['status'] = "ONLINE";
 		
 		$tier 	 = $this->db->get_where('gsplode_splode_config',array('id'=>$tier_id));
 		$tierall = $this->db->get('gsplode_splode_config');		
@@ -445,8 +445,8 @@ class SG_Gsplode extends CI_Model {
 	
 	function recv_pmt($player_name,$player_key,$pmt_amt,$slurl,$auth,$v_recv)
 	{
-		echo "SHUTDOWN;The GridSplode system has been shut down.  Thank you for playing.  Refunding your money now.  Check our twitter for more information http://twitter.com/sublimegeek or our blog http://sublimegeek.com/blog";
-		return;
+		//echo "SHUTDOWN;The GridSplode system has been shut down.  Thank you for playing.  Refunding your money now.  Check our twitter for more information http://twitter.com/sublimegeek or our blog http://sublimegeek.com/blog";
+		//return;
 		
 		$sys  	  = $this->db->get('gsplode_config');
 		$sys_row  = $sys->result_array();		
